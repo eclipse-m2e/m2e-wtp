@@ -24,17 +24,36 @@
   <name>M2E-WTP :: Parent</name>
 
   <properties>
-    <tycho-version>0.14.1</tycho-version>
-    <m2eclipse-core.version>1.1.0.20120315-1002</m2eclipse-core.version>
-    <m2eclipse-core.site>1.1.0/N/${m2eclipse-core.version}</m2eclipse-core.site>
-    <target.platform>m2e-wtp-e371</target.platform>        
+    <tycho-version>0.15.0</tycho-version>
     <test.timeout>1800</test.timeout><!--  30 mins -->       
-    <m2e.site-compressed>http://repository.sonatype.org/service/local/repositories/forge-sites/content-compressed/</m2e.site-compressed>
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
+    <eclipse.target>juno</eclipse.target>
+    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
+    <mavenarchiver-repo.url>https://repository.sonatype.org/content/sites/forge-sites/m2e-extras/0.15.0/N/0.15.0.201109290002/</mavenarchiver-repo.url>
   </properties>
 
+  <organization>
+    <name>Eclipse foundation</name>
+    <url>http://www.eclipse.org</url>
+  </organization>
+  
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+  
+  <issueManagement>
+    <url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=M2E-WTP</url>
+    <system>Bugzilla</system>
+  </issueManagement>
+
   <modules>
+    <!--
     <module>org.eclipse.m2e.wtp.target-platform</module>
+    -->
     <module>org.eclipse.m2e.wtp.overlay</module>
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
@@ -42,9 +61,37 @@
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
     
+  <repositories>
+    <repository>
+      <id>eclipse</id>
+      <layout>p2</layout>
+      <url>${eclipse-repo.url}</url>
+    </repository>
+    <repository>
+      <id>m2e-core</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/technology/m2e/milestones/1.1/</url>
+    </repository>    
+    <repository>
+      <id>mavenarchiver</id>
+      <layout>p2</layout>
+      <url>${mavenarchiver-repo.url}</url>
+    </repository>    
+    <repository>
+      <id>RSO-public-group</id>
+      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+    
   <pluginRepositories>
     <pluginRepository>
-      <id>tycho</id>
+      <id>RSO-public-group</id>
       <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
       <snapshots>
         <enabled>true</enabled>
@@ -65,37 +112,13 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <resolver>p2</resolver>
-            <target>
-            <artifact>
-                <groupId>org.eclipse.m2e.wtp</groupId>
-                <artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
-                <version>${project.version}</version>
-                <classifier>${target.platform}</classifier>
-            </artifact>
-          </target>
-          <ignoreTychoRepositories>true</ignoreTychoRepositories>
+          <pomDependencies>consider</pomDependencies>
         </configuration>
       </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-surefire-plugin</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-            <useUIHarness>true</useUIHarness>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <argLine>${tycho.test.jvmArgs}</argLine>
-            <appArgLine>-pluginCustomization ${basedir}/plugin_customization.ini</appArgLine>
-            <!-- kill test JVM if tests take more than X seconds to finish -->
-            <forkedProcessTimeoutInSeconds>${test.timeout}</forkedProcessTimeoutInSeconds>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
