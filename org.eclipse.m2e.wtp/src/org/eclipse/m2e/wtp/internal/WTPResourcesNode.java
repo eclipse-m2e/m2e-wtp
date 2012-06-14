@@ -67,7 +67,7 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
   public ImageDescriptor getImageDescriptor(Object object) {
     try {
       IFacetedProject facetedProject = ProjectFacetsManager.create(project);
-      if (facetedProject.hasProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)) {
+      if (facetedProject != null && facetedProject.hasProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)) {
         return WTPResourcesImages.APP_RESOURCES;
       }
     } catch(CoreException ex) {
