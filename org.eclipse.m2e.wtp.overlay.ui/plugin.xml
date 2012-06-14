@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<!--
+   <extension
+         point="org.eclipse.wst.common.modulecore.ui.virtualComponentLabelProvider">
+      <provider
+            class="org.eclipse.m2e.wtp.overlay.ui.VirtualComponentLabelProvider">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.wst.common.modulecore.ui.referenceWizardFragment">
+      <referenceFragment
+            class="org.eclipse.m2e.wtp.overlay.ui.OverlayWizardFragment"
+            hidden="false"
+            id="org.eclipse.m2e.wtp.overlay.ui.referenceFragment"
+            name="Project Overlay">
+      </referenceFragment>
+   </extension>
+	-->   
+   <extension point="org.eclipse.ui.preferencePages">
+      <page id="org.eclipse.m2e.wtp.overlay.ui.preferences.OverlayPreferencePage"
+         category="org.eclipse.wst.server.ui.preferencePage"
+         class="org.eclipse.m2e.wtp.overlay.ui.preferences.OverlayPublishingPreferencePage"
+         name="Overlays">
+         <keywordReference id="org.eclipse.wst.server.preferenceKeywords"/>
+      </page>
+   </extension>
+   
+</plugin>

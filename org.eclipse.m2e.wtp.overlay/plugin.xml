@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     <extension
+         point="org.eclipse.wst.common.modulecore.referenceResolver">
+      <resolver
+            class="org.eclipse.m2e.wtp.overlay.modulecore.OverlayReferenceResolver"
+            id="org.maven.ide.eclipse.wtp.overlay.modulecore.OverlayReferenceResolver">
+      </resolver>
+   </extension>
+
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.eclipse.m2e.wtp.overlay.internal.preferences.OverlayPreferencesInitializer"/>
+   </extension>
+     
+</plugin>
