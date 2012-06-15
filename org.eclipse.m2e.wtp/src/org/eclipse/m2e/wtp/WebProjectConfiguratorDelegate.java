@@ -375,6 +375,8 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       // or if it's a workspace project (projects already have a reference created in configure())
       if(!isDeployed) {
         descriptor.setClasspathAttribute(NONDEPENDENCY_ATTRIBUTE.getName(), NONDEPENDENCY_ATTRIBUTE.getValue());
+        //Bug #382078 : no need to rename non-deployed artifacts.
+        continue;
       }
     
       //If custom fileName is used, then copy the artifact and rename the artifact under the build dir
@@ -395,8 +397,11 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     iter = classpath.getEntryDescriptors().iterator();
     while (iter.hasNext()) {
       IClasspathEntryDescriptor descriptor = iter.next();
+      if (descriptor.getClasspathAttributes().containsKey(NONDEPENDENCY_ATTRIBUTE.getName())) {
+        //No need to rename if not deployed
+        continue;
+      }
       IClasspathEntry entry = descriptor.toClasspathEntry();
-      
       if (dups.contains(entry.getPath().lastSegment())) {
         String newName = descriptor.getGroupId() + "-" + entry.getPath().lastSegment();
         IPath newPath = renameArtifact(targetDir, entry.getPath(), newName );
