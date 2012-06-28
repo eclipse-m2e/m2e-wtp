@@ -282,7 +282,11 @@
             name="WTP Web Project conversion participant"
             nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
       </projectConversionParticipant>   
-   </extension>
-   
-   
+      <projectConversionParticipant
+            class="org.eclipse.m2e.wtp.internal.conversion.EjbProjectConverter"
+            id="org.eclipse.m2e.wtp.conversion.EjbProjectConverter"
+            name="WTP EJB Project conversion participant"
+            nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
+      </projectConversionParticipant>   
+    </extension>
 </plugin>
