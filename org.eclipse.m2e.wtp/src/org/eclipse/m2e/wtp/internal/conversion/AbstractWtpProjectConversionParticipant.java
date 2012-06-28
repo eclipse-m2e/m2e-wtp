@@ -37,11 +37,16 @@ public abstract class AbstractWtpProjectConversionParticipant extends AbstractPr
     }
     return false;
   }
-  
+
+  /**
+   * @return a clone of the model's {@link Build} if it exists or a new instance.
+   */
   protected Build getOrCreateBuild(Model model) {
-    Build build = model.getBuild();
-    if (build == null) {
+    Build build;
+    if (model.getBuild() == null) {
       build = new Build();
+    } else {
+      build = model.getBuild().clone();
     }
     return build;
   }

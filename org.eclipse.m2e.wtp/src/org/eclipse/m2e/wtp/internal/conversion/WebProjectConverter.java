@@ -58,10 +58,12 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
   
     // Set  <warSourceDirectory>WebContent</warSourceDirectory>
     IFolder webContentFolder = findWebRootFolder(component);
+    boolean customized = false;
     if (webContentFolder != null) {
       String webContent = webContentFolder.getProjectRelativePath().toPortableString();
       if (!DEFAULT_WAR_SOURCE_FOLDER.equals(webContent)) {
         configure(warPlugin, WAR_SOURCE_DIRECTORY_KEY, webContent);
+        customized = true;
       }
     }
     
@@ -71,10 +73,13 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
       IProjectFacetVersion webVersion = fProject.getProjectFacetVersion(IJ2EEFacetConstants.DYNAMIC_WEB_FACET);
       if (webVersion != null && webVersion.compareTo(IJ2EEFacetConstants.DYNAMIC_WEB_24) > 0) {
         configure(warPlugin, FAIL_IF_MISSING_WEBXML_KEY, "false");
+        customized = true;
       }
     }
 
-    model.setBuild(build);
+    if (customized) {
+      model.setBuild(build);
+    }
   }
 
   private IFolder findWebRootFolder(IVirtualComponent component) {
