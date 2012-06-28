@@ -288,5 +288,11 @@
             name="WTP EJB Project conversion participant"
             nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
       </projectConversionParticipant>   
+      <projectConversionParticipant
+            class="org.eclipse.m2e.wtp.internal.conversion.EarProjectConverter"
+            id="org.eclipse.m2e.wtp.conversion.EarProjectConverter"
+            name="WTP EAR Project conversion participant"
+            nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
+      </projectConversionParticipant>   
     </extension>
 </plugin>
