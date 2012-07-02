@@ -365,7 +365,9 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
   
   protected void addFilesToClean(ResourceCleaner fileCleaner, IPath[] paths) {
     for (IPath resourceFolderPath : paths) {
-      fileCleaner.addFiles(resourceFolderPath.append("META-INF/MANIFEST.MF"));
+      if (resourceFolderPath != null) {
+        fileCleaner.addFiles(resourceFolderPath.append("META-INF/MANIFEST.MF"));
+      }
     }
   }
 
