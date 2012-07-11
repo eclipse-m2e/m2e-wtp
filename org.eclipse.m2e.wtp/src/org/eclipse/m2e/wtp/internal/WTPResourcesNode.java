@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WTPResourcesNode implements IWorkbenchAdapter {
 
+  private static final int HASHCODE_ADDITION = 0x504;
   private static final Logger LOG = LoggerFactory.getLogger(WTPResourcesNode.class);
 
   private final IProject project;
@@ -113,4 +114,14 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
     return "Deployed Resources";
   }
 
+  public boolean equals(Object o) {
+    if( !(o instanceof WTPResourcesNode))
+      return false;
+    IProject p = ((WTPResourcesNode)o).project;
+    return this.project == null ? p == null : this.project.equals(p);
+  }
+  public int hashCode() {
+    return HASHCODE_ADDITION + (project == null ? 0 : project.hashCode());
+  }
+  
 }
