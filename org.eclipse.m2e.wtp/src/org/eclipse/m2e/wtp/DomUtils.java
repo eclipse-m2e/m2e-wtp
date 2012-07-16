@@ -10,6 +10,7 @@ package org.eclipse.m2e.wtp;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.core.runtime.Assert;
 
 public class DomUtils {
 
@@ -72,4 +73,17 @@ public class DomUtils {
     }
     return new String[0];
   }  
+  
+  public static final Xpp3Dom getOrCreateChildNode(Xpp3Dom parent, String childName) {
+    Assert.isNotNull(parent);
+    Assert.isNotNull(childName);
+    Xpp3Dom dom = parent.getChild(childName);
+    if (dom == null) {
+      dom = new Xpp3Dom(childName);
+      parent.addChild(dom);
+    }
+    return dom;
+  }
+  
+
 }

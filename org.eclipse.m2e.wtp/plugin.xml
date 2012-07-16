@@ -294,5 +294,11 @@
             name="WTP EAR Project conversion participant"
             nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
       </projectConversionParticipant>   
+      <projectConversionParticipant
+            class="org.eclipse.m2e.wtp.internal.conversion.AppClientProjectConverter"
+            id="org.eclipse.m2e.wtp.conversion.AppClientProjectConverter"
+            name="WTP Application Client Project conversion participant"
+            nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
+      </projectConversionParticipant>
     </extension>
 </plugin>
