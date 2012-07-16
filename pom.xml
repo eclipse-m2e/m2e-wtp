@@ -33,6 +33,10 @@
     <mavenarchiver-repo.url>https://repository.sonatype.org/content/sites/forge-sites/m2e-extras/0.15.0/N/0.15.0.201109290002/</mavenarchiver-repo.url>
   </properties>
 
+  <prerequisites>
+   <maven>3.0</maven>
+  </prerequisites>
+ 
   <organization>
     <name>Eclipse foundation</name>
     <url>http://www.eclipse.org</url>

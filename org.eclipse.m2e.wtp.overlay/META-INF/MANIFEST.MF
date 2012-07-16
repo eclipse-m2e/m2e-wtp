@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jem.util,
  org.apache.ant,
  org.eclipse.jface
-Bundle-Vendor: Red Hat, Inc.
+Bundle-Vendor: Eclipse.org - m2e-wtp
 Export-Package: org.eclipse.m2e.wtp.overlay,
  org.eclipse.m2e.wtp.overlay.internal.modulecore,
  org.eclipse.m2e.wtp.overlay.modulecore

@@ -6,7 +6,7 @@
       provider-name="%providerName"
       plugin="org.eclipse.m2e.wtp">
 
-   <description url="http://www.eclipse.org/m2e-wtp/">
+   <description>
       %description
    </description>
 
