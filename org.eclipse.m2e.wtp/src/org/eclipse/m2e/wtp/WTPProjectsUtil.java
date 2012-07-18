@@ -343,7 +343,7 @@ public class WTPProjectsUtil {
   
   public static IVirtualReference[] extractHardReferences(IVirtualComponent warComponent, boolean overlays) {
     Map<String, Object> options = new HashMap<String, Object>(1);
-    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, IVirtualComponent.HARD_REFERENCES);
+    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, IVirtualComponent.DISPLAYABLE_REFERENCES_ALL);
     IVirtualReference[] allReferences = warComponent.getReferences(options);
     if (allReferences == null || allReferences.length == 0) {
       return new IVirtualReference[]{};
