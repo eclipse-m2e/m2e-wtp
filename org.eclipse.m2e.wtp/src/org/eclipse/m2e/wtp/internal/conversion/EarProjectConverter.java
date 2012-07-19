@@ -54,7 +54,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
   }
 
   private void setEarPlugin(IVirtualComponent component, Model model) throws CoreException {
-    Build build = getOrCreateBuild(model);
+    Build build = getCloneOrCreateBuild(model);
     Plugin earPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ear-plugin", "2.7");
   
     // Set  <earSourceDirectory>EarContent</earSourceDirectory>

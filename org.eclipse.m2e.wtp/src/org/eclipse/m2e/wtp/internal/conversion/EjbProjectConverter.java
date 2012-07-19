@@ -49,7 +49,7 @@ public class EjbProjectConverter extends AbstractWtpProjectConversionParticipant
   }
 
   private void setEjbPlugin(IVirtualComponent component, Model model) throws CoreException {
-    Build build = getOrCreateBuild(model);
+    Build build = getCloneOrCreateBuild(model);
     Plugin ejbPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ejb-plugin", "2.3");
   
     IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());

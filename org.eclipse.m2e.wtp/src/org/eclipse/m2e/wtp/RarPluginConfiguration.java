@@ -16,10 +16,13 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jst.j2ee.internal.J2EEVersionConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -37,16 +40,16 @@ public class RarPluginConfiguration {
 
   final Plugin plugin;
   
-  final MavenProject rarProject;
+  final IMavenProjectFacade rarFacade;
   
   
-  public RarPluginConfiguration(MavenProject mavenProject) {
-
-    if (JEEPackaging.RAR != JEEPackaging.getValue(mavenProject.getPackaging()))
+  public RarPluginConfiguration(IMavenProjectFacade facade) {
+    Assert.isNotNull(facade);
+    if (JEEPackaging.RAR != JEEPackaging.getValue(facade.getPackaging()))
       throw new IllegalArgumentException("Maven project must have rar packaging");
     
-    this.rarProject = mavenProject;
-    this.plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-rar-plugin");
+    this.rarFacade = facade;
+    this.plugin = facade.getMavenProject().getPlugin("org.apache.maven.plugins:maven-rar-plugin");
   }
 
   /**
@@ -80,7 +83,8 @@ public class RarPluginConfiguration {
    * 
    * @return the first resource directory found in pom.xml.
    */
-  public String getRarContentDirectory(IProject project) {
+  public String getRarContentDirectory() {
+    IProject project = rarFacade.getProject();
     Xpp3Dom config = getConfiguration();
     if(config != null) {
       Xpp3Dom contentDirDom = config.getChild("rarSourceDirectory");
@@ -98,10 +102,10 @@ public class RarPluginConfiguration {
   /**
    * @return
    */
-  public IProjectFacetVersion getConnectorFacetVersion(IProject project) {
-
-      IFile raXml = project.getFolder(getRarContentDirectory(project)).getFile(RA_XML);
-      if(raXml.isAccessible()) {
+  public IProjectFacetVersion getConnectorFacetVersion() {
+      IFile raXml = getRaXml();
+      
+      if(raXml != null && raXml.isAccessible()) {
         try {
           InputStream is = raXml.getContents();
           try {
@@ -124,7 +128,6 @@ public class RarPluginConfiguration {
           // expected
         }
       }
-  
 
       //If no ra.xml found and the project depends and WTP >= 3.2, then set connector facet to 1.6
       //TODO see if other conditions might apply to differentiate JCA 1.6 from 1.5
@@ -135,17 +138,37 @@ public class RarPluginConfiguration {
    * Get the custom location of ra.xml, as set in &lt;raXmlFile&gt;.
    * @return the custom location of ra.xml or null if &lt;raXmlFile&gt; is not set
    */
-  public String getCustomRaXml(IProject project) {
+  public String getCustomRaXml() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
       Xpp3Dom raXmlFileDom = config.getChild("raXmlFile");
       if(raXmlFileDom != null && raXmlFileDom.getValue() != null) {
         String raXmlFile = raXmlFileDom.getValue().trim();
-        raXmlFile = ProjectUtils.getRelativePath(project, raXmlFile);
+        raXmlFile = ProjectUtils.getRelativePath(rarFacade.getProject(), raXmlFile);
         return raXmlFile;
       }
     }
     return null;
   }
 
+  public IFile getRaXml() {
+    IProject project = rarFacade.getProject();
+    String customRaXmlPath = getCustomRaXml();
+    IFile raXml = null;
+    if (customRaXmlPath != null ) {
+      raXml = project.getFile(customRaXmlPath);
+    }
+    if (raXml == null || !raXml.isAccessible()) {
+      raXml = project.getFolder(getRarContentDirectory()).getFile(RA_XML);
+    }
+    if (!raXml.isAccessible()) {
+      for (IPath resourcePath : rarFacade.getResourceLocations()) {
+        raXml = project.getFolder(resourcePath).getFile(RA_XML);
+        if (raXml.isAccessible()) {
+          break;
+        }
+      }
+    }
+    return raXml;
+  }
 }

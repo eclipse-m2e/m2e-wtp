@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jst.j2ee.jca.project.facet.ConnectorFacetInstallDataModelProvider;
 import org.eclipse.jst.j2ee.jca.project.facet.IConnectorFacetInstallDataModelProperties;
+import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.wtp.namemapping.FileNameMappingFactory;
@@ -60,25 +61,24 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
    */
   protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
-
-    if(facetedProject.hasProjectFacet(WTPProjectsUtil.JCA_FACET)) {
-      try {
-        facetedProject.modify(Collections.singleton(new IFacetedProject.Action(IFacetedProject.Action.Type.UNINSTALL,
-            facetedProject.getInstalledVersion(WTPProjectsUtil.JCA_FACET), null)), monitor);
-      } catch(Exception ex) {
-        LOG.error("Error removing JCA facet", ex);
-      }
+    if (facetedProject == null) {
+      return;
     }
-    
+
     Set<Action> actions = new LinkedHashSet<Action>();
     installJavaFacet(actions, project, facetedProject);
 
-    RarPluginConfiguration config = new RarPluginConfiguration(mavenProject);
+    IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
+    RarPluginConfiguration config = new RarPluginConfiguration(facade);
     
     IFile manifest = null;
     IFolder firstInexistentfolder = null;
     boolean manifestAlreadyExists =false;
-    String contentDir = config.getRarContentDirectory(project);
+    String contentDir = config.getRarContentDirectory();
+
+    IProjectFacetVersion connectorFv = config.getConnectorFacetVersion();
+
+    IDataModel rarModelCfg = DataModelFactory.createDataModel(new ConnectorFacetInstallDataModelProvider());
 
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.JCA_FACET)) {
       // Configuring content directory, used by WTP to create META-INF/manifest.mf, ra.xml
@@ -88,16 +88,22 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
       if (!manifestAlreadyExists) {
         firstInexistentfolder = findFirstInexistentFolder(project, contentFolder, manifest);
       }   
-
       
-      IDataModel rarModelCfg = DataModelFactory.createDataModel(new ConnectorFacetInstallDataModelProvider());
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.CONFIG_FOLDER, contentDir);
       //Don't generate ra.xml by default - Setting will be ignored for JCA 1.6
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.GENERATE_DD, false);
 
-      IProjectFacetVersion connectorFv = config.getConnectorFacetVersion(project);
       removeConflictingFacets(facetedProject, connectorFv, actions);
+
       actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, connectorFv, rarModelCfg));
+    } else {
+      IProjectFacetVersion projectFacetVersion = facetedProject.getProjectFacetVersion(WTPProjectsUtil.JCA_FACET);     
+      if(projectFacetVersion.getVersionString() != null && !projectFacetVersion.getVersionString().equals(projectFacetVersion.getVersionString())){
+
+        removeConflictingFacets(facetedProject, connectorFv, actions);
+
+        actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, connectorFv, rarModelCfg));
+      } 
     }
 
     if(!actions.isEmpty()) {
@@ -113,7 +119,7 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
     }
     removeTestFolderLinks(project, mavenProject, monitor, "/"); 
     
-    String customRaXml = config.getCustomRaXml(project);
+    String customRaXml = config.getCustomRaXml();
     linkFileFirst(project, customRaXml, "META-INF/ra.xml", monitor);
     
     //Remove "library unavailable at runtime" warning. TODO is it relevant for connector projects?
@@ -190,7 +196,8 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
     newRefs.toArray(newRefsArray);
     
     //Only change the project references if they've changed
-    if (hasChanged(rarComponent.getReferences(), newRefsArray)) {
+    IVirtualReference[] references = WTPProjectsUtil.extractHardReferences(rarComponent, false);
+    if (WTPProjectsUtil.hasChanged(references, newRefsArray)) {
       rarComponent.setReferences(newRefsArray);
     }
   }
