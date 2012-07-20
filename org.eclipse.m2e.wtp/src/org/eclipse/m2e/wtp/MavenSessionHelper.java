@@ -8,7 +8,6 @@
 
 package org.eclipse.m2e.wtp;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
 
@@ -19,7 +18,6 @@ import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.lifecycle.internal.DependencyContext;
 import org.apache.maven.lifecycle.internal.MojoExecutor;
 import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.eclipse.core.runtime.CoreException;
@@ -80,14 +78,7 @@ public class MavenSessionHelper {
       DependencyContext dependencyContext = mojoExecutor.newDependencyContext(session,
           Collections.singletonList(execution));
 
-      // workaround for http://jira.codehaus.org/browse/MNG-5141
-      // use reflection until we can get maven 3.0.4+, which has MNG-5141 fixed
-      Method ensureDependenciesAreResolved = mojoExecutor.getClass().getDeclaredMethod("ensureDependenciesAreResolved",
-                                                                                        MojoDescriptor.class, 
-                                                                                        MavenSession.class, 
-                                                                                        DependencyContext.class);
-      ensureDependenciesAreResolved.setAccessible(true);
-      ensureDependenciesAreResolved.invoke(mojoExecutor, execution.getMojoDescriptor(), session, dependencyContext);
+      mojoExecutor.ensureDependenciesAreResolved(execution.getMojoDescriptor(), session, dependencyContext);
 
     } catch(Exception ex) {
       dispose();
