@@ -162,8 +162,7 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     if (!actions.isEmpty()) {
       ResourceCleaner fileCleaner = new ResourceCleaner(project);
       try {
-        addFilesToClean(fileCleaner, facade.getResourceLocations());
-        addFilesToClean(fileCleaner, facade.getCompileSourceLocations());
+        addFoldersToClean(fileCleaner, facade);
         facetedProject.modify(actions, monitor);      
       } finally {
         //Remove any unwanted MANIFEST.MF the Facet installation has created
@@ -339,20 +338,6 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
       return WTPProjectsUtil.hasChanged(existingRefs, refArray);
   }
 
-  protected IFolder findFirstInexistentFolder(IProject project, IContainer keptFolder, IFile file) {
-    StringBuilder path = new StringBuilder();
-    for (String segment : file.getParent().getProjectRelativePath().segments()) {
-      path.append(IPath.SEPARATOR);
-      path.append(segment);
-      IFolder curFolder = project.getFolder(path.toString());
-      if (!curFolder.exists() && 
-          !curFolder.getProjectRelativePath().isPrefixOf(keptFolder.getProjectRelativePath())) {
-        return curFolder;
-      }
-    }
-    return null;
-  }
-  
   public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
     // do nothing
@@ -363,14 +348,26 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     // do nothing
   }
   
-  protected void addFilesToClean(ResourceCleaner fileCleaner, IPath[] paths) {
-    for (IPath resourceFolderPath : paths) {
-      if (resourceFolderPath != null) {
-        fileCleaner.addFiles(resourceFolderPath.append("META-INF/MANIFEST.MF"));
+  protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
+    for (IPath p : facade.getCompileSourceLocations()) {
+      if (p != null) {
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFolder(p);
       }
     }
+    for (IPath p : facade.getResourceLocations()) {
+      if (p != null) {
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFolder(p);
+      }
+    }
+    for (IPath p : facade.getTestCompileSourceLocations()) {
+      if (p != null) fileCleaner.addFolder(p);
+    }
+    for (IPath p : facade.getTestResourceLocations()) {
+      if (p != null) fileCleaner.addFolder(p);
+    }
   }
-
   
   /**
    * Add inclusion/exclusion patterns to .component metadata. WTP server adapters can use that information to 

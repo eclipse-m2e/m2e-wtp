@@ -8,10 +8,9 @@
 
 package org.eclipse.m2e.wtp;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -23,19 +22,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 /**
- * ResourceCleaner
+ * Utility class used to delete generated resources.
  *
  * @author Fred Bricon
  */
 public class ResourceCleaner {
   
+  private static final Path EMPTY_PATH = new Path("");
+
   private final IProject project;
 
-  private Map<IFolder, Boolean> folders = new LinkedHashMap<IFolder, Boolean>(); 
+  private List<IFolder> folders = new ArrayList<IFolder>(); 
 
-  private Map<IFile, Boolean> files = new LinkedHashMap<IFile, Boolean>(); 
+  private List<IFile> files = new ArrayList<IFile>(); 
   
   private Set<IFolder> keepers = new HashSet<IFolder>();
 
@@ -63,27 +65,19 @@ public class ResourceCleaner {
   }
 
   
-  public void addFolder(IPath folderPath, boolean deleteEmptyParents) {
-    if (folderPath == null) {
+  public void addFolder(IPath folderPath) {
+    if (folderPath == null || EMPTY_PATH.equals(folderPath)) {
       return;
     }
-    addFolder(project.getFolder(folderPath), deleteEmptyParents);
+    addFolder(project.getFolder(folderPath));
   }
 
-  
-  public void addFolders(Collection<IPath> folderPaths) {
-    if (folderPaths == null) {
-      return;
-    }
-    for (IPath path : folderPaths) {
-      addFolder(path, false);
-    }
-  }
-  
-  public void addFolder(IFolder folder, boolean deleteEmptyParents) {
+  public void addFolder(IFolder folder) {
     if (folder != null && !folder.exists()) {
-      folders.put(folder, deleteEmptyParents);
-      addInexistentParentFolders(folder);
+      if (!folder.getProject().getFullPath().equals(folder.getFullPath())){
+        folders.add(folder);
+        addInexistentParentFolders(folder);
+      }
     }
   }
 
@@ -94,7 +88,7 @@ public class ResourceCleaner {
     for (IPath fileName : filePaths) {
       IFile fileToDelete = project.getFile(fileName);
       if (!fileToDelete.exists()) {
-        files.put(fileToDelete, false);
+        files.add(fileToDelete);
         addInexistentParentFolders(fileToDelete);
       }
     }
@@ -102,12 +96,12 @@ public class ResourceCleaner {
 
   public void cleanUp() throws CoreException {
     IProgressMonitor monitor = new NullProgressMonitor();
-    for (IFile file : files.keySet()) {
+    for (IFile file : files) {
       if (file.exists()) {
         file.delete(true, monitor);
       }
     }
-    for (IFolder folder : folders.keySet()) {
+    for (IFolder folder : folders) {
       if (folder.exists() && folder.members().length == 0) {
         folder.delete(true, monitor);
       }
@@ -115,18 +109,15 @@ public class ResourceCleaner {
   }
   
   protected void addInexistentParentFolders(IResource resource) {
-    IContainer parent = resource.getParent();
-    IFolder firstInexistentParent = null; 
-    while (parent instanceof IFolder) {
-      if (keepers.contains(parent) 
-          || parent.exists()) {
+    IContainer parentContainer = resource.getParent();
+    while (parentContainer instanceof IFolder) {
+      if (keepers.contains(parentContainer) 
+          || parentContainer.exists()) {
         break;
       }
-      firstInexistentParent = (IFolder)parent;
-      parent = parent.getParent();
-    }
-    if (firstInexistentParent != null) {
-      folders.put(firstInexistentParent, true);
+      IFolder parent = (IFolder)parentContainer;
+      folders.add(parent);
+      parentContainer = parentContainer.getParent();
     }
   }
   

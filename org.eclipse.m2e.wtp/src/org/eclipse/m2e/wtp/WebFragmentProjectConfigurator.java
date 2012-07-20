@@ -76,8 +76,7 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     Set<Action> actions = new LinkedHashSet<Action>();
     
     ResourceCleaner fileCleaner = new ResourceCleaner(project);
-    addFilesToClean(fileCleaner, facade.getResourceLocations());
-    addFilesToClean(fileCleaner, facade.getCompileSourceLocations());
+    addFoldersToClean(fileCleaner, facade);
     
     removeConflictingFacets(facetedProject, WTPProjectsUtil.WEB_FRAGMENT_3_0, actions);
      
@@ -111,11 +110,26 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     
   }
 
-  private void addFilesToClean(ResourceCleaner cleaner, IPath[] paths) {
-    for (IPath resourceFolderPath : paths) {
-      cleaner.addFiles(resourceFolderPath.append("META-INF/web-fragment.xml"));
-      cleaner.addFiles(resourceFolderPath.append("META-INF/MANIFEST.MF"));
+  protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
+    for (IPath p : facade.getCompileSourceLocations()) {
+      if (p != null) {
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml"));
+        fileCleaner.addFolder(p);
+      }
+    }
+    for (IPath p : facade.getResourceLocations()) {
+      if (p != null) {
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml"));
+        fileCleaner.addFolder(p);
+      }
+    }
+    for (IPath p : facade.getTestCompileSourceLocations()) {
+      if (p != null) fileCleaner.addFolder(p);
+    }
+    for (IPath p : facade.getTestResourceLocations()) {
+      if (p != null) fileCleaner.addFolder(p);
     }
   }
-  
 }

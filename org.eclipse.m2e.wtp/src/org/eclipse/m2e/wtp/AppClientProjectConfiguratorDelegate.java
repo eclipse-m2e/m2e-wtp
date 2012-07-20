@@ -69,8 +69,7 @@ class AppClientProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
     if(!actions.isEmpty()) {
       ResourceCleaner fileCleaner = new ResourceCleaner(project);
       try {
-        addFilesToClean(fileCleaner, facade.getResourceLocations());
-        addFilesToClean(fileCleaner, facade.getCompileSourceLocations());
+        addFoldersToClean(fileCleaner, facade);
         
         facetedProject.modify(actions, monitor);
       } finally {

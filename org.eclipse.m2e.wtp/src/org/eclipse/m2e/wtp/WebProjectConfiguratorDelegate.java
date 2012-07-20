@@ -23,10 +23,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -86,7 +87,6 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   */
   private static final String M2ECLIPSE_WTP_CONTEXT_ROOT = "m2eclipse.wtp.contextRoot";
   
-
   protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
@@ -122,16 +122,13 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     String customWebXml = config.getCustomWebXml(project);
     
     if(!actions.isEmpty()) {
-      ResourceCleaner fileCleaner = new ResourceCleaner(project);
+      ResourceCleaner fileCleaner = new ResourceCleaner(project, contentFolder);
       try {
-        addFilesToClean(fileCleaner, facade.getResourceLocations());
-        addFilesToClean(fileCleaner, facade.getCompileSourceLocations());
-        IFolder libDir = project.getFolder(warSourceDirectory).getFolder("WEB-INF/lib");
+        addFoldersToClean(fileCleaner, facade);
         fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath());
-        fileCleaner.addFolder(libDir, false);
+        fileCleaner.addFolder(contentFolder.getFolder("WEB-INF/lib"));
         if (customWebXml != null) {
-          IFile defaultWebXml = project.getFolder(warSourceDirectory).getFile("WEB-INF/web.xml");
-          fileCleaner.addFiles(defaultWebXml.getProjectRelativePath());
+          fileCleaner.addFiles(contentFolder.getFile("WEB-INF/web.xml").getProjectRelativePath());
         }
         
         facetedProject.modify(actions, monitor);
@@ -154,7 +151,6 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       J2EEProjectUtilities.setServerContextRoot(project, contextRoot);
     }
 
-    //If we have a custom web.xml but WTP created one against our will, we delete it 
     if (customWebXml != null) {
       linkFileFirst(project, customWebXml, "/WEB-INF/web.xml", monitor);
     }
@@ -339,7 +335,6 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     //http://maven.apache.org/plugins/maven-war-plugin/examples/skinny-wars.html
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
-
     /*
      * Need to take care of three separate cases
      * 
@@ -367,7 +362,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       String deployedName = fileNameMapping.mapFileName(artifact);
     
       boolean isDeployed = (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope)) 
-    		  				&& !descriptor.isOptionalDependency() 
+    		  				&& !descriptor.isOptionalDependency()
     		  				&& opts.isPackaged("WEB-INF/lib/"+deployedName)
     		  				&& !isWorkspaceProject(artifact);
       

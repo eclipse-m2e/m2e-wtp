@@ -68,9 +68,7 @@ class EjbProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     if(!actions.isEmpty()) {
       ResourceCleaner fileCleaner = new ResourceCleaner(project);
       try {
-        addFilesToClean(fileCleaner, facade.getResourceLocations());
-        addFilesToClean(fileCleaner, facade.getCompileSourceLocations());
-        
+        addFoldersToClean(fileCleaner, facade);
         facetedProject.modify(actions, monitor);
       } finally {
         //Remove any unwanted MANIFEST.MF the Facet installation has created

@@ -80,7 +80,7 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     IFolder contentFolder = project.getFolder(contentDir);
 
     ResourceCleaner fileCleaner = new ResourceCleaner(project);
-    addFilesToClean(fileCleaner, facade.getResourceLocations());
+    addFoldersToClean(fileCleaner, facade);
     fileCleaner.addFiles(contentFolder.getFile("META-INF/application.xml").getProjectRelativePath());
 
     IProjectFacetVersion earFv = config.getEarFacetVersion();

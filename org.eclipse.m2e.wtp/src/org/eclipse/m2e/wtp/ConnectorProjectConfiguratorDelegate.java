@@ -10,7 +10,6 @@ package org.eclipse.m2e.wtp;
 
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -18,7 +17,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +34,7 @@ import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
+import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -71,24 +70,17 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
     RarPluginConfiguration config = new RarPluginConfiguration(facade);
     
-    IFile manifest = null;
-    IFolder firstInexistentfolder = null;
-    boolean manifestAlreadyExists =false;
     String contentDir = config.getRarContentDirectory();
 
     IProjectFacetVersion connectorFv = config.getConnectorFacetVersion();
 
     IDataModel rarModelCfg = DataModelFactory.createDataModel(new ConnectorFacetInstallDataModelProvider());
 
+    IFolder contentFolder = project.getFolder(contentDir);
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.JCA_FACET)) {
+
       // Configuring content directory, used by WTP to create META-INF/manifest.mf, ra.xml
-      IFolder contentFolder = project.getFolder(contentDir);
-      manifest = contentFolder.getFile("META-INF/MANIFEST.MF");
-      manifestAlreadyExists =manifest.exists(); 
-      if (!manifestAlreadyExists) {
-        firstInexistentfolder = findFirstInexistentFolder(project, contentFolder, manifest);
-      }   
-      
+     
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.CONFIG_FOLDER, contentDir);
       //Don't generate ra.xml by default - Setting will be ignored for JCA 1.6
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.GENERATE_DD, false);
@@ -98,6 +90,7 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
       actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, connectorFv, rarModelCfg));
     } else {
       IProjectFacetVersion projectFacetVersion = facetedProject.getProjectFacetVersion(WTPProjectsUtil.JCA_FACET);     
+      
       if(projectFacetVersion.getVersionString() != null && !projectFacetVersion.getVersionString().equals(projectFacetVersion.getVersionString())){
 
         removeConflictingFacets(facetedProject, connectorFv, actions);
@@ -105,57 +98,94 @@ public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfigu
         actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, connectorFv, rarModelCfg));
       } 
     }
-
+    String customRaXml = config.getCustomRaXml();
+    
     if(!actions.isEmpty()) {
-      facetedProject.modify(actions, monitor);
+      ResourceCleaner fileCleaner = new ResourceCleaner(project);
+      try {
+        addFoldersToClean(fileCleaner, facade);
+        fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath());
+        if (customRaXml != null) {
+          fileCleaner.addFiles(contentFolder.getFile("META-INF/ra.xml").getProjectRelativePath());
+        }
+        
+        facetedProject.modify(actions, monitor);
+      } finally {
+        //Remove any unwanted MANIFEST.MF the Facet installation has created
+        fileCleaner.cleanUp();
+      }
     }
 
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
-    if (!config.isJarIncluded()) {
-      //project classes won't be jar'ed in the resulting rar.
-      removeSourceLinks(project, mavenProject, monitor, "/");
-    }
-    removeTestFolderLinks(project, mavenProject, monitor, "/"); 
-    
-    String customRaXml = config.getCustomRaXml();
-    linkFileFirst(project, customRaXml, "META-INF/ra.xml", monitor);
-    
-    //Remove "library unavailable at runtime" warning. TODO is it relevant for connector projects?
-    setNonDependencyAttributeToContainer(project, monitor);
-    
-    if (!manifestAlreadyExists && manifest != null && manifest.exists()) {
-      manifest.delete(true, monitor);
-    }
-    if (firstInexistentfolder != null && firstInexistentfolder.exists() && firstInexistentfolder.members().length == 0 )
-    {
-      firstInexistentfolder.delete(true, monitor);
-    }
-
     IVirtualComponent component = ComponentCore.createComponent(project);
     if (component != null) {
+
+      if (config.isJarIncluded()) {
+        addSourceLinks(component, mavenProject, monitor);
+      } else {
+        //project classes won't be jar'ed in the resulting rar.
+        removeSourceLinks(component, mavenProject, monitor);
+      }
+      
+      removeTestFolderLinks(project, mavenProject, monitor, "/"); 
+      
+      linkFileFirst(project, customRaXml, "META-INF/ra.xml", monitor);
+
       IPath contentDirPath = new Path("/").append(contentDir);
+      
+      if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, contentDirPath, monitor)) {
+        component.getRootFolder().createLink(contentDirPath, IVirtualResource.NONE, monitor); 
+      }
+      
       WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(component.getRootFolder(), contentDirPath, monitor);
     }
 
+    setNonDependencyAttributeToContainer(project, monitor);
+
+    //Remove "library unavailable at runtime" warning. TODO is it relevant for connector projects?
     WTPProjectsUtil.removeWTPClasspathContainer(project);
     
   }
 
-  private void removeSourceLinks(IProject project, MavenProject mavenProject, IProgressMonitor monitor, String folder) throws CoreException {
-      IVirtualComponent component = ComponentCore.createComponent(project);
-      if (component != null){
-        IVirtualFolder jsrc = component.getRootFolder().getFolder(folder);
-        for(IPath location : MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots())) {
-          jsrc.removeLink(location, 0, monitor);
-        }
-        for(IPath location : MavenProjectUtils.getResourceLocations(project, mavenProject.getResources())) {
-          jsrc.removeLink(location, 0, monitor);
-        }
+  private void addSourceLinks(IVirtualComponent component, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
+    IProject project = component.getProject();
+    IPath classesPath = MavenProjectUtils.getProjectRelativePath(project, mavenProject.getBuild().getOutputDirectory());
+    if (classesPath != null) {
+      for(IPath location : MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots())) {
+        addLinkIfNecessary(component, location, monitor);
       }
+      for(IPath location : MavenProjectUtils.getResourceLocations(project, mavenProject.getResources())) {
+        addLinkIfNecessary(component, location, monitor);
+      }
+    }
   }
 
+  private void addLinkIfNecessary(IVirtualComponent component, IPath location, IProgressMonitor monitor) throws CoreException {
+    IProject project = component.getProject();
+    if (location!=null && !WTPProjectsUtil.hasLink(project, ROOT_PATH, location, monitor)) {
+      if (project.getFolder(location).isAccessible()) {
+        component.getRootFolder().createLink(location, IVirtualResource.NONE, monitor); 
+      }
+    }
+  }
+
+  
+  
+  private void removeSourceLinks(IVirtualComponent component, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
+      IVirtualFolder jsrc = component.getRootFolder();
+      IProject project = component.getProject();
+      for(IPath location : MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots())) {
+        jsrc.removeLink(location, 0, monitor);
+      }
+      for(IPath location : MavenProjectUtils.getResourceLocations(project, mavenProject.getResources())) {
+        jsrc.removeLink(location, 0, monitor);
+      }
+  }
+  
+
+  
   /**
    * @see org.eclipse.m2e.wtp.IProjectConfiguratorDelegate#setModuleDependencies(org.eclipse.core.resources.IProject, org.apache.maven.project.MavenProject, org.eclipse.core.runtime.IProgressMonitor)
    */

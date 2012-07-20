@@ -382,10 +382,10 @@ public class WTPProjectsUtil {
       // remove classpatch container from JavaProject
       ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>();
       for(IClasspathEntry entry : javaProject.getRawClasspath()) {
-    	String path = entry.getPath().toString();
+      String path = entry.getPath().toString();
         if(!"org.eclipse.jst.j2ee.internal.module.container".equals(path)
-        	&& !"org.eclipse.jst.j2ee.internal.web.container".equals(path)) {
-	          newEntries.add(entry);
+          && !"org.eclipse.jst.j2ee.internal.web.container".equals(path)) {
+            newEntries.add(entry);
         }
       }
       javaProject.setRawClasspath(newEntries.toArray(new IClasspathEntry[newEntries.size()]), null);
