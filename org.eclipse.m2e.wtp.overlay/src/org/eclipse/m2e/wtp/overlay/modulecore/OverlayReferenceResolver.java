@@ -53,7 +53,7 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 
   public boolean canResolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
     URI uri = referencedComponent.getHandle();
-    return (uri.segmentCount() > 2) && (uri.segment(0).equals("overlay"));
+    return uri != null && (uri.segmentCount() > 2) && (uri.segment(0).equals("overlay"));
   }
 
   public IVirtualReference resolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
