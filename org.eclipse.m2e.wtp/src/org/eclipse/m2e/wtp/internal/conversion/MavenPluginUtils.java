@@ -12,7 +12,7 @@ import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
- * MavenPluginUtils
+ * Utility class for {@link Plugin} manipulations.
  *
  * @author Fred Bricon
  */
@@ -20,6 +20,9 @@ public class MavenPluginUtils {
 
   private static final String CONFIGURATION_KEY = "configuration";
 
+  private MavenPluginUtils() {
+  }
+  
   private static Xpp3Dom getOrCreateConfiguration(Plugin plugin) {
     Xpp3Dom configuration = (Xpp3Dom)plugin.getConfiguration();
     if (configuration == null) {
