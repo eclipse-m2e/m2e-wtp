@@ -374,10 +374,14 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         continue;
       }
     
-      //If custom fileName is used, then copy the artifact and rename the artifact under the build dir
+      //If custom fileName is used, check if the underlying file already exists
+      // if it doesn't, copy and rename the artifact under the build dir
       String fileName = entry.getPath().lastSegment(); 
       if (!deployedName.equals(fileName)) {
-        IPath newPath = renameArtifact(targetDir, entry.getPath(), deployedName );
+        IPath newPath = entry.getPath().removeLastSegments(1).append(deployedName);
+        if (!new File(newPath.toOSString()).exists()) {
+          newPath = renameArtifact(targetDir, entry.getPath(), deployedName );
+        }
         if (newPath != null) {
           descriptor.setPath(newPath);
         }
