@@ -8,6 +8,7 @@
 
 package org.eclipse.m2e.wtp;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,6 +99,21 @@ public class WTPProjectsUtil {
   public static final IProjectFacet EAR_FACET = ProjectFacetsManager
       .getProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION);
 
+  public static final String DYN_REQUESTED_REFERENCE_TYPE;
+  
+  static {
+    //Bug #385605 : IVirtualComponent.DISPLAYABLE_REFERENCES_ALL is not available in helios
+    String reqRefType = null;
+    try {
+      Field displayableRefsAllField = IVirtualComponent.class.getField("DISPLAYABLE_REFERENCES_ALL");
+      reqRefType = (String)displayableRefsAllField.get(null);
+    } catch(Throwable e) {
+      //Falling back on IVirtualComponent.HARD_REFERENCES works in helios wrt bug #385229 : 
+      reqRefType = IVirtualComponent.HARD_REFERENCES;
+    }
+    DYN_REQUESTED_REFERENCE_TYPE = reqRefType;
+  }
+  
   /**
    * Checks if a project has a given class in its classpath 
    * @param project : the workspace project
@@ -343,7 +359,7 @@ public class WTPProjectsUtil {
   
   public static IVirtualReference[] extractHardReferences(IVirtualComponent warComponent, boolean overlays) {
     Map<String, Object> options = new HashMap<String, Object>(1);
-    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, IVirtualComponent.DISPLAYABLE_REFERENCES_ALL);
+    options.put(IVirtualComponent.REQUESTED_REFERENCE_TYPE, DYN_REQUESTED_REFERENCE_TYPE);
     IVirtualReference[] allReferences = warComponent.getReferences(options);
     if (allReferences == null || allReferences.length == 0) {
       return new IVirtualReference[]{};
