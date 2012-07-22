@@ -16,7 +16,7 @@ import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualArchiveComp
 import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualComponent;
 
 /**
- * Overlay Component Core
+ * Overlay Component factory.
  * 
  * @author Fred Bricon
  */

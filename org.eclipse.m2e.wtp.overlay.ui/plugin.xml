@@ -21,7 +21,7 @@
    <extension point="org.eclipse.ui.preferencePages">
       <page id="org.eclipse.m2e.wtp.overlay.ui.preferences.OverlayPreferencePage"
          category="org.eclipse.wst.server.ui.preferencePage"
-         class="org.eclipse.m2e.wtp.overlay.ui.preferences.OverlayPublishingPreferencePage"
+         class="org.eclipse.m2e.wtp.overlay.internal.ui.preferences.OverlayPublishingPreferencePage"
          name="Overlays">
          <keywordReference id="org.eclipse.wst.server.preferenceKeywords"/>
       </page>

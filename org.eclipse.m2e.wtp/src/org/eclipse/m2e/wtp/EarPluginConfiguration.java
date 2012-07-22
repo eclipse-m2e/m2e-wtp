@@ -35,12 +35,15 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * EarPluginConfiguration used to read maven-ear-plugin configuration.
+ * maven-ear-plugin configuration model.
  * 
  * @see http://maven.apache.org/plugins/maven-ear-plugin/
  * @see http://maven.apache.org/plugins/maven-ear-plugin/modules.html
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
  * 
  * @author Fred Bricon
  */

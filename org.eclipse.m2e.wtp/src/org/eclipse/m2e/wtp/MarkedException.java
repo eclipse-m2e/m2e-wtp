@@ -9,6 +9,12 @@
 package org.eclipse.m2e.wtp;
 
 /**
+ * Represents an {@link Exception} that should be turned into an Error Marker.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public class MarkedException extends Exception {

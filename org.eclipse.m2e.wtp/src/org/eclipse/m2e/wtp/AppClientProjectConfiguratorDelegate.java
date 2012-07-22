@@ -36,7 +36,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 
 /**
- * Application Client project configurator delegate
+ *  Configures Application Client projects based on their maven-acr-plugin configuration.
  * 
  * @author Fred Bricon
  */

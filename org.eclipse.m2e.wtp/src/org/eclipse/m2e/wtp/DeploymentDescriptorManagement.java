@@ -14,14 +14,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * DeploymentDescriptorManagement
- *
+ * Management of EAR deployment descriptors
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public interface DeploymentDescriptorManagement {
 
   static final DeploymentDescriptorManagement INSTANCE = new MavenDeploymentDescriptorManagement();
-  //static final DeploymentDescriptorManagement INSTANCE = new WTPDeploymentDescriptorManagement();
   
   void updateConfiguration(IProject project, MavenProject mavenProject, EarPluginConfiguration plugin, boolean useBuildDirectory, IProgressMonitor monitor) throws CoreException;
 }

@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="Maven Integration for WTP">
-      Maven Integration for WTP
+   <description name="Maven Integration for WTP (Incubation)">
+      m2e-wtp - Maven Integration for WTP (Incubation)
    </description>
    <category name="m2e-wtp"/>
+   
    <feature url="features/org.eclipse.m2e.wtp.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
-   <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
+   <category-def name="m2e-wtp" label="Maven Integration for WTP (Incubation)"/>
+
+   <category name="maven-archiver"/>
+
+   <feature url="features/org.sonatype.m2e.mavenarchiver.feature_0.0.0.qualifier.jar" id="org.sonatype.m2e.mavenarchiver.feature" version="0.0.0">
+      <category name="maven-archiver"/>
+   </feature>
+      
+   <category-def name="maven-archiver" label="M2E Maven Archiver Connector (3rd party)"/>
+
 </site>

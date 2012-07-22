@@ -45,13 +45,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ConnectorProjectConfiguratorDelegate
+ * Configures Connector (RAR) projects based on their mavenè-rar-plugin configuration.
  *
  * @author Fred Bricon
  */
-public class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate{
-
-  private static final Logger LOG = LoggerFactory.getLogger(ConnectorProjectConfiguratorDelegate.class);
+class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate{
 
   public static final ArtifactFilter SCOPE_FILTER_RUNTIME = new ScopeArtifactFilter(Artifact.SCOPE_RUNTIME);
 

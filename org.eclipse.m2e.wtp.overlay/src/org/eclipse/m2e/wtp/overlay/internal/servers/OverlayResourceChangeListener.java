@@ -29,6 +29,12 @@ import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerCore;
 
+/**
+ * Listens to overlaid project changes to force server redeployment.
+ * 
+ * @author Fred Bricon
+ *
+ */
 public class OverlayResourceChangeListener implements IResourceChangeListener {
 
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -74,14 +80,6 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 		}
 		
 		for(IServer server : republishableServers) {
-			/* Looks like clearing the module cache is no longer necessary 
-				if (server instanceof Server) {
-				  //System.err.println("Clearing "+server.getName() + "'s module cache");
-					synchronized (server) {
-						//((Server)server).clearModuleCache();
-					}
-				}
-			*/
 			//TODO Publish more elegantly (check server status ...)
 			server.publish(IServer.PUBLISH_INCREMENTAL, new NullProgressMonitor());
 		}

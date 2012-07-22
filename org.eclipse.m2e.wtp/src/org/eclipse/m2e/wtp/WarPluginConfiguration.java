@@ -38,7 +38,13 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 
 /**
- * See http://maven.apache.org/plugins/maven-war-plugin/war-mojo.html
+ *  maven-war-plugin configuration model.
+ *  
+ * @see <a href="http://maven.apache.org/plugins/maven-war-plugin/war-mojo.html">http://maven.apache.org/plugins/maven-war-plugin/war-mojo.html</a>
+ *  
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
  * 
  * @author Igor Fedorenko
  * @author Fred Bricon

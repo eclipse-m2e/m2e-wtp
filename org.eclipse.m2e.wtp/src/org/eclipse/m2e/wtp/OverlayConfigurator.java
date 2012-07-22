@@ -32,6 +32,7 @@ import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.wtp.internal.StringUtils;
+import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualArchiveComponent;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.m2e.wtp.overlay.modulecore.OverlayComponentCore;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -41,8 +42,12 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 /**
- * OverlayConfigurator
- *
+ * Configurator for war overlays.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public class OverlayConfigurator extends WTPProjectConfigurator {

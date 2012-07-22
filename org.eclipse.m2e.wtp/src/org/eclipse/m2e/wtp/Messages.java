@@ -13,6 +13,12 @@ package org.eclipse.m2e.wtp;
 import org.eclipse.osgi.util.NLS;
 
 /**
+ * m2E-wtp i18n messages.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public class Messages extends NLS {

@@ -18,9 +18,14 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 
 /**
- * Overlay Self Component
+ * Overlay component pointing at it self referencing component.
  *
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
+ * 
  */
 public class OverlaySelfComponent extends OverlayVirtualComponent implements IOverlayVirtualComponent {
 

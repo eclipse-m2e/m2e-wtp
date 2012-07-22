@@ -27,8 +27,8 @@
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <metadataRepositoryName>Maven Integration for Eclipse WTP</metadataRepositoryName>
-          <artifactRepositoryName>Maven Integration for Eclipse WTP</artifactRepositoryName>
+          <metadataRepositoryName>m2e-wtp - Maven Integration for Eclipse WTP (Incubation)</metadataRepositoryName>
+          <artifactRepositoryName>m2e-wtp - Maven Integration for Eclipse WTP (Incubation)</artifactRepositoryName>
         </configuration>
       </plugin>
       

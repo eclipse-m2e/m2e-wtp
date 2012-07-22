@@ -18,9 +18,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.m2e.wtp.overlay.OverlayPluginActivator;
+import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
 import org.eclipse.m2e.wtp.overlay.internal.utilities.CompressionUtil;
 
+/**
+ * Job unpacking a {@link File} to a destination {@link IFolder}.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
+ * @author Fred Bricon
+ *
+ */
 public class UnpackArchiveJob extends WorkspaceJob {
 
 	private IFolder unpackFolder;
@@ -40,7 +50,6 @@ public class UnpackArchiveJob extends WorkspaceJob {
 			throws CoreException {
 		try {
 			if (unpackFolder.exists()) {
-	      System.out.println(getName() +" deleting "+unpackFolder);
 	      		//delete members as deleting unpackFolder will use scheduling rule of its parent, so an IllegalArgumentException would be thrown otherwise
 				final IResource[] members = unpackFolder.members(IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 				for (final IResource member : members)
@@ -71,7 +80,6 @@ public class UnpackArchiveJob extends WorkspaceJob {
 
 	protected void unpack(File archive, String unpackFolderPath, IProgressMonitor monitor) throws IOException, CoreException,
 			InterruptedException {
-    System.out.println(getName() +" unpacking "+archive + " to " +unpackFolderPath);
 		File unpackFolder = new File(unpackFolderPath);
 		CompressionUtil.unzip(archive, unpackFolder, monitor);
 		unpackFolder.setLastModified(archive.lastModified());

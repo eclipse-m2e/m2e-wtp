@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Configures Ear projects from maven-ear-plugin.
+ * Configures EAR projects based on their maven-ear-plugin configuration.
  * 
  * @see org.eclipse.jst.j2ee.ui.AddModulestoEARPropertiesPage
  * @author Fred Bricon

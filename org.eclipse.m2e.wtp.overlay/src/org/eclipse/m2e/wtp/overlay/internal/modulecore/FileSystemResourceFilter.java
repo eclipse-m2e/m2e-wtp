@@ -17,6 +17,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.wtp.overlay.internal.utilities.PathUtil;
 
+/**
+ * Filter for FileSystem resources.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
+ * @author Fred Bricon
+ * 
+ */
 public class FileSystemResourceFilter implements IResourceFilter {
 
 	private SimpleScanner scanner;

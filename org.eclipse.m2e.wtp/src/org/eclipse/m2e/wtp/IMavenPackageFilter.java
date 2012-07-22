@@ -11,8 +11,12 @@ package org.eclipse.m2e.wtp;
 import org.eclipse.m2e.core.internal.markers.SourceLocation;
 
 /**
- * PackageFilter
- *
+ * Represents Maven packaging filter settings.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public interface IMavenPackageFilter {

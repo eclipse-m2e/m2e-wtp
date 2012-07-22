@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="%featureName" url="http://download.jboss.org/jbosstools/updates/m2eclipse-wtp/"/>
+      <update label="%featureName" url="http://download.eclipse.org/m2e-wtp/releases/"/>
    </url>
 
    <requires>
@@ -46,7 +46,7 @@
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+   <plugin
          id="org.eclipse.m2e.wtp.overlay"
          download-size="0"
          install-size="0"

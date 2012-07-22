@@ -11,7 +11,7 @@ package org.eclipse.m2e.wtp;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 
 /**
- * Maven WTP Constants
+ * m2e-wtp Constants
  *
  * @author Fred Bricon
  */

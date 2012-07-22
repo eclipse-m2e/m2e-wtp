@@ -47,8 +47,9 @@ import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.IClasspathEntryDescriptor;
-import org.eclipse.m2e.wtp.filtering.WebResourceFilteringConfiguration;
 import org.eclipse.m2e.wtp.internal.ExtensionReader;
+import org.eclipse.m2e.wtp.internal.filtering.WebResourceFilteringConfiguration;
+import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
@@ -67,7 +68,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * WebProjectConfiguratorDelegate
+ * Configures web projects based on their maven-war-plugin configuration.
  * 
  * @author Igor Fedorenko
  * @author Fred Bricon

@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.m2e.wtp.overlay.OverlayConstants;
-import org.eclipse.m2e.wtp.overlay.OverlayPluginActivator;
+import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
 
 public class OverlayPreferencesInitializer extends AbstractPreferenceInitializer {
 

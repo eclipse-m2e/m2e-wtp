@@ -13,26 +13,19 @@ import java.util.Set;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 
 /**
- * IOverlayVirtualComponent
+ * Represents an Overlay virtual component. This component's resources can be filtered out depending
+ * on its inclusion and exclusion patterns. 
  *
  * @author Fred Bricon
  */
 public interface IOverlayVirtualComponent extends IVirtualComponent{
 
-	/**
-	 */
 	void setInclusions(Set<String> inclusionPatterns);
 	
-	/**
-	 */
 	void setExclusions(Set<String> inclusionPatterns);
 	
-	/**
-	 */
 	Set<String> getExclusions();
 
-	/**
-	 */
 	Set<String> getInclusions();
 
 }

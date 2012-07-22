@@ -7,6 +7,12 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.overlay;
 
+/**
+ * Constants used by the org.eclipse.m2e.wtp.overlay plugin
+ * 
+ * @author Fred Bricon
+ *
+ */
 public class OverlayConstants {
 
   private OverlayConstants(){}

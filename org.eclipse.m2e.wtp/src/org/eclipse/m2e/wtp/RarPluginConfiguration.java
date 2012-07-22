@@ -25,8 +25,14 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
- * RarPluginConfiguration
- *
+ * maven-rar-plugin configuration model.
+ * 
+ * @see <a href="maven.apache.org/plugins/maven-rar-plugin/rar-mojo.html">maven.apache.org/plugins/maven-rar-plugin/rar-mojo.html</a>
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 public class RarPluginConfiguration {

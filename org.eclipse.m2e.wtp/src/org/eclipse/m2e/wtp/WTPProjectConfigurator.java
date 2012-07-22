@@ -21,7 +21,7 @@ import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.IJavaProjectConfigurator;
-import org.eclipse.m2e.wtp.filtering.ResourceFilteringBuildParticipant;
+import org.eclipse.m2e.wtp.internal.filtering.ResourceFilteringBuildParticipant;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Project configurator for WTP projects. Specific project configuration is delegated to the
  * IProjectConfiguratorDelegate bound to a maven packaging type.
+ *
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
  * 
  * @author Igor Fedorenko
+ * @author Fred Bricon
  */
 public class WTPProjectConfigurator extends AbstractProjectConfigurator implements IJavaProjectConfigurator {
 

@@ -20,6 +20,15 @@ import org.eclipse.m2e.core.embedder.MavenRuntimeManager;
 import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 
+/**
+* Base class to configure dependent worskpace projects.
+* 
+* @provisional This class has been added as part of a work in progress. 
+* It is not guaranteed to work or remain the same in future releases. 
+* For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+* 
+* @author Eugene Kuleshov
+*/
 public abstract class AbstractDependencyConfigurator {
 
   public static final String ATTR_ID = "id";

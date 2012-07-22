@@ -8,15 +8,13 @@
 
 package org.eclipse.m2e.wtp;
 
-import java.io.File;
-
 import org.eclipse.m2e.wtp.internal.preferences.MavenWtpPreferencesManagerImpl;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * Maven WTP plugin
+ * m2e-wtp plugin
  *
  * @author Eugene Kuleshov
  */
@@ -25,9 +23,6 @@ public class MavenWtpPlugin extends AbstractUIPlugin {
   public static final String ID = "org.eclipse.m2e.wtp";
   
   private static MavenWtpPlugin instance;
-
-  private File explodedWarsDir;
-  
 
   private IMavenWtpPreferencesManager preferenceManager; 
   
@@ -43,12 +38,6 @@ public class MavenWtpPlugin extends AbstractUIPlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
     
-    File stateLocationDir = getStateLocation().toFile();
-    explodedWarsDir = new File(stateLocationDir, "exploded-wars");
-    if (!explodedWarsDir.exists()) {
-      explodedWarsDir.mkdirs();
-    }
-
     this.preferenceManager = new MavenWtpPreferencesManagerImpl();
   }
 
@@ -61,11 +50,4 @@ public class MavenWtpPlugin extends AbstractUIPlugin {
     return instance;
   }
 
-  /**
-   * @return Returns the explodedWarsDir.
-   */
-  public File getExplodedWarsDir() {
-    return explodedWarsDir;
-  }
-  
 }

@@ -35,7 +35,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 
 /**
- * EjbProjectConfiguratorDelegate
+ * Configures EJB projects based on their maven-ejb-plugin configuration.
  * 
  * @author Fred Bricon
  */

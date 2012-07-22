@@ -17,7 +17,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.m2e.wtp.internal.StringUtils;
 
 /**
- * AbstractFilteringSupportMavenPlugin
+ * Base class for Maven plugin models supporting resource filtering.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
  *
  * @author Fred Bricon
  */

@@ -44,6 +44,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
+import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.StructureEdit;
@@ -58,10 +59,15 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * AbstractProjectConfiguratorDelegate
+ * Base class to configure JavaEE projects
  * 
  * @author Igor Fedorenko
  * @author Fred Bricon
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  */
 abstract class AbstractProjectConfiguratorDelegate implements IProjectConfiguratorDelegate {
 
@@ -136,15 +142,6 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     if (isDebugEnabled) {
       DebugUtilities.debug(DebugUtilities.dumpProjectState("Before configuration ",project));
     }
-
-    IPath sourceFolder = null;
-    if ((sourceRoots == null || sourceRoots.length == 0) || !project.getFolder(sourceRoots[0]).exists()) {
-      sourceRoots = MavenProjectUtils.getResourceLocations(project, mavenProject.getResources());
-    }
-    if ((sourceRoots != null && sourceRoots.length > 0 && project.getFolder(sourceRoots[0]).exists())) {
-      sourceFolder = sourceRoots[0];
-    }
-    IContainer contentFolder = sourceFolder == null? project : project.getFolder(sourceFolder);
 
     // 2 - check if the manifest already exists, and its parent folder
     

@@ -32,6 +32,10 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 /**
  * Overlay Reference Resolver
  *
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 @SuppressWarnings("restriction")

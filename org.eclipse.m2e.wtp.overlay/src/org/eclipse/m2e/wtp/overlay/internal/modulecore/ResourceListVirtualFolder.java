@@ -23,9 +23,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFile;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFolder;
+import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFile;
 import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
 
+/**
+ * Virtual Folder traversing the {@link IResource}s members of a {@link IVirtualComponent} 
+ * and mapping them as {@link IVirtualResource}.
+ * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
+ * @author Fred Bricon
+ *
+ */
+@SuppressWarnings("restriction")
 public class ResourceListVirtualFolder extends VirtualFolder implements IFilteredVirtualFolder {
 
 	private ArrayList<IResource> children;
