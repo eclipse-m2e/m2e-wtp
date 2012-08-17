@@ -36,7 +36,7 @@ public class ConnectorProjectConverter extends AbstractWtpProjectConversionParti
   private static final String DEFAULT_RA_XML = "src/main/rar/META-INF/ra.xml";
 
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) && !"rar".equals(model.getPackaging())) {
+    if (!accept(project) || !"rar".equals(model.getPackaging())) {
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);

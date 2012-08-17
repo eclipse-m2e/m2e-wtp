@@ -37,7 +37,7 @@ public class EjbProjectConverter extends AbstractWtpProjectConversionParticipant
   private static final String EJB_VERSION= "ejbVersion";
 
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) && !"ejb".equals(model.getPackaging())) {
+    if (!accept(project) || !"ejb".equals(model.getPackaging())) {
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);

@@ -41,7 +41,7 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
   private static final String FAIL_IF_MISSING_WEBXML_KEY = "failOnMissingWebXml";
 
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) && !"war".equals(model.getPackaging())) {
+    if (!accept(project) || !"war".equals(model.getPackaging())) {
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);

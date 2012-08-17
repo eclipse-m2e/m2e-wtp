@@ -42,7 +42,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
   private static final String GENERATE_APPLICATION_XML = "generateApplicationXml";
 
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) && !"ear".equals(model.getPackaging())) {
+    if (!accept(project) || !"ear".equals(model.getPackaging())) {
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);

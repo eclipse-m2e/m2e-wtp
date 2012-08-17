@@ -50,7 +50,7 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
   private static final String MAIN_CLASS = "Main-Class";
   
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) && !"app-client".equals(model.getPackaging())) {
+    if (!accept(project) || !"app-client".equals(model.getPackaging())) {
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
