@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Overlay support for Eclipse WTP - UI (Incubation)
 Bundle-SymbolicName: org.eclipse.m2e.wtp.overlay.ui;singleton:=true
 Bundle-Version: 0.16.0.qualifier
-Bundle-Activator: org.eclipse.m2e.wtp.overlay.ui.OverlayUIPluginActivator
+Bundle-Activator: org.eclipse.m2e.wtp.overlay.internal.ui.OverlayUIPluginActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.wst.common.modulecore,
