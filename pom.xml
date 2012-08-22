@@ -29,8 +29,9 @@
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
     <eclipse.target>juno</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
-    <mavenarchiver-repo.url>https://repository.sonatype.org/content/sites/forge-sites/m2e-extras/0.15.0/N/0.15.0.201109290002/</mavenarchiver-repo.url>
+    <mavenarchiver-repo.url>http://repository.tesla.io:8081/nexus/content/sites/m2e.extras/m2eclipse-mavenarchiver/0.15.0/N/0.15.0.201207090125/</mavenarchiver-repo.url>
   </properties>
 
   <prerequisites>
@@ -70,6 +71,11 @@
       <id>eclipse</id>
       <layout>p2</layout>
       <url>${eclipse-repo.url}</url>
+    </repository>
+    <repository>
+      <id>webtools</id>
+      <layout>p2</layout>
+      <url>${webtools-repo.url}</url>
     </repository>
     <repository>
       <id>m2e-core</id>
