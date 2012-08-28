@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jst.j2ee.project.facet.IAppClientFacetInstallDataModelProperties;
+import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.datamodel.FacetDataModelProvider;
@@ -48,24 +49,30 @@ public class AppClientVersionChangeDelegate implements IDelegate {
     }
 
     try {
-      IDataModel model = (IDataModel) cfg;
-      
-      if(monitor != null) {
-        monitor.worked(1);
-      }
-      IPath appClientContent = new Path("/" + model.getStringProperty(IAppClientFacetInstallDataModelProperties.CONFIG_FOLDER));//$NON-NLS-1$
-      if (!WTPProjectsUtil.hasLink(project, new Path("/"), appClientContent, monitor)) {//$NON-NLS-1$
-        final IVirtualComponent c = ComponentCore.createComponent(project, true);
-        if (c != null) {
-          final IVirtualFolder root = c.getRootFolder();
-          root.createLink(appClientContent , 0, null); 
+      //The action applies if the Project has Maven nature
+      if(project.hasNature(IMavenConstants.NATURE_ID)){
+        IDataModel model = (IDataModel) cfg;
+        
+        if(monitor != null) {
+          monitor.worked(1);
         }
-      }
+        //The model could not provide us the property we require
+        if(model.isProperty(IAppClientFacetInstallDataModelProperties.CONFIG_FOLDER)){
+          IPath appClientContent = new Path("/" + model.getStringProperty(IAppClientFacetInstallDataModelProperties.CONFIG_FOLDER));//$NON-NLS-1$
+          if (!WTPProjectsUtil.hasLink(project, new Path("/"), appClientContent, monitor)) {//$NON-NLS-1$
+            final IVirtualComponent c = ComponentCore.createComponent(project, true);
+            if (c != null) {
+              final IVirtualFolder root = c.getRootFolder();
+              root.createLink(appClientContent , 0, null); 
+            }
+          }
 
-      try {
-        ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION)).execute(monitor, null);
-      } catch(ExecutionException e) {
-        LOG.error("Unable to notify Application Client version change", e);
+          try {
+            ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION)).execute(monitor, null);
+          } catch(ExecutionException e) {
+            LOG.error("Unable to notify Application Client version change", e);
+          }
+        } 
       }
     }
 

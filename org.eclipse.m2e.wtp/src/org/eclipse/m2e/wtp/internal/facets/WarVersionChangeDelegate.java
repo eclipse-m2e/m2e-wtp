@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2012 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEModuleFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.web.project.facet.IWebFacetInstallDataModelProperties;
+import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.datamodel.FacetDataModelProvider;
@@ -49,39 +50,44 @@ public class WarVersionChangeDelegate implements IDelegate {
     }
 
     try {
-      final IDataModel model = (IDataModel) cfg;
-
-      final IVirtualComponent c = ComponentCore.createComponent(project, true);
-      if (c == null) {
-        return;
-      }
       
-      try {
-        if (model != null) {
-
-          final IWorkspace ws = ResourcesPlugin.getWorkspace();
-          final IPath pjpath = project.getFullPath();
-
-          final IPath contentdir = setContentPropertyIfNeeded(model, pjpath, project);
-          mkdirs(ws.getRoot().getFolder(contentdir), monitor);
-          IVirtualFolder contentRootFolder = c.getRootFolder();
-          WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(contentRootFolder, contentdir, monitor);
-          
-          String contextRoot = model.getStringProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT);
-          setContextRootPropertyIfNeeded(c, contextRoot);
-
-          
-          IDataModelOperation notificationOperation = ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION));
-          if (notificationOperation != null) {
-            notificationOperation.execute(monitor, null);
-          }
+      //The action applies if the Project has Maven nature
+      if(project.hasNature(IMavenConstants.NATURE_ID)){
+        final IDataModel model = (IDataModel) cfg;
+        final IVirtualComponent c = ComponentCore.createComponent(project, true);
+        if (c == null) {
+          return;
         }
-      } catch (ExecutionException e) {
-        LOG.error("Unable to notify Dynamic Web version change", e);
-      }
-      
-      if (monitor != null) {
-        monitor.worked(1);
+        
+        try {
+          if (model != null) {
+            //The model could not provide us the property we require
+            if(model.isProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT)){
+              final IWorkspace ws = ResourcesPlugin.getWorkspace();
+              final IPath pjpath = project.getFullPath();
+
+              final IPath contentdir = setContentPropertyIfNeeded(model, pjpath, project);
+              mkdirs(ws.getRoot().getFolder(contentdir), monitor);
+              IVirtualFolder contentRootFolder = c.getRootFolder();
+              WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(contentRootFolder, contentdir, monitor);
+              
+              String contextRoot = model.getStringProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT);
+              setContextRootPropertyIfNeeded(c, contextRoot);
+
+              
+              IDataModelOperation notificationOperation = ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION));
+              if (notificationOperation != null) {
+                notificationOperation.execute(monitor, null);
+              }
+            }
+          }
+        } catch (ExecutionException e) {
+          LOG.error("Unable to notify Dynamic Web version change", e);
+        }
+        
+        if (monitor != null) {
+          monitor.worked(1);
+        }
       }
     } finally {
       if (monitor != null) {
