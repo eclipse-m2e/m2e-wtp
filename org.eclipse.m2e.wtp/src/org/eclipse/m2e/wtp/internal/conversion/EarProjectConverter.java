@@ -25,6 +25,8 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Converts Eclipse WTP EAR project settings into maven-ear-plugin configuration 
@@ -40,6 +42,8 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
   private static final String EAR_VERSION = "version";
 
   private static final String GENERATE_APPLICATION_XML = "generateApplicationXml";
+  
+  private static final Logger LOG = LoggerFactory.getLogger(EarProjectConverter.class);
 
   public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
     if (!accept(project) || !"ear".equals(model.getPackaging())) {
@@ -68,6 +72,11 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
         customized = true;
       }
       hasApplicationXml = applicationContentFolder.getFile("META-INF/application.xml").exists();
+    }
+    else{
+      IProject project = component.getProject();
+      String msg =  "The EAR project " + (project!= null?project.getName():component.getName()) + " does not have a content folder or uses root as content folder";
+      LOG.warn(msg);
     }
     
     IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());

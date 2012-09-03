@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008, 2012 Sonatype, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -620,6 +621,8 @@ public class WTPProjectsUtil {
   
   /**
    * Gets the default deployment descriptor folder's relative path. 
+   * @return  An IFolder representing the default folder for deployment descriptor, or null if 
+   *          the default folder is the root of the project.
    */
   public static IFolder getDefaultDeploymentDescriptorFolder(IVirtualFolder vFolder) {
     IPath defaultPath = null;
@@ -635,14 +638,15 @@ public class WTPProjectsUtil {
       ex.printStackTrace();
     }
     
-    IFolder folder;
+    IFolder folder = null;
     IVirtualComponent component = vFolder.getComponent();
     if (defaultPath == null) {
-      folder = (IFolder)vFolder.getUnderlyingFolder();
-    } else {
-      folder = component.getProject().getFolder(defaultPath);
-    }
-    
+      IContainer container = vFolder.getUnderlyingFolder();
+      if (container instanceof IFolder)
+        folder = (IFolder)container;
+    } else if (!defaultPath.isRoot()){
+        folder = component.getProject().getFolder(defaultPath);
+    }    
     return folder;
   }  
 }

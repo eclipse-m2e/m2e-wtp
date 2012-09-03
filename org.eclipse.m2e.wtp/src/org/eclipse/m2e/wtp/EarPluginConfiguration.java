@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008, 2012 Sonatype, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,8 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   /**
    * Gets the ear content directory of the project from pom.xml configuration.
    * 
-   * @return the first resource directory found in pom.xml.
+   *  @return the contents of the earSourceDirectory element. If earSourceDirectory is not specified
+   *          in pom.xml, the default value src/main/application is returned. 
    */
   public String getEarContentDirectory(IProject project) {
     Xpp3Dom config = getConfiguration();
