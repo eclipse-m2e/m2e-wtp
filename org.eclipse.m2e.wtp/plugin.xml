@@ -210,7 +210,7 @@
       <page id="org.maven.ide.eclipse.wtp.preferences.MavenWtpPreferencePage"
          category="org.eclipse.m2e.core.preferences.Maven2PreferencePage"
          class="org.eclipse.m2e.wtp.internal.preferences.MavenWtpPreferencePage"
-         name="WTP integration">
+         name="Java EE Integration">
          <keywordReference id="org.eclipse.m2e.core.maven"/>
       </page>
    </extension>
@@ -220,7 +220,7 @@
       
       <page id="org.maven.ide.eclipse.wtp.preferences.MavenWtpPropertyPage"
             class="org.eclipse.m2e.wtp.internal.preferences.MavenWtpPreferencePage"
-            name="WTP Integration"
+            name="Java EE Integration"
             category="org.eclipse.m2e.core.MavenProjectPreferencePage">
          <filter name="nature" value="org.eclipse.m2e.core.maven2Nature"/>
 	    <enabledWhen>
@@ -242,25 +242,25 @@
    
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.overlayError"
-         name="Maven WTP Configuration Problem">
+         name="Maven Java EE Configuration Problem">
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.manifestError"
-         name="Maven WTP Configuration Problem">
+         name="Maven Java EE Configuration Problem">
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.configuration"
-         name="Maven WTP Configuration Problem">
+         name="Maven Java EE Configuration Problem">
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.unsupportedDependencyProblem"
-         name="Maven WTP Dependency Problem">
+         name="Maven Java EE Dependency Problem">
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>      
    </extension>
@@ -279,7 +279,7 @@
       <projectConversionParticipant
             class="org.eclipse.m2e.wtp.internal.conversion.WebProjectConverter"
             id="org.eclipse.m2e.wtp.conversion.WebProjectConverter"
-            name="WTP Web Project conversion participant"
+            name="Dynamic Web Project conversion participant"
             nature="org.eclipse.wst.common.modulecore.ModuleCoreNature">
       </projectConversionParticipant>   
       <projectConversionParticipant

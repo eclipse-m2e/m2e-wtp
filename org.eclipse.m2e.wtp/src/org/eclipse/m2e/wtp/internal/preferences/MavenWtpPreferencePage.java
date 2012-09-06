@@ -70,7 +70,7 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   private Button warMavenArchiverButton;
 
   public MavenWtpPreferencePage() {
-    setTitle("WTP Integration Settings");
+    setTitle("Java EE Integration Settings");
   }
 
   protected Control createContents(Composite parent) {
@@ -233,8 +233,8 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
     if(!newPreferences.equals(preferences)) {
       preferencesManager.savePreferences(newPreferences, getProject());
 
-      boolean res = MessageDialog.openQuestion(getShell(), "Maven WTP Integration Settings", //
-          "Maven WTP integration settings have changed. Do you want to update project configuration?");
+      boolean res = MessageDialog.openQuestion(getShell(), "Maven Java EE Integration Settings", //
+          "Maven Java EE Integration settings have changed. Do you want to update project configuration?");
       if(res) {
         updateImpactedProjects();
       }
