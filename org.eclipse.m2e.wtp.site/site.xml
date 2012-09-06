@@ -17,5 +17,14 @@
    </feature>
       
    <category-def name="maven-archiver" label="M2E Maven Archiver Connector (3rd party)"/>
+   
+   <category name="m2e-wtp-sdk"/>
+   
+   <feature url="features/org.eclipse.m2e.wtp.sdk.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
+      <category name="m2e-wtp-sdk"/>
+   </feature>
 
+   <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK (Incubation)"/>
+
+   
 </site>
