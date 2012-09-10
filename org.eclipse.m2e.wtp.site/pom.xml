@@ -31,7 +31,6 @@
           <artifactRepositoryName>m2e-wtp - Maven Integration for Eclipse WTP (Incubation)</artifactRepositoryName>
         </configuration>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -49,7 +48,7 @@
             <source>${pom.basedir}/src/main/assembly/fixupdate.groovy</source>
         </configuration>
       </plugin>
-      -->
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
