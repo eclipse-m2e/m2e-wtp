@@ -32,7 +32,6 @@ import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.wtp.internal.StringUtils;
-import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualArchiveComponent;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.m2e.wtp.overlay.modulecore.OverlayComponentCore;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -124,13 +123,16 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
             artifact.getVersion());
 
         if(workspaceDependency != null) {
-          //artifact dependency is a workspace project
+          //artifact dependency is a workspace project && dependency resolution is on
           IProject overlayProject = workspaceDependency.getProject();
 
           if (overlayProject.equals(project)) {
             overlayComponent = OverlayComponentCore.createSelfOverlayComponent(project);
-          } else {
+          } else if (workspaceDependency.getFullPath(artifact.getFile()) != null){
             overlayComponent = OverlayComponentCore.createOverlayComponent(overlayProject);
+          } else {
+            //Dependency resolution is off
+            overlayComponent = createOverlayArchiveComponent(project, mavenProject, overlay);
           }
         } else {
           overlayComponent = createOverlayArchiveComponent(project, mavenProject, overlay);
