@@ -19,7 +19,6 @@ import org.eclipse.jst.common.internal.modulecore.AddClasspathLibReferencesParti
 import org.eclipse.jst.common.internal.modulecore.AddMappedOutputFoldersParticipant;
 import org.eclipse.jst.common.internal.modulecore.IgnoreJavaInSourceFolderParticipant;
 import org.eclipse.jst.common.internal.modulecore.SingleRootExportParticipant;
-import org.eclipse.jst.j2ee.internal.common.exportmodel.JEEHeirarchyExportParticipant;
 import org.eclipse.jst.j2ee.internal.common.exportmodel.JavaEESingleRootCallback;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -93,7 +92,7 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 		//TODO Maybe deal with the inclusion/exclusion stuff on the participant level (using an Adapter or a Callback pattern)
 		IFlattenParticipant[] participants = new IFlattenParticipant[] { 
 	    	       new SingleRootExportParticipant(new JavaEESingleRootCallback()), 
-	    	       new JEEHeirarchyExportParticipant(), 
+	    	       //new JEEHeirarchyExportParticipant(), Prevents from deploying web fragments!!! 
 	    	       new AddClasspathLibReferencesParticipant(), 
 	    	       new AddClasspathFoldersParticipant(), 
 	    	       new AddMappedOutputFoldersParticipant(),
