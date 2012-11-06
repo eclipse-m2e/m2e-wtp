@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jst.j2ee.project.EarUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -97,11 +98,35 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
         configure(earPlugin, EAR_VERSION, version);
         customized = true;
       }
+      
+      String libDir = EarUtilities.getEARLibDir(component);
+      if (libDir == null) {
+        libDir = inspectDefaultLibDirs(applicationContentFolder);
+      }
+      if (libDir != null) {
+        configure(earPlugin, "defaultLibBundleDir", libDir);
+        customized = true;
+      }
+      
     }
 
     if (customized) {
       model.setBuild(build);
     }
+  }
+
+  /**
+   * Checks if a lib directory exists in the application content folder
+   * @return the relative path of the lib directory, if it exists, null otherwise
+   */
+  private String inspectDefaultLibDirs(IFolder applicationContentFolder) {
+    
+    for (String candidate : new String[] {"lib", "APP-INF/lib"}) {
+      if  (applicationContentFolder.getFolder(candidate).exists()) {
+        return candidate;
+      }
+    }
+    return null;
   }
 
   private IFolder findEarContentFolder(IVirtualComponent component) {
