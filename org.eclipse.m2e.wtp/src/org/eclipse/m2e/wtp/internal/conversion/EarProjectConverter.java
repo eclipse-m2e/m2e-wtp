@@ -84,7 +84,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
       IProjectFacetVersion earVersion = fProject.getProjectFacetVersion(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
       if (!IJ2EEFacetConstants.ENTERPRISE_APPLICATION_13.equals(earVersion)) {
         String version;
-        boolean isJavaEE = IJ2EEFacetConstants.ENTERPRISE_APPLICATION_50.compareTo(earVersion) < 0;
+        boolean isJavaEE = earVersion.compareTo(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_50) >= 0;
         if (isJavaEE) {
           // maven-ear-plugin needs version 5 instead of 5.0
           version = earVersion.getVersionString().substring(0, 1);//Yuck!
