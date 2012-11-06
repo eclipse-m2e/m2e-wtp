@@ -41,6 +41,8 @@ public final class FileNameMappingFactory
 
     static final String NO_VERSION_FILE_NAME_MAPPING = "no-version";
 
+    static final String NO_VERSION_FOR_EJB_NAME_MAPPING = "no-version-for-ejb";
+
 
     private FileNameMappingFactory()
     {
@@ -73,6 +75,10 @@ public final class FileNameMappingFactory
         if ( NO_VERSION_FILE_NAME_MAPPING.equals( nameOrClass ) )
         {
             return new NoVersionFileNameMapping();
+        }
+        if ( NO_VERSION_FOR_EJB_NAME_MAPPING.equals( nameOrClass ) )
+        {
+            return new EjbNoVersionFileNameMapping();
         }
         try
         {
