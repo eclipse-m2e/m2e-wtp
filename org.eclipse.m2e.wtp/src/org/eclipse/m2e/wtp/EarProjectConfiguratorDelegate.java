@@ -195,7 +195,6 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         IProject depProject = preConfigureDependencyProject(workspaceDependency, monitor);
         if (ModuleCoreNature.isFlexibleProject(depProject)) {
           depComponent = createDependencyComponent(earComponent, depProject);
-          configureDeployedName(depProject, earModule.getBundleFileName());
         }
       } else {
         //artifact dependency should be added as a JEE module, referenced with M2_REPO variable 
