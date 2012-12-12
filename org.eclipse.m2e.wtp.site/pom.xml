@@ -16,21 +16,12 @@
   </parent>
 
   <artifactId>org.eclipse.m2e.wtp.site</artifactId>
-  <packaging>eclipse-update-site</packaging>
+  <packaging>eclipse-repository</packaging>
 
   <name>M2E-WTP :: Update Site</name>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-packaging-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <configuration>
-          <metadataRepositoryName>m2e-wtp - Maven Integration for Eclipse WTP (Incubation)</metadataRepositoryName>
-          <artifactRepositoryName>m2e-wtp - Maven Integration for Eclipse WTP (Incubation)</artifactRepositoryName>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -48,59 +39,22 @@
             <source>${pom.basedir}/src/main/assembly/fixupdate.groovy</source>
         </configuration>
       </plugin>
-      
+      <!--
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id> 
-            <phase>package</phase> 
-            <goals>
-              <goal>single</goal> 
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <version>${tycho-version}</version>
       </plugin>
-
+       -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <includePackedArtifacts>true</includePackedArtifacts>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>publish-site</id>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>maven-upload-plugin</artifactId>
-            <version>0.0.1</version>
-            <executions>
-              <execution>
-                <id>publish-site</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>upload-file</goal>
-                </goals>
-                <configuration>
-                  <file>${project.build.directory}/${project.artifactId}-${project.version}-site.zip</file>
-
-                  <serverId>forge-releases</serverId>
-                  <repositoryUrl>${m2e.site-compressed}</repositoryUrl>
-                  <repositoryPath>m2eclipse-wtp/${unqualifiedVersion}/S/${unqualifiedVersion}.${buildQualifier}</repositoryPath>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
 

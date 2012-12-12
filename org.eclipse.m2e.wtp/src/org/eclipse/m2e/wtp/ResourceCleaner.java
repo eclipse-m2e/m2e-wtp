@@ -98,6 +98,18 @@ public class ResourceCleaner {
     }
   }
 
+  public void addFiles(IFile ... filesToDelete) {
+    if (filesToDelete == null) {
+      return;
+    }
+    for (IFile fileToDelete : filesToDelete) {
+      if (!fileToDelete.exists()) {
+        files.add(fileToDelete);
+        addInexistentParentFolders(fileToDelete);
+      }
+    }
+  }
+
   public void cleanUp() throws CoreException {
     IProgressMonitor monitor = new NullProgressMonitor();
     for (IFile file : files) {

@@ -32,9 +32,7 @@
     <eclipse.target>juno</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
-    <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla 
-     <mavenarchiver-repo.url>http://repository.tesla.io:8081/nexus/content/sites/m2e.extras/m2eclipse-mavenarchiver/0.15.0/N/0.15.0.201207090125/</mavenarchiver-repo.url>
-    -->
+    <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.15.0.201207090125, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
     
@@ -69,6 +67,14 @@
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
     <module>org.eclipse.m2e.wtp.feature</module>
+    <module>org.eclipse.m2e.wtp.jaxrs</module>
+    <module>org.eclipse.m2e.wtp.jaxrs.feature</module>
+    <module>org.eclipse.m2e.wtp.jsf</module>
+    <module>org.eclipse.m2e.wtp.jsf.feature</module>    
+    <!-- disabled as doesn't compile in Kepler 
+    <module>org.eclipse.m2e.wtp.jpa</module>
+    <module>org.eclipse.m2e.wtp.jpa.feature</module>
+    -->
     <module>org.eclipse.m2e.wtp.sdk.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>

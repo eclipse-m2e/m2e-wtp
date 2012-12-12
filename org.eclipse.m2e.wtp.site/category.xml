@@ -8,6 +8,17 @@
    <feature url="features/org.eclipse.m2e.wtp.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
+   <feature url="features/org.eclipse.m2e.wtp.jaxrs.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jaxrs.feature" version="0.0.0">
+      <category name="m2e-wtp"/>
+   </feature>
+   <feature url="features/org.eclipse.m2e.wtp.jsf.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jsf.feature" version="0.0.0">
+      <category name="m2e-wtp"/>
+   </feature>
+   <!--
+   <feature url="features/org.eclipse.m2e.wtp.jpa.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.feature.jpa" version="0.0.0">
+      <category name="m2e-wtp"/>
+   </feature>
+   -->
    <category-def name="m2e-wtp" label="Maven Integration for WTP (Incubation)"/>
 
    <category name="maven-archiver"/>

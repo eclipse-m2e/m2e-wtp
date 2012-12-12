@@ -649,4 +649,8 @@ public class WTPProjectsUtil {
     }    
     return folder;
   }  
+  
+  public static boolean isWTPProject(IProject project) {
+    return ModuleCoreNature.getModuleCoreNature(project) != null;
+  }
 }

@@ -1,0 +1,43 @@
+/*************************************************************************************
+ * Copyright (c) 2011-2012 Red Hat, Inc. and others.
+ * All rights reserved. This program and the accompanying materials 
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Fred Bricon (Red Hat, Inc.) - initial API and implementation
+ ************************************************************************************/
+package org.eclipse.m2e.wtp.jaxrs.internal;
+
+import org.eclipse.jst.ws.jaxrs.core.internal.IJAXRSCoreConstants;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+
+/**
+ * 
+ * @author Fred Bricon
+ *
+ */
+public class MavenJaxRsConstants {
+	
+	public static final String JAXRS_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jaxrs.configuration";
+
+	public static final IProjectFacet JAX_RS_FACET; 
+
+	public static final IProjectFacetVersion JAX_RS_FACET_1_0; 
+	
+	public static final IProjectFacetVersion JAX_RS_FACET_1_1; 
+
+	static {
+		JAX_RS_FACET = ProjectFacetsManager.getProjectFacet(IJAXRSCoreConstants.JAXRS_FACET_ID);
+		JAX_RS_FACET_1_0 = JAX_RS_FACET.getVersion(IJAXRSCoreConstants.JAXRS_VERSION_1_0);
+		JAX_RS_FACET_1_1 = JAX_RS_FACET.getVersion(IJAXRSCoreConstants.JAXRS_VERSION_1_1);
+	}
+	
+	/**
+	 * Private constructor to prevent instanciation.
+	 */
+	private MavenJaxRsConstants() {};
+}

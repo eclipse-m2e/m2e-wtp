@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+	<extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+    </extension>
+   
+    <extension
+         point="org.eclipse.m2e.core.lifecycleMappings">
+      <lifecycleMapping
+            class="org.eclipse.m2e.wtp.jaxrs.internal.configurators.JaxRsLifecycleMapping"
+            id="org.eclipse.m2e.wtp.jaxrs.JaxrsLifecycleMapping"
+            name="JAX-RS Lifecycle mapping">
+      </lifecycleMapping>
+    </extension>
+    
+	<extension point="org.eclipse.m2e.core.projectConfigurators">
+      <configurator 
+          id="org.eclipse.m2e.wtp.jaxrs.configurator"
+          class="org.eclipse.m2e.wtp.jaxrs.internal.configurators.JaxRsProjectConfigurator"
+          name="%JAXRS_Project_configurator" 
+          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"/>
+    </extension>
+    
+     <extension point="org.eclipse.core.resources.markers"
+         id="org.eclipse.m2e.core.maven2Problem.wtp.jaxrs.configuration"
+         name="%Maven_Configuration_Problem">
+      <super type="org.eclipse.m2e.core.maven2Problem.configuration"/>
+      <persistent value="true"/>
+    </extension>
+</plugin>
