@@ -47,7 +47,6 @@ import org.eclipse.m2e.wtp.ResourceCleaner;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
 import org.eclipse.m2e.wtp.jsf.internal.utils.JSFUtils;
-import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -106,10 +105,6 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 		
 	}
 
-	private boolean isWTPProject(IProject project) {
-	    return ModuleCoreNature.getModuleCoreNature(project) != null;
-	 }
-	
 	private void installJSFFacet(IFacetedProject fproj, MavenProject mavenProject,
 			IProjectFacetVersion facetVersion, IProgressMonitor monitor)
 			throws CoreException {

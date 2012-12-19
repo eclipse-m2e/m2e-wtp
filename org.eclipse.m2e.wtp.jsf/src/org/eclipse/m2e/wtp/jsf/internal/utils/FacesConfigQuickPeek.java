@@ -20,18 +20,18 @@ import org.xml.sax.InputSource;
 @SuppressWarnings("restriction")
 public class FacesConfigQuickPeek {
 
-	private String FACES_CONFIG_PUBLIC_ID_1_0 = "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN";
-	private String FACES_CONFIG_SYSTEM_ID_1_0 = "http://java.sun.com/dtd/web-facesconfig_1_0.dtd";
-	private String FACES_CONFIG_PUBLIC_ID_1_1 = "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN";
-	private String FACES_CONFIG_SYSTEM_ID_1_1 = "http://java.sun.com/dtd/web-facesconfig_1_1.dtd";
-	private String FACES_CONFIG_SCHEMA_ID_1_2 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd";
-	private String FACES_CONFIG_SCHEMA_ID_2_0 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd";
-	private String FACES_CONFIG_SCHEMA_ID_2_1 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd";
-	private String FACES_CONFIG_ID_1_0 = "1.0";
-	private String FACES_CONFIG_ID_1_1 = "1.1";
-	private String FACES_CONFIG_ID_1_2 = "1.2";
-	private String FACES_CONFIG_ID_2_0 = "2.0";
-	private String FACES_CONFIG_ID_2_1 = "2.1";
+	private static final String FACES_CONFIG_PUBLIC_ID_1_0 = "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN";
+	private static final String FACES_CONFIG_SYSTEM_ID_1_0 = "http://java.sun.com/dtd/web-facesconfig_1_0.dtd";
+	private static final String FACES_CONFIG_PUBLIC_ID_1_1 = "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN";
+	private static final String FACES_CONFIG_SYSTEM_ID_1_1 = "http://java.sun.com/dtd/web-facesconfig_1_1.dtd";
+	private static final String FACES_CONFIG_SCHEMA_ID_1_2 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd";
+	private static final String FACES_CONFIG_SCHEMA_ID_2_0 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd";
+	private static final String FACES_CONFIG_SCHEMA_ID_2_1 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd";
+	private static final String FACES_CONFIG_ID_1_0 = "1.0";
+	private static final String FACES_CONFIG_ID_1_1 = "1.1";
+	private static final String FACES_CONFIG_ID_1_2 = "1.2";
+	private static final String FACES_CONFIG_ID_2_0 = "2.0";
+	private static final String FACES_CONFIG_ID_2_1 = "2.1";
 	
 	private XMLRootHandler handler;
 

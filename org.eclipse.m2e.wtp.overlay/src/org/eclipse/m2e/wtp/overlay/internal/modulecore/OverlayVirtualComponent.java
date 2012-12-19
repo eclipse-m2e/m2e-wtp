@@ -9,7 +9,6 @@
 package org.eclipse.m2e.wtp.overlay.internal.modulecore;
 
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +23,6 @@ import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.flat.FlatVirtualComponent;
 import org.eclipse.wst.common.componentcore.internal.flat.FlatVirtualComponent.FlatComponentTaskModel;
-import org.eclipse.wst.common.componentcore.internal.flat.IChildModuleReference;
 import org.eclipse.wst.common.componentcore.internal.flat.IFlattenParticipant;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -118,7 +116,7 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 		return inclusionPatterns;
 	}
 	@Override
-	public IVirtualReference[] getReferences(Map<String, Object> paramMap){;
+	public IVirtualReference[] getReferences(Map<String, Object> paramMap){
 		CompositeVirtualFolder  root = getRoot(); 
 		if (root != null) {
 			try {
@@ -130,14 +128,6 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 			}
 		}
 		return new IVirtualReference[0];
-	}
-
-	private Set<IVirtualReference> getReferences(IChildModuleReference[] childModules) {
-		Set<IVirtualReference> references = new LinkedHashSet<IVirtualReference>(childModules.length);
-		for (IChildModuleReference child : childModules){
-			references.add(child.getReference());
-		}
-		return references;
 	}
 
 	@Override
