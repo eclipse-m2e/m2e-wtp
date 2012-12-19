@@ -18,6 +18,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -399,5 +400,13 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   public String getSourceIncludeParameterName() {
     return "earSourceIncludes";
+  }
+  
+  public String getFinalName() {
+    String finalName = DomUtils.getChildValue(getConfiguration(), "finalName");
+    if (StringUtils.isEmpty(finalName)) {
+      finalName = mavenProject.getBuild().getFinalName(); 
+    }
+    return finalName;
   }
 }
