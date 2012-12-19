@@ -23,20 +23,10 @@
     </extension>
     
      <extension point="org.eclipse.core.resources.markers"
-         id="org.jbosstools.maven.configuration.jsf"
+         id="org.eclipse.m2e.core.maven2Problem.wtp.jsf.configuration"
          name="%Maven_Configuration_Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem.configuration"/>
+      <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
     </extension>
-   
-    <extension
-         point="org.eclipse.ui.ide.markerSupport">
-      <markerTypeCategory
-            name="%Maven_Configuration_Problems">
-         <markerTypeReference
-               id="org.jbosstools.maven.configuration.jsf">
-         </markerTypeReference>
-      </markerTypeCategory>
-   </extension>
    
 </plugin>

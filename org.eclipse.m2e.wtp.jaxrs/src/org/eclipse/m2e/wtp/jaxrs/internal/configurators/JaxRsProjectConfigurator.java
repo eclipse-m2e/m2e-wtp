@@ -109,6 +109,8 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 	private void installJaxRsFacet(IFacetedProject fproj, IProjectFacetVersion facetVersion,
 			MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
 
+		markerManager.deleteMarkers(fproj.getProject(), MavenJaxRsConstants.JAXRS_CONFIGURATION_ERROR_MARKER_ID);
+
 		IStatus status = facetVersion.getConstraint().check(fproj.getProjectFacets());
 		if (status.isOK()) {
 			// refreshing the project hierarchy to make sure that Eclipse "sees" the .settings folder and file, 
