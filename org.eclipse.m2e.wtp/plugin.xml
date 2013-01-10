@@ -335,5 +335,18 @@
       	 />     
       	      
     </extension>
-    
+
+   <extension
+         point="org.eclipse.m2e.jdt.classifierClasspathProviders">
+      <classifierClasspathProvider
+            class="org.eclipse.m2e.wtp.internal.jdt.launch.WarClassesClassifierClasspathProvider"
+            id="org.eclipse.m2e.wtp.warClassesClassifierClasspathProvider"
+            name="War classes Classpath Provider">
+      </classifierClasspathProvider>
+      <classifierClasspathProvider
+            class="org.eclipse.m2e.wtp.internal.jdt.launch.EjbClientClassifierClasspathProvider"
+            id="org.eclipse.m2e.wtp.ejbClientClassifierClasspathProvider"
+            name="EJB Client Classpath Provider">
+      </classifierClasspathProvider>
+   </extension>    
 </plugin>

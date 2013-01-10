@@ -195,7 +195,6 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     
     WTPProjectsUtil.removeWTPClasspathContainer(project);
 
-    //MECLIPSEWTP-214 : add (in|ex)clusion patterns as .component metadata
   }
 
   private IDataModel getWebModelConfig(String warSourceDirectory, String contextRoot) {
