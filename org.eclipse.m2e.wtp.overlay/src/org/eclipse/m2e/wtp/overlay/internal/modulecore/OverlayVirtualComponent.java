@@ -18,7 +18,9 @@ import org.eclipse.jst.common.internal.modulecore.AddClasspathLibReferencesParti
 import org.eclipse.jst.common.internal.modulecore.AddMappedOutputFoldersParticipant;
 import org.eclipse.jst.common.internal.modulecore.IgnoreJavaInSourceFolderParticipant;
 import org.eclipse.jst.common.internal.modulecore.SingleRootExportParticipant;
+import org.eclipse.jst.j2ee.internal.common.exportmodel.JEEHeirarchyExportParticipant;
 import org.eclipse.jst.j2ee.internal.common.exportmodel.JavaEESingleRootCallback;
+import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.flat.FlatVirtualComponent;
@@ -70,7 +72,6 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 			return cachedRoot;
 		}
 		
-		//System.err.println("returning new root "); 
 		if (project != null) {
 			IVirtualComponent component = ComponentCore.createComponent(project);
 			if (component != null) {
@@ -90,7 +91,22 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 		//TODO Maybe deal with the inclusion/exclusion stuff on the participant level (using an Adapter or a Callback pattern)
 		IFlattenParticipant[] participants = new IFlattenParticipant[] { 
 	    	       new SingleRootExportParticipant(new JavaEESingleRootCallback()), 
-	    	       //new JEEHeirarchyExportParticipant(), Prevents from deploying web fragments!!! 
+	    	       //JEEHeirarchyExportParticipant doesn't deploy utility java projects
+	    	       //if JEEHeirarchyExportParticipant  is skipped, utility java projects are deployed as exploded folders, 
+	    	       //only the sources, not classes; Should be deployed as zips. 
+	    	       new JEEHeirarchyExportParticipant() {
+	    	    	   @Override
+	    	    	protected boolean isApprovedNesting(String parentType,
+	    	    			String childType, boolean binary) {
+	    	    		   if( childType == null )
+	    	    				return false;
+	    	    			if( IJ2EEFacetConstants.UTILITY.equals(childType) && binary)
+	    	    				return false; // child utility project 
+	    	    			if( IJ2EEFacetConstants.WEBFRAGMENT.equals(childType) && binary)
+	    	    				return false; // child utility project 
+	    	    			return true;
+	    	    	}
+	    	       },
 	    	       new AddClasspathLibReferencesParticipant(), 
 	    	       new AddClasspathFoldersParticipant(), 
 	    	       new AddMappedOutputFoldersParticipant(),
