@@ -10,8 +10,8 @@
  ************************************************************************************/
 package org.eclipse.m2e.wtp.jpa.internal;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -54,8 +54,6 @@ public class MavenJpaActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the shared instance
-	 *
 	 * @return the shared instance
 	 */
 	public static MavenJpaActivator getDefault() {
