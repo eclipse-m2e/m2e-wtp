@@ -24,24 +24,20 @@
 
   <properties>
     <eclipse.target>kepler</eclipse.target>
-    <dali-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</dali-repo.url>    
+    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>    
     <platform.id>e43</platform.id>
   </properties>
 
   <modules>
-    <!--
-    <module>org.eclipse.m2e.wtp.target-platform</module>
-    -->
     <module>org.eclipse.m2e.wtp.jpa</module>
     <module>org.eclipse.m2e.wtp.jpa.feature</module>
-    <!-- module>org.eclipse.m2e.wtp.jpa.site</module -->
   </modules>
     
   <repositories>
     <repository>
-      <id>webtools</id>
+      <id>m2e-wtp</id>
       <layout>p2</layout>
-      <url>${dali-repo.url}</url>
+      <url>${m2e-wtp.url}</url>
     </repository>
   </repositories>
 
