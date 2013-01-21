@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.m2e.wtp</groupId>
+    <artifactId>org.eclipse.m2e.wtp.jpa.parent</artifactId>
+    <version>0.17.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>org.eclipse.m2e.wtp.jpa.feature</artifactId>
+  <packaging>eclipse-feature</packaging>
+
+  <name>M2E-WTP :: JPA Support (Kepler) Feature</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<deployableFeature>true</deployableFeature>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>categorization</id>
+						<phase>package</phase>
+						<goals>
+							<goal>category-p2-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<metadataRepositoryName>${project.name}</metadataRepositoryName>
+					<artifactRepositoryName>${project.name}</artifactRepositoryName>
+				</configuration>
+			</plugin>
+  			<plugin>
+				<groupId>io.tesla.tycho</groupId>
+				<artifactId>feature-zip-plugin</artifactId>
+				<version>0.0.1</version>
+				<configuration>
+					<sourceDirectory>${project.build.directory}/site</sourceDirectory>
+					<zip>${project.build.directory}/${project.artifactId}-${project.version}-site.zip</zip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>feature-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>zip</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
+
