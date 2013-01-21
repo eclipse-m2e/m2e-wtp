@@ -41,7 +41,24 @@
 					<artifactRepositoryName>${project.name}</artifactRepositoryName>
 				</configuration>
 			</plugin>
-  			<plugin>
+	      <plugin>
+	        <groupId>org.codehaus.gmaven</groupId>
+	        <artifactId>gmaven-plugin</artifactId>
+	        <version>1.4</version>
+	        <executions>
+	            <execution>
+	                <id>fix-content</id>
+	                <phase>package</phase>
+	                <goals>
+	                    <goal>execute</goal>
+	                </goals>
+	            </execution>
+	        </executions>
+	        <configuration>
+	            <source>${pom.basedir}/src/main/assembly/fixupdate.groovy</source>
+	        </configuration>
+	      </plugin>
+		  <plugin>
 				<groupId>io.tesla.tycho</groupId>
 				<artifactId>feature-zip-plugin</artifactId>
 				<version>0.0.1</version>
