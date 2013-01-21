@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,16 +24,15 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jpt.common.core.resource.ResourceLocator;
-import org.eclipse.jpt.common.core.resource.xml.JptXmlResource;
-import org.eclipse.jpt.jpa.core.JpaProject;
-import org.eclipse.jpt.jpa.core.JpaWorkspace;
+import org.eclipse.jpt.jpa.core.JpaFacet;
+import org.eclipse.jpt.jpa.core.JptJpaCorePlugin;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetDataModelProperties;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetInstallDataModelProperties;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetInstallDataModelProvider;
 import org.eclipse.jpt.jpa.core.internal.resource.persistence.PersistenceXmlResourceProvider;
-import org.eclipse.jpt.jpa.core.platform.JpaPlatformConfig;
-import org.eclipse.jpt.jpa.core.platform.JpaPlatformManager;
+import org.eclipse.jpt.jpa.core.platform.JpaPlatformDescription;
 import org.eclipse.jpt.jpa.core.resource.persistence.XmlPersistenceUnit;
+import org.eclipse.jpt.jpa.core.resource.xml.JpaXmlResource;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.jst.common.project.facet.core.internal.JavaFacetUtil;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
@@ -113,11 +111,11 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		
 		PersistenceXmlResourceProvider provider = PersistenceXmlResourceProvider.getXmlResourceProvider(persistenceXml);
 		
-		JptXmlResource jpaXmlResource = provider.getXmlResource(); 
+		JpaXmlResource jpaXmlResource = provider.getXmlResource(); 
 		 
 		IProjectFacetVersion version = JptUtils.getVersion(jpaXmlResource);
 		
-		JpaPlatformConfig platform = getPlatform(jpaXmlResource, version);
+		JpaPlatformDescription platform = getPlatform(jpaXmlResource, version);
 		
 		IDataModel dataModel = getDataModel(facetedProject, version, platform);
 
@@ -130,17 +128,16 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	}
 
 	
-	private JpaPlatformConfig getPlatform(JptXmlResource persistenceXml, IProjectFacetVersion facetVersion) {
+	private JpaPlatformDescription getPlatform(JpaXmlResource persistenceXml, IProjectFacetVersion facetVersion) {
 		XmlPersistenceUnit xmlPersistenceUnit = JptUtils.getFirstXmlPersistenceUnit(persistenceXml);
 		if (xmlPersistenceUnit == null) {
 			return null;
 		}
 		PlatformIdentifierManager identifierManager = MavenJpaActivator.getDefault().getPlatformIdentifierManager();
 		String platformType = identifierManager.identify(xmlPersistenceUnit);
-		JpaPlatformManager platformManager = getPlatformManager();
 		if (platformType != null) {
-			for (JpaPlatformConfig platform : platformManager.getJpaPlatformConfigs(facetVersion)) {
-				if (platform.getId().contains(platformType)) {
+			for (JpaPlatformDescription platform : JptJpaCorePlugin.getJpaPlatformManager().getJpaPlatforms()) {
+				if (platform.supportsJpaFacetVersion(facetVersion) && platform.getId().contains(platformType)) {
 					return platform;
 				}
 			}
@@ -149,20 +146,14 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return null;
 	}
 	
-	private JpaPlatformManager getPlatformManager() {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		JpaWorkspace jpaWorkspace = (JpaWorkspace) workspace.getAdapter(JpaWorkspace.class);
-		return jpaWorkspace.getJpaPlatformManager();
-	}
-
 	private IDataModel getDataModel(IFacetedProject facetedProject,
 									IProjectFacetVersion version, 
-									JpaPlatformConfig platformConfig) {
+									JpaPlatformDescription platform) {
 		
 		IDataModel dm = DataModelFactory.createDataModel(new JpaFacetInstallDataModelProvider()); 
 
 		dm.setProperty(IFacetDataModelProperties.FACET_VERSION_STR, version.getVersionString()); 
-		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platformConfig); 
+		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platform); 
 		dm.setProperty(JpaFacetInstallDataModelProperties.CREATE_ORM_XML, false);
 		dm.setProperty(JpaFacetInstallDataModelProperties.DISCOVER_ANNOTATED_CLASSES, true);
 		
@@ -177,9 +168,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		boolean configureJpa = store.getBoolean(Activator.CONFIGURE_JPA);
 		*/
-		IFacetedProject fProj = ProjectFacetsManager.create(project);
-		
-		return fProj != null && !fProj.hasProjectFacet(JpaProject.FACET) 
+		return !JpaFacet.isInstalled(project) 
 				&& project.hasNature(JavaCore.NATURE_ID);
 	}
 

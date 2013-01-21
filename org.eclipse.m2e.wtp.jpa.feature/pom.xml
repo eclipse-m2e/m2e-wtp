@@ -11,7 +11,7 @@
   <artifactId>org.eclipse.m2e.wtp.jpa.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
-  <name>M2E-WTP :: JPA Support (Kepler) Feature</name>
+  <name>M2E-WTP :: JPA Support (Juno) Feature</name>
 
 	<build>
 		<plugins>

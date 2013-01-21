@@ -10,22 +10,20 @@
  ************************************************************************************/
 package org.eclipse.m2e.wtp.jpa.internal.util;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jpt.common.core.JptWorkspace;
+import org.eclipse.jpt.common.core.JptCommonCorePlugin;
 import org.eclipse.jpt.common.core.resource.ResourceLocator;
-import org.eclipse.jpt.common.core.resource.ResourceLocatorManager;
-import org.eclipse.jpt.common.core.resource.xml.JptXmlResource;
-import org.eclipse.jpt.jpa.core.JpaProject;
+import org.eclipse.jpt.jpa.core.JpaFacet;
 import org.eclipse.jpt.jpa.core.resource.persistence.XmlPersistence;
 import org.eclipse.jpt.jpa.core.resource.persistence.XmlPersistenceUnit;
+import org.eclipse.jpt.jpa.core.resource.xml.JpaXmlResource;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +56,7 @@ public class JptUtils {
 	/**
 	 * @return the first {@link XmlPersistenceUnit} found in persistenceXml
 	 */
-	public static XmlPersistenceUnit getFirstXmlPersistenceUnit(JptXmlResource persistenceXml) {
+	public static XmlPersistenceUnit getFirstXmlPersistenceUnit(JpaXmlResource persistenceXml) {
 		if (persistenceXml != null && persistenceXml.getRootObject() instanceof XmlPersistence) {
 			XmlPersistence xmlPersistence = (XmlPersistence)persistenceXml.getRootObject();
 			List<XmlPersistenceUnit> persistenceUnits  = xmlPersistence.getPersistenceUnits();
@@ -72,36 +70,47 @@ public class JptUtils {
 	/**
 	 * @return the JPA Facet version corresponding to the version attribute of a {@link JpaXmlResource}
 	 */
-	public static  IProjectFacetVersion getVersion(JptXmlResource persistenceXml) {
+	public static  IProjectFacetVersion getVersion(JpaXmlResource persistenceXml) {
 		if (persistenceXml == null) {
 			return null;
 		}
 		String version = persistenceXml.getVersion();
-		if (version != null && version.trim().length() > 0) {
-			try {
-				return JpaProject.FACET.getVersion(version);
-			} catch (Exception e) {
-				LOG.error("Can not get JPA Facet version "+version, e);
-				try {
-					//We assume the detected version is not supported *yet* so take the latest.
-					return JpaProject.FACET.getLatestVersion();
-				} catch(CoreException cex) {
-					LOG.error("Can not get Latest JPA Facet version", cex);
-				}
-			}
+		if (version == null || version.trim().length() == 0) {
+			return JpaFacet.FACET.getDefaultVersion();
 		}
-		return JpaProject.FACET.getDefaultVersion();
+		return JpaFacet.FACET.getVersion(version);
 	}
 
 
 	/**
 	 * Returns the {@link ResourceLocator} for a given project.
+	 * <p>
+	 * This method was introduced to workaround a breaking change in Dali's (provisional) API : {@link JptCommonCorePlugin}.getResourceLocator  
+	 * was removed in favor of {@link org.eclipse.jpt.common.core.internal.resource.ResourceLocatorManager}.getResourceLocator),
+	 * </p>
 	 */
 	public static ResourceLocator getResourceLocator(IProject project) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		JptWorkspace jptWorkspace = (JptWorkspace) workspace.getAdapter(JptWorkspace.class);
-		ResourceLocatorManager rlm = jptWorkspace.getResourceLocatorManager();
-		return (rlm==null)?null:rlm.getResourceLocator(project);
+	  Method getResourceLocator;
+	  try {
+		getResourceLocator = JptCommonCorePlugin.class.getMethod("getResourceLocator", IProject.class);
+		if(getResourceLocator!=null) {
+			return (ResourceLocator)getResourceLocator.invoke(null, project);
+		}
+      } catch (NoSuchMethodException e) {
+		try {
+			Class<?> resourceLocatorManagerClass = Class.forName("org.eclipse.jpt.common.core.internal.resource.ResourceLocatorManager");
+			Object resourceLocatorManager = resourceLocatorManagerClass.getMethod("getInstance", null).invoke(null, null);
+			getResourceLocator = resourceLocatorManagerClass.getMethod("getResourceLocator", IProject.class);
+			if(getResourceLocator!=null) {
+				return (ResourceLocator)getResourceLocator.invoke(resourceLocatorManager, project);
+			} ;
+		} catch (Exception e1) {
+			LOG.error("Unable to get a ResourceLocator for "+project, e1);
+		}
+	  } catch (Exception e) {
+		LOG.error("Unable to get a ResourceLocator for "+project, e);
+	  }
+	  return null;  
 	}
 	
 }

@@ -23,7 +23,7 @@
   <name>M2E-WTP JPA :: Parent</name>
 
   <properties>
-    <eclipse.target>kepler</eclipse.target>
+    <eclipse.target>juno</eclipse.target>
     <dali-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</dali-repo.url>    
     <platform.id>e42</platform.id>
   </properties>
