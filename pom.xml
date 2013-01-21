@@ -24,7 +24,7 @@
 
   <properties>
     <eclipse.target>juno</eclipse.target>
-    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>    
+    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}</m2e-wtp.url>    
     <platform.id>e42</platform.id>
   </properties>
 
