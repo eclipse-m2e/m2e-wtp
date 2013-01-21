@@ -60,9 +60,6 @@
   </issueManagement>
 
   <modules>
-    <!--
-    <module>org.eclipse.m2e.wtp.target-platform</module>
-    -->
     <module>org.eclipse.m2e.wtp.overlay</module>
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
@@ -71,10 +68,6 @@
     <module>org.eclipse.m2e.wtp.jaxrs.feature</module>
     <module>org.eclipse.m2e.wtp.jsf</module>
     <module>org.eclipse.m2e.wtp.jsf.feature</module>    
-    <!-- disabled as doesn't compile in Kepler 
-    <module>org.eclipse.m2e.wtp.jpa</module>
-    <module>org.eclipse.m2e.wtp.jpa.feature</module>
-    -->
     <module>org.eclipse.m2e.wtp.sdk.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
@@ -90,11 +83,13 @@
       <layout>p2</layout>
       <url>${eclipse-repo.url}</url>
     </repository>
+    <!--
     <repository>
       <id>webtools</id>
       <layout>p2</layout>
       <url>${webtools-repo.url}</url>
     </repository>
+    -->
     <repository>
       <id>mavenarchiver</id>
       <layout>p2</layout>
