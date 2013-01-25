@@ -45,6 +45,7 @@ import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
@@ -165,7 +166,6 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platformConfig); 
 		dm.setProperty(JpaFacetInstallDataModelProperties.CREATE_ORM_XML, false);
 		dm.setProperty(JpaFacetInstallDataModelProperties.DISCOVER_ANNOTATED_CLASSES, true);
-		
 		LibraryInstallDelegate libraryInstallDelegate = getNoOpLibraryProvider(facetedProject, version);
 		dm.setProperty(JpaFacetInstallDataModelProperties.LIBRARY_PROVIDER_DELEGATE, libraryInstallDelegate);
 		
@@ -173,14 +173,12 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	}
 
 	private boolean canConfigure(IProject project) throws CoreException {
-		/* FIX_POST_MIGRATION (dis/en)able configurators in prefs
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		boolean configureJpa = store.getBoolean(Activator.CONFIGURE_JPA);
-		*/
+		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		if (!enabled || !project.hasNature(JavaCore.NATURE_ID)) {
+			return false;
+		}
 		IFacetedProject fProj = ProjectFacetsManager.create(project);
-		
-		return fProj != null && !fProj.hasProjectFacet(JpaProject.FACET) 
-				&& project.hasNature(JavaCore.NATURE_ID);
+		return  fProj == null || !fProj.hasProjectFacet(JpaProject.FACET);
 	}
 
 	private LibraryInstallDelegate getNoOpLibraryProvider(IFacetedProject facetedProject, IProjectFacetVersion facetVersion) {

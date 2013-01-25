@@ -18,5 +18,14 @@
           name="%jpa_project_configurator_wtp" 
           secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"/>
     </extension>   
+    <extension
+         point="org.eclipse.m2e.wtp.javaeeConfiguratorEnabler">
+         <javaeeConfiguratorEnabler
+           id="org.eclipse.m2e.wtp.jpa.enabler"
+           label="%jpa_enabler_label"
+           description="%jpa_enabler_description"
+           configuratorIds="org.eclipse.m2e.wtp.jpa.configurator.wtp,org.eclipse.m2e.wtp.jpa.configurator.jdt"
+         />
+    </extension>
 
 </plugin>
