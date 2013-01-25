@@ -42,6 +42,7 @@ import org.eclipse.jst.jsf.core.internal.project.facet.IJSFFacetInstallDataModel
 import org.eclipse.jst.jsf.core.internal.project.facet.JSFFacetInstallDataModelProvider;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.ResourceCleaner;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
@@ -78,14 +79,10 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 		
-		/*
-		//FIX_POST_MIGRATION
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		boolean configureJSF = store.getBoolean(Activator.CONFIGURE_JSF);
-		if (!configureJSF) {
+		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		if (!enabled) {
 			return;
 		}
-		*/
 		
     	final IFacetedProject fproj = ProjectFacetsManager.create(project);
 		if (fproj != null) {

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+
+   <extension-point id="javaeeConfiguratorEnabler" name="Java EE Configurator Enablers" schema="schema/javaeeConfiguratorEnablers.exsd"/>
+
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
@@ -214,7 +217,6 @@
          <keywordReference id="org.eclipse.m2e.core.maven"/>
       </page>
    </extension>
-   
    <extension
          point="org.eclipse.ui.propertyPages">
       

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2013 Sonatype, Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,10 +8,20 @@
 
 package org.eclipse.m2e.wtp.internal.preferences;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
+import org.eclipse.m2e.wtp.internal.StringUtils;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
 import org.eclipse.m2e.wtp.preferences.MavenWtpPreferencesConstants;
@@ -26,7 +36,18 @@ import org.slf4j.LoggerFactory;
  */
 public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManager {
 
+  private static final String ATTR_ENABLER_ID = "id";
+  private static final String ATTR_CONFIGURATOR_IDS = "configuratorIds";
+  private static final String ATTR_LABEL = "label";
+  private static final String ATTR_DESCRIPTION = "description";
+
+
   private static Logger LOG = LoggerFactory.getLogger(MavenWtpPreferencesManagerImpl.class);
+  
+  private static final String CONFIGURATOR_ENABLER_EXTENSION_POINT = MavenWtpPlugin.ID+".javaeeConfiguratorEnabler";
+
+  private List<ConfiguratorEnabler> enablers;
+
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#getPreferences(org.eclipse.core.resources.IProject)
    */
@@ -116,4 +137,46 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
     return new ProjectScope(project).getNode(MavenWtpPreferencesConstants.PREFIX);    
   }
 
+  public ConfiguratorEnabler[] getConfiguratorEnablers() {
+    if (enablers == null) {
+      enablers = loadConfiguratorEnablers();
+    }
+    ConfiguratorEnabler[] enablersArray = new ConfiguratorEnabler[enablers.size()];
+    enablers.toArray(enablersArray);
+    return enablersArray;
+  }
+
+  private static List<ConfiguratorEnabler> loadConfiguratorEnablers() {
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    IConfigurationElement[] enablerConfigs = registry.getConfigurationElementsFor(CONFIGURATOR_ENABLER_EXTENSION_POINT);
+    if (enablerConfigs == null) {
+      return Collections.emptyList();
+    }
+    ArrayList<ConfiguratorEnabler> enablers = new ArrayList<ConfiguratorEnabler>();
+    for (IConfigurationElement config : enablerConfigs) {
+        String enablerId = config.getAttribute(ATTR_ENABLER_ID);
+        String[] configuratorIds = split(config.getAttribute(ATTR_CONFIGURATOR_IDS));
+        String label = config.getAttribute(ATTR_LABEL);
+        String description = config.getAttribute(ATTR_DESCRIPTION);
+        enablers.add(new ConfiguratorEnabler(enablerId, label, configuratorIds, description));
+    }
+    return enablers;
+  }
+
+  private static String[] split(String str) {
+    return StringUtils.tokenizeToStringArray(str, ",");
+  }
+
+  /* (non-Javadoc)
+   * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#isEnabled(java.lang.String)
+   */
+  public boolean isEnabled(String configuratorId) {
+    for (ConfiguratorEnabler enabler : getConfiguratorEnablers()) {
+      if (enabler.appliesTo(configuratorId)) {
+        return enabler.isEnabled();
+      }
+    }
+    return true;
+  }
+  
 }

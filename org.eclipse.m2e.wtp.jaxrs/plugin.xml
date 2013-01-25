@@ -29,4 +29,14 @@
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
     </extension>
+
+   <extension
+         point="org.eclipse.m2e.wtp.javaeeConfiguratorEnabler">
+         <javaeeConfiguratorEnabler
+           id="org.eclipse.m2e.wtp.jaxrs.enabler"
+           label="%jaxrs_enabler_label"
+           description="%jaxrs_enabler_description"
+           configuratorIds="org.eclipse.m2e.wtp.jaxrs.configurator"
+         />
+   </extension>    
 </plugin>

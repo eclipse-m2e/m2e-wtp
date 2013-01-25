@@ -37,6 +37,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
@@ -79,13 +80,10 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 
-		/* FIX_POST_MIGRATION (dis/en)able configurators in prefs
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		boolean configureJaxRs = store.getBoolean(Activator.CONFIGURE_JAXRS);
-		if (!configureJaxRs) {
+		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		if (!enabled) {
 			return;
 		}
-		*/
 		
     	final IFacetedProject fproj = ProjectFacetsManager.create(project);
     	if (fproj == null) {
