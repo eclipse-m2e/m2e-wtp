@@ -20,16 +20,6 @@
    </license>
 
    <requires>
-      <!--
-      <import plugin="org.eclipse.wst.common.frameworks"/>
-      <import plugin="org.eclipse.wst.common.modulecore"/>
-      <import plugin="org.eclipse.wst.common.project.facet.core"/>
-      <import plugin="org.eclipse.jst.common.frameworks"/>
-      <import plugin="org.eclipse.jst.common.project.facet.core"/>
-      <import plugin="org.eclipse.jst.j2ee.web"/>
-      <import plugin="org.eclipse.jst.j2ee"/>
-      <import plugin="org.eclipse.jst.j2ee.core"/>
-      -->
       <import feature="org.eclipse.platform" version="3.6.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.rcp" version="3.6.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.jdt" version="3.6.0" match="greaterOrEqual"/>
@@ -38,6 +28,7 @@
       <import feature="org.eclipse.wst.common.fproj" version="3.2.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.jst.common.fproj.enablement.jdt" version="3.2.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.m2e.feature" version="1.1.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.jsf.feature" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

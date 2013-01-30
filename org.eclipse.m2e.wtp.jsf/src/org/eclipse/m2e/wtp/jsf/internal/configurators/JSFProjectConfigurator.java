@@ -13,14 +13,8 @@
 package org.eclipse.m2e.wtp.jsf.internal.configurators;
 
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET_VERSION_1_1;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET_VERSION_1_2;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET_VERSION_2_0;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET_VERSION_2_1;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_1;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_2;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_0;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_1;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
@@ -52,6 +46,8 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JSF maven project configurator.
@@ -64,6 +60,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(JSFProjectConfigurator.class);
+
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
@@ -177,19 +175,19 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 		}
 		
 		IProjectFacetVersion facetVersion = null;
-		if (version != null) {
-			if (version.startsWith(JSF_VERSION_1_1)) { 
-				facetVersion = JSF_FACET_VERSION_1_1;
+		if (version != null && version.trim().length() > 0) {
+			try {
+				facetVersion = JSF_FACET.getVersion(version);
+			} catch (Exception e) {
+				LOG.error("Can not get JSF Facet version "+version, e);
+				try {
+					//We assume the detected version is not supported *yet* so take the latest.
+					facetVersion = JSF_FACET.getLatestVersion();
+				} catch(CoreException cex) {
+					LOG.error("Can not get Latest JSF Facet version", cex);
+					facetVersion =  JSF_FACET.getDefaultVersion();		
+				}
 			}
-			else if (version.startsWith(JSF_VERSION_1_2)) { 
-				facetVersion = JSF_FACET_VERSION_1_2;	
-			}
-			else if (version.startsWith(JSF_VERSION_2_0)) { 
-				facetVersion = JSF_FACET_VERSION_2_0;
-			}
-			else if (version.startsWith(JSF_VERSION_2_1)) { 
-				facetVersion = JSF_FACET_VERSION_2_1;
-			}			
 		}
 
 	    return facetVersion;

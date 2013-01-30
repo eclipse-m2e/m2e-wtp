@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 public class MavenJSFConstants {
 	
 	public static final String JSF_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jsf.configuration";
+
+	public static final String JSF_VERSION_2_2 = "2.2";
 	
 	public static final String JSF_VERSION_2_1 = "2.1";
 
@@ -34,6 +36,8 @@ public class MavenJSFConstants {
 	
 	public static final IProjectFacet JSF_FACET;
 	
+	public static final IProjectFacetVersion JSF_FACET_VERSION_2_2;
+
 	public static final IProjectFacetVersion JSF_FACET_VERSION_2_1;
 	
 	public static final IProjectFacetVersion JSF_FACET_VERSION_2_0;
@@ -58,6 +62,15 @@ public class MavenJSFConstants {
 			jsf21Version = JSF_FACET_VERSION_2_0; 
 		}
 		JSF_FACET_VERSION_2_1 = jsf21Version;
+
+		IProjectFacetVersion jsf22Version = null;
+		try {
+			jsf22Version = JSF_FACET.getVersion(JSF_VERSION_2_2); 
+		} catch (Exception e) {
+			LOG.warn("JSF 2.2 Facet is unavailable, fall back to "+JSF_FACET_VERSION_2_1.getVersionString());
+			jsf22Version = JSF_FACET_VERSION_2_1; 
+		}
+		JSF_FACET_VERSION_2_2 = jsf22Version;
 	}
 	
 	

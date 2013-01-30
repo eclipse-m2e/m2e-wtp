@@ -15,6 +15,7 @@ import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_1
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_2;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_0;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_1;
+import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_2;
 
 import java.io.InputStream;
 import java.util.List;
@@ -155,6 +156,9 @@ public class JSFUtils {
 			}
 			if (type != null) {
 				String[] emptyParams = new String[0];
+				if (type.getMethod("getResourceLibraryContracts", emptyParams).exists()) {
+					return JSF_VERSION_2_2;
+				}
 				if (type.getMethod("isReleased", emptyParams).exists()) {
 					return JSF_VERSION_2_1;					
 				}
