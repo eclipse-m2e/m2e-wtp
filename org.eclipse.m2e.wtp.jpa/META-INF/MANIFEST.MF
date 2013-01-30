@@ -26,3 +26,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  JavaSE-1.7
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
+Export-Package: org.eclipse.m2e.wtp.jpa,
+ org.eclipse.m2e.wtp.jpa.internal;x-friends:="org.eclipse.m2e.wtp.tests",
+ org.eclipse.m2e.wtp.jpa.internal.configurators;x-friends:="org.eclipse.m2e.wtp.tests",
+ org.eclipse.m2e.wtp.jpa.internal.util;x-friends:="org.eclipse.m2e.wtp.tests"
