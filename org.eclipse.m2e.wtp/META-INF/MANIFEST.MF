@@ -34,7 +34,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.m2e.wtp.overlay;visibility:=reexport,
  org.eclipse.wst.server.core,
- org.sonatype.m2e.mavenarchiver;bundle-version="0.14.0"
+ org.sonatype.m2e.mavenarchiver;bundle-version="0.14.0",
+ org.eclipse.jst.jee.web,
+ org.eclipse.jst.jee.ejb
 Bundle-Vendor: Eclipse.org - m2e-wtp
 Export-Package: org.eclipse.m2e.wtp;x-friends:="org.eclipse.m2e.wtp.tests";
   uses:="org.eclipse.core.runtime,
