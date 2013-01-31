@@ -23,4 +23,5 @@ Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %Bundle-Vendor
-Export-Package: org.eclipse.m2e.wtp.jaxrs.internal.configurators
+Export-Package: org.eclipse.m2e.wtp.jaxrs.internal,
+ org.eclipse.m2e.wtp.jaxrs.internal.configurators

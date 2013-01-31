@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
@@ -28,6 +30,7 @@ import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.wtp.JEEPackaging;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
+import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
 import org.eclipse.m2e.wtp.preferences.MavenWtpPreferencesConstants;
@@ -69,6 +72,11 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
 
   private Button warMavenArchiverButton;
 
+
+  private Group configuratorEnablerGroup;
+
+  private List<ConfiguratorEnablerComposite> enablersComposites;
+  
   public MavenWtpPreferencePage() {
     setTitle("Java EE Integration Settings");
   }
@@ -85,10 +93,32 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
     if (project == null || JavaEEProjectUtilities.isDynamicWebProject(project)) {
       createWarPrefs(main);
     }
-    IMavenWtpPreferences preferences = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager()
-        .getPreferences(project);
-    fillValues(preferences);
+    IMavenWtpPreferencesManager prefManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
+    fillValues(prefManager.getPreferences(project));
+    
+    if (project == null) {
+      createJavaeeConfiguratorActivation(main, prefManager.getConfiguratorEnablers());
+    }
+    
     return main;
+  }
+
+  private void createJavaeeConfiguratorActivation(Composite main, ConfiguratorEnabler[] configuratorEnablers) {
+    if (configuratorEnablers == null || configuratorEnablers.length == 0) {
+      return;
+    }
+    configuratorEnablerGroup = new Group(main, SWT.NONE);
+    configuratorEnablerGroup.setText("Select active Java EE configurators");
+    GridDataFactory.fillDefaults().applyTo(configuratorEnablerGroup);
+    GridLayoutFactory.fillDefaults().margins(5, 0).applyTo(configuratorEnablerGroup);
+    enablersComposites = new ArrayList<ConfiguratorEnablerComposite>(configuratorEnablers.length);
+        
+    for (ConfiguratorEnabler configuratorEnabler : configuratorEnablers) {
+      ConfiguratorEnablerComposite enablerComposite = new ConfiguratorEnablerComposite(configuratorEnablerGroup, 
+          configuratorEnabler, SWT.NONE);
+      GridLayoutFactory.fillDefaults().margins(20, 0).applyTo(enablerComposite);
+      enablersComposites.add(enablerComposite);
+    }
   }
 
   /**
@@ -230,6 +260,12 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
       newPreferences.setWebMavenArchiverUsesBuildDirectory(warMavenArchiverButton.getSelection());
     }
 
+    if (enablersComposites != null) {
+      for (ConfiguratorEnablerComposite enablerComposite : enablersComposites) {
+        enablerComposite.savePreferences();
+      }
+    }
+    
     if(!newPreferences.equals(preferences)) {
       preferencesManager.savePreferences(newPreferences, getProject());
 
@@ -259,6 +295,12 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
 
     fillValues(workspacePreferences);
 
+    if (enablersComposites != null) {
+      for (ConfiguratorEnablerComposite enablerComposite : enablersComposites) {
+        enablerComposite.setDefaultValue();
+      }
+    }
+    
     super.performDefaults();
   }
 

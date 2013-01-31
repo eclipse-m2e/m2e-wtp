@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Red Hat, Inc.
+ * Copyright (c) 2013 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,15 +18,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
-import org.eclipse.m2e.jdt.internal.launch.MainClassifierClasspathProvider;
+import org.eclipse.m2e.jdt.AbstractClassifierClasspathProvider;
 
 /**
- * TestClassifierClasspathProvider
+ * Adds main classes of EJB project referenced using the "client" classifier to the runtime classpath. 
  *
  * @author Fred Bricon
  */
-public class EjbClientClassifierClasspathProvider extends MainClassifierClasspathProvider {
+public class EjbClientClassifierClasspathProvider extends AbstractClassifierClasspathProvider {
 
+  /**
+   * Applies if project of type <code>ejb</code> and having maven-ejb-plugin > configuration > generateClient = true 
+   */
   @Override
   public boolean applies(IMavenProjectFacade mavenProjectFacade, String classifier) {
     return getClassifier().equals(classifier) 
@@ -53,12 +56,16 @@ public class EjbClientClassifierClasspathProvider extends MainClassifierClasspat
     return "client";
   }
   
-  @Override
-  public void setTestClasspath(Set<IRuntimeClasspathEntry> resolved, IMavenProjectFacade mavenProjectFacade,
+  public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
       IProgressMonitor monitor) throws CoreException {
-    //Don't set the test classes
+    addMainFolder(runtimeClasspath, mavenProjectFacade, monitor);
   }
 
+  public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+      IProgressMonitor monitor) throws CoreException {
+    setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor);
+  }
+  
   public String getName() {
     return "EJB Client Classifier Classpath Provider";
   }

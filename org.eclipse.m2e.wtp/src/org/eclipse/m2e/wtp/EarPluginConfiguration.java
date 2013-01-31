@@ -162,9 +162,9 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       Xpp3Dom config = getConfiguration();
       if(config != null) {
         Xpp3Dom libDom = config.getChild("defaultLibBundleDir");
-        if(libDom != null) {
+        if(libDom != null && libDom.getValue() != null) {
           String libDir = libDom.getValue().trim();
-          libDirectory = (libDir == null || libDir.length() == 0) ? EAR_DEFAULT_BUNDLE_DIR : libDir;
+          libDirectory = (libDir.length() == 0) ? EAR_DEFAULT_BUNDLE_DIR : libDir;
         }
       }
       libDirectory = (libDirectory  == null)?EAR_DEFAULT_BUNDLE_DIR:libDirectory;

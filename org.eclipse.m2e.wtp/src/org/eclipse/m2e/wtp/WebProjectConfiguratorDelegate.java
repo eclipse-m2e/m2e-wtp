@@ -26,14 +26,11 @@ import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathAttribute;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jst.j2ee.classpathdep.IClasspathDependencyConstants;
 import org.eclipse.jst.j2ee.internal.project.J2EEProjectUtilities;
@@ -353,7 +350,6 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     Iterator<IClasspathEntryDescriptor> iter = classpath.getEntryDescriptors().iterator();
     while (iter.hasNext()) {
       IClasspathEntryDescriptor descriptor = iter.next();
-      IClasspathEntry entry = descriptor.toClasspathEntry();
       String scope = descriptor.getScope();
       Artifact artifact = ArtifactHelper.getArtifact(mavenProject.getArtifacts(), descriptor.getArtifactKey());
 
@@ -376,11 +372,11 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     
       //If custom fileName is used, check if the underlying file already exists
       // if it doesn't, copy and rename the artifact under the build dir
-      String fileName = entry.getPath().lastSegment(); 
+      String fileName = descriptor.getPath().lastSegment(); 
       if (!deployedName.equals(fileName)) {
-        IPath newPath = entry.getPath().removeLastSegments(1).append(deployedName);
+        IPath newPath = descriptor.getPath().removeLastSegments(1).append(deployedName);
         if (!new File(newPath.toOSString()).exists()) {
-          newPath = renameArtifact(targetDir, entry.getPath(), deployedName );
+          newPath = renameArtifact(targetDir, descriptor.getPath(), deployedName );
         }
         if (newPath != null) {
           descriptor.setPath(newPath);
@@ -400,10 +396,9 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         //No need to rename if not deployed
         continue;
       }
-      IClasspathEntry entry = descriptor.toClasspathEntry();
-      if (dups.contains(entry.getPath().lastSegment())) {
-        String newName = descriptor.getGroupId() + "-" + entry.getPath().lastSegment();
-        IPath newPath = renameArtifact(targetDir, entry.getPath(), newName );
+      if (dups.contains(descriptor.getPath().lastSegment())) {
+        String newName = descriptor.getGroupId() + "-" + descriptor.getPath().lastSegment();
+        IPath newPath = renameArtifact(targetDir, descriptor.getPath(), newName );
         if (newPath != null) {
           descriptor.setPath(newPath);
         }

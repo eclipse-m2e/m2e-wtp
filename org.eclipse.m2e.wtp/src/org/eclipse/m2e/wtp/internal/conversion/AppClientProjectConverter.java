@@ -8,11 +8,9 @@
 
 package org.eclipse.m2e.wtp.internal.conversion;
 
-import static org.eclipse.m2e.wtp.DomUtils.*;
+import static org.eclipse.m2e.wtp.DomUtils.getOrCreateChildNode;
+
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -27,15 +25,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.m2e.wtp.DomUtils;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
-import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;

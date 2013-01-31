@@ -29,7 +29,7 @@
     
     <test.timeout>1800</test.timeout><!--  30 mins -->       
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>juno</eclipse.target>
+    <eclipse.target>kepler</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
@@ -60,9 +60,6 @@
   </issueManagement>
 
   <modules>
-    <!--
-    <module>org.eclipse.m2e.wtp.target-platform</module>
-    -->
     <module>org.eclipse.m2e.wtp.overlay</module>
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
@@ -71,30 +68,29 @@
     <module>org.eclipse.m2e.wtp.jaxrs.feature</module>
     <module>org.eclipse.m2e.wtp.jsf</module>
     <module>org.eclipse.m2e.wtp.jsf.feature</module>    
-    <!-- disabled as doesn't compile in Kepler 
-    <module>org.eclipse.m2e.wtp.jpa</module>
-    <module>org.eclipse.m2e.wtp.jpa.feature</module>
-    -->
     <module>org.eclipse.m2e.wtp.sdk.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
     
   <repositories>
     <repository>
+      <id>m2e-core</id>
+      <layout>p2</layout>
+      <!--<url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.3.0/N/LATEST/</url> -->
+      <url>http://download.eclipse.org/technology/m2e/milestones/1.3/</url>
+    </repository>    
+    <repository>
       <id>eclipse</id>
       <layout>p2</layout>
       <url>${eclipse-repo.url}</url>
     </repository>
+    <!--
     <repository>
       <id>webtools</id>
       <layout>p2</layout>
       <url>${webtools-repo.url}</url>
     </repository>
-    <repository>
-      <id>m2e-core</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/technology/m2e/milestones/1.2/</url>
-    </repository>    
+    -->
     <repository>
       <id>mavenarchiver</id>
       <layout>p2</layout>

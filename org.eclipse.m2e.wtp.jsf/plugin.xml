@@ -28,5 +28,14 @@
       <super type="org.eclipse.m2e.core.maven2Problem"/>
       <persistent value="true"/>
     </extension>
+    <extension
+         point="org.eclipse.m2e.wtp.javaeeConfiguratorEnabler">
+         <javaeeConfiguratorEnabler
+           id="org.eclipse.m2e.wtp.jsf.enabler"
+           label="%jsf_enabler_label"
+           description="%jsf_enabler_description"
+           configuratorIds="org.eclipse.m2e.wtp.jsf.configurator"
+         />
+    </extension>
    
 </plugin>
