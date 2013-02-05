@@ -13,10 +13,12 @@ import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -223,6 +225,10 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     
     Set<IVirtualReference> references = new LinkedHashSet<IVirtualReference>();
     List<IMavenProjectFacade> exportedDependencies = getWorkspaceDependencies(project, mavenProject);
+    
+    Set<String> dups = new HashSet<String>();
+    Set<String> names = new HashSet<String>();
+    Map<IVirtualReference, Artifact> referenceMapping = new HashMap<IVirtualReference, Artifact>(exportedDependencies.size()); 
     for(IMavenProjectFacade dependency : exportedDependencies) {
       String depPackaging = dependency.getPackaging();
       if ("pom".equals(depPackaging) //MNGECLIPSE-744 pom dependencies shouldn't be deployed
@@ -261,6 +267,11 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     		  reference.setArchiveName(deployedName);
     		  reference.setRuntimePath(path);
     		  references.add(reference);
+    		  
+    		  referenceMapping.put(reference, artifact);
+          if (!names.add(deployedName)) {
+            dups.add(deployedName);
+          }
     		}
       } catch(RuntimeException ex) {
         //Should probably be NPEs at this point
@@ -270,6 +281,13 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       }
     }
 
+    for (IVirtualReference reference : references) {
+      if (dups.contains(reference.getArchiveName())) {
+        Artifact a = referenceMapping.get(reference); 
+        String newName = a.getGroupId() + "-" + reference.getArchiveName();
+        reference.setArchiveName(newName);
+      }
+    }
     
     IVirtualReference[] oldRefs = WTPProjectsUtil.extractHardReferences(component, false);
     
@@ -343,6 +361,16 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
 
     Set<String> dups = new LinkedHashSet<String>();
     Set<String> names = new HashSet<String>();
+    
+    IVirtualComponent component = ComponentCore.createComponent(project);
+    if (component != null) {
+      for (IVirtualReference vr : component.getReferences()) {
+        if (!vr.getReferencedComponent().isBinary()) {
+          names.add(vr.getArchiveName());
+        }
+      }
+    }
+    
     FileNameMapping fileNameMapping = config.getFileNameMapping();
     String targetDir = mavenProject.getBuild().getDirectory();
 

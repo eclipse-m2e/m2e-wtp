@@ -18,6 +18,10 @@ import org.eclipse.m2e.jdt.IClasspathDescriptor;
 /**
  * Configure projects based on maven plugin configuration.
  * 
+ * @provisional This class has been added as part of a work in progress. 
+ * It is not guaranteed to work or remain the same in future releases. 
+ * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * 
  * @author Fred Bricon
  */
 interface IProjectConfiguratorDelegate {
