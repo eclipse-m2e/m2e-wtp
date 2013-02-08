@@ -11,7 +11,6 @@
 package org.eclipse.m2e.wtp.jpa.internal.configurators;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.maven.model.Resource;
@@ -57,7 +56,8 @@ public class MavenResourceLocator implements ResourceLocator {
 	 * Accepts all resources not under the build output and test build output
 	 * folders
 	 */
-	public boolean resourceLocationIsValid(IProject project, IContainer container) {
+	@Override
+	public boolean locationIsValid(IProject project, IContainer container) {
 		IMavenProjectFacade mavenProjectFacade = getMavenProjectFacade(project);
 		boolean accept = true;
 		if (mavenProjectFacade != null
@@ -73,7 +73,7 @@ public class MavenResourceLocator implements ResourceLocator {
 		} else {
 			// Maven project not loaded yet, fallback to default behaviour.
 			//System.err.println(project + " not loaded");
-			accept = isResourceLocationValid(getDelegate(project), project, container);
+			accept = getDelegate(project).locationIsValid(project, container);
 		}
 		// Sometimes src/main/resources/META-INF is not even sent immediately to
 		// this method, resulting in persistence.xml not being added to the jpaFiles 
@@ -103,7 +103,8 @@ public class MavenResourceLocator implements ResourceLocator {
 	 * Returns the resource path from Maven's resource folders mapped to theP
 	 * runtimePath.
 	 */
-	public IPath getResourcePath(IProject project, IPath runtimePath) {
+	@Override
+	public IPath getWorkspacePath(IProject project, IPath runtimePath) {
 		IPath resourcePath = null;
 		IMavenProjectFacade mavenProjectFacade = getMavenProjectFacade(project);
 		if (mavenProjectFacade != null 	&& mavenProjectFacade.getMavenProject() != null) {
@@ -132,10 +133,8 @@ public class MavenResourceLocator implements ResourceLocator {
 			}
 		}
 
-		// System.err.println("getResourcePath (" + project + ", " + runtimePath
-		// + ") = " + resourcePath);
 		if (resourcePath == null) {
-			resourcePath = getDelegate(project).getResourcePath(project, runtimePath);
+			resourcePath = getDelegate(project).getWorkspacePath(project, runtimePath);
 		}
 		return resourcePath;
 	}
@@ -155,7 +154,8 @@ public class MavenResourceLocator implements ResourceLocator {
 	/**
 	 * Returns the META-INF folder found in one of Maven's resource.
 	 */
-	public IContainer getDefaultResourceLocation(IProject project) {
+	@Override
+	public IContainer getDefaultLocation(IProject project) {
 		IMavenProjectFacade mavenProjectFacade = getMavenProjectFacade(project);
 		IContainer defaultLocation = null;
 		if (mavenProjectFacade != null	&& mavenProjectFacade.getMavenProject() != null) {
@@ -175,7 +175,7 @@ public class MavenResourceLocator implements ResourceLocator {
 		}
 
 		if (defaultLocation == null) {
-			defaultLocation = getDelegate(project).getDefaultResourceLocation(project);
+			defaultLocation = getDelegate(project).getDefaultLocation(project);
 		}
 		return defaultLocation;
 	}
@@ -210,33 +210,4 @@ public class MavenResourceLocator implements ResourceLocator {
 		return runtimePath;
 	}
 
-	/**
-	 * @deprecated use {@link #acceptResourceLocation(IProject, IContainer)} instead
-	 */
-	@Deprecated
-	public boolean acceptResourceLocation(IProject project, IContainer container) {
-		return resourceLocationIsValid(project, container);
-	}
-	
-	
-	//FIXME workaround to deal with Dali API changes in Juno and keep backward compatibility with Indigo
-	private static boolean isResourceLocationValid(ResourceLocator resourceLocator, IProject project, IContainer container) {
-		Method isResourceLocationIsValid = null;
-		for (Method m : resourceLocator.getClass().getMethods()) {
-			if ("isResourceLocationIsValid".equals(m.getName()) || "acceptResourceLocation".equals(m.getName())) {
-				isResourceLocationIsValid = m;
-				break;
-			}
-		}
-		boolean result = false;
-		if (isResourceLocationIsValid != null) {
-			try {
-				result = (Boolean)isResourceLocationIsValid.invoke(resourceLocator, project, container);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-	
 }

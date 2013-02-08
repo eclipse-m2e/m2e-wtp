@@ -47,7 +47,7 @@ public class JptUtils {
 		if (resourceLocator == null) {
 			return null;
 		}
-		IPath path = resourceLocator.getResourcePath(project, new Path("META-INF/persistence.xml"));
+		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml"));
 		IFile persistenceXml = null;
 		if (path != null) {
 			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		
