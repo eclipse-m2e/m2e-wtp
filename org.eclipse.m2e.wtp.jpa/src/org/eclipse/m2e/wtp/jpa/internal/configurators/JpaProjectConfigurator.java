@@ -47,6 +47,7 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
+import org.eclipse.m2e.wtp.ResourceCleaner;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
 import org.eclipse.m2e.wtp.jpa.internal.util.JptUtils;
@@ -85,18 +86,25 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		
 		IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 		if (facetedProject != null) {
-			
 			//Refresh parent in multi-module setups, or Dali throws an exception 
 			ProjectUtils.refreshHierarchy(request.getMavenProject().getBasedir(), 
 										  IResource.DEPTH_INFINITE, 
 										  new SubProgressMonitor(monitor, 1));
-
-			configureFacets(facetedProject, persistenceXml, monitor);
+			
+			//Configurators should *never* create files in the user's source folders
+			ResourceCleaner cleaner = new ResourceCleaner(facetedProject.getProject());
+			addFoldersToClean(cleaner, request.getMavenProjectFacade());
+			try {
+				configureFacets(facetedProject, persistenceXml, monitor);
+			} finally {
+				cleaner.cleanUp();
+			}
 		} 
 	}
 
 	private IFile getPersistenceXml(IProject project) {
 		ResourceLocator resourceLocator = new MavenResourceLocator();
+		
 		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml"));
 		IFile persistenceXml = null;
 		if (path != null) {
@@ -127,7 +135,8 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, 
 								                version, 
 								                dataModel));
-	    facetedProject.modify(actions, monitor);
+		
+		facetedProject.modify(actions, monitor);
 	}
 
 	
@@ -204,4 +213,27 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, javaFv, null));
 	    } 
 	}
+	
+	 protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
+		    for (IPath p : facade.getCompileSourceLocations()) {
+		      if (p != null) {
+		        fileCleaner.addFiles(p.append("META-INF/persistence.xml"));
+		        fileCleaner.addFiles(p.append("META-INF/orm.xml"));
+				fileCleaner.addFolder(p);
+		      }
+		    }
+		    for (IPath p : facade.getResourceLocations()) {
+		      if (p != null) {
+			    fileCleaner.addFiles(p.append("META-INF/persistence.xml"));
+			    fileCleaner.addFiles(p.append("META-INF/orm.xml"));
+		        fileCleaner.addFolder(p);
+		      }
+		    }
+		    for (IPath p : facade.getTestCompileSourceLocations()) {
+		      if (p != null) fileCleaner.addFolder(p);
+		    }
+		    for (IPath p : facade.getTestResourceLocations()) {
+		      if (p != null) fileCleaner.addFolder(p);
+		    }
+		  }
 }
