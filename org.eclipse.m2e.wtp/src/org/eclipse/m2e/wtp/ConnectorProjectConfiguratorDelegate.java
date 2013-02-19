@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008, 2013 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,7 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.CONFIG_FOLDER, contentDir);
       //Don't generate ra.xml by default - Setting will be ignored for JCA 1.6
       rarModelCfg.setProperty(IConnectorFacetInstallDataModelProperties.GENERATE_DD, false);
+      rarModelCfg.setBooleanProperty(IConnectorFacetInstallDataModelProperties.ADD_TO_EAR, false);
 
       removeConflictingFacets(facetedProject, connectorFv, actions);
 

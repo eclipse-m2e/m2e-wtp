@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008, 2013 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ class EjbProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   private Object getEjbDataModel(String contentDir) {
     IDataModel ejbModelCfg = DataModelFactory.createDataModel(new EjbFacetInstallDataModelProvider());
     ejbModelCfg.setProperty(IEjbFacetInstallDataModelProperties.CONFIG_FOLDER, contentDir);
+    ejbModelCfg.setBooleanProperty(IEjbFacetInstallDataModelProperties.ADD_TO_EAR, false);
     return ejbModelCfg;
   }
 
