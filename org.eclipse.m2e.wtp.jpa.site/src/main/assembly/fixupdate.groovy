@@ -18,7 +18,7 @@ def updateMatchDefinition(root, oldFeature, newFeature, textContent) {
 }
 
 def basedir = project.basedir.canonicalPath 
-def repositoryDir = basedir + "/target/site"
+def repositoryDir = basedir + "/target/repository"
 def contentJar = repositoryDir  + "/content.jar"
 def contentDir = basedir  + "/target/content.jar/"
 
