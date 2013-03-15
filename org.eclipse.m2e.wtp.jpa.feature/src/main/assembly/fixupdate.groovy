@@ -39,19 +39,3 @@ contentXml.text = newContentText
 
 println 'Zipping back customized content.jar'
 ant.zip(  destFile: contentJar, baseDir:contentDir)
-
-println 'Fixing broken signed feature site'
-
-File siteFeaturesDir = new File(repositoryDir, "features")
-String siteFeaturesFileName = null;
-siteFeaturesDir.eachFileMatch(~/.*feature.*/) {siteFeaturesFileName = it.name } 
-
-println "expected feature name is ${siteFeaturesFileName}"
-
-File signedFeature = null;
-new File(basedir + "/target").eachFileMatch(~/.*feature.*jar/) {signedFeature = it } 
-if (signedFeature) {
-  println "Moving ${signedFeature} to ${siteFeaturesFileName}"
-  ant.move(  file: signedFeature.absolutePath, toFile: siteFeaturesDir.absolutePath + "/" + siteFeaturesFileName,  overwrite:"true")
-}
-
