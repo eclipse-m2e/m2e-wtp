@@ -17,6 +17,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEModuleFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.web.project.facet.IWebFacetInstallDataModelProperties;
 import org.eclipse.m2e.core.internal.IMavenConstants;
@@ -27,8 +29,9 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModelOperation;
-import org.eclipse.wst.common.project.facet.core.IDelegate;
-import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
+import org.eclipse.wst.common.project.facet.core.events.IProjectFacetActionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,65 +41,69 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Fred Bricon
  */
-public class WarVersionChangeDelegate implements IDelegate {
+public class WarVersionChangeDelegate implements IFacetedProjectListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(WarVersionChangeDelegate.class);
 
-  public void execute(IProject project, IProjectFacetVersion fv, Object cfg, IProgressMonitor monitor)
-      throws CoreException {
+  /* (non-Javadoc)
+   * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)
+   */
+  public void handleEvent(IFacetedProjectEvent event) {
+    if (event.getType().equals(IFacetedProjectEvent.Type.POST_VERSION_CHANGE)) {
+      IProject project = ((IProjectFacetActionEvent) event).getProject().getProject();
+      //The action applies if the Project has Maven nature and web facet
+      try {
+        if(project.hasNature(IMavenConstants.NATURE_ID)){
+          if(((IProjectFacetActionEvent) event)
+              .getProjectFacet().getId().equals(IJ2EEFacetConstants.DYNAMIC_WEB)){
 
-    if (monitor != null) {
-      monitor.beginTask("Updating Dynamic Web facet to "+fv, 1); //$NON-NLS-1$
-    }
+            NullProgressMonitor monitor = new NullProgressMonitor();
+            Object cfg = ((IProjectFacetActionEvent) event).getActionConfig();
 
-    try {
-      
-      //The action applies if the Project has Maven nature
-      if(project.hasNature(IMavenConstants.NATURE_ID)){
-        final IDataModel model = (IDataModel) cfg;
-        final IVirtualComponent c = ComponentCore.createComponent(project, true);
-        if (c == null) {
-          return;
-        }
-        
-        try {
-          if (model != null) {
-            //The model could not provide us the property we require
-            if(model.isProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT)){
-              final IWorkspace ws = ResourcesPlugin.getWorkspace();
-              final IPath pjpath = project.getFullPath();
+            if(cfg == null)
+              return;
 
-              final IPath contentdir = setContentPropertyIfNeeded(model, pjpath, project);
-              mkdirs(ws.getRoot().getFolder(contentdir), monitor);
-              IVirtualFolder contentRootFolder = c.getRootFolder();
-              WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(contentRootFolder, contentdir, monitor);
-              
-              String contextRoot = model.getStringProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT);
-              setContextRootPropertyIfNeeded(c, contextRoot);
+            IDataModel model = (IDataModel) cfg;
 
-              
-              IDataModelOperation notificationOperation = ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION));
-              if (notificationOperation != null) {
-                notificationOperation.execute(monitor, null);
+            final IVirtualComponent c = ComponentCore.createComponent(project, true);
+
+            if (c == null)
+              return;
+
+            try{
+              if (model != null) {
+                //The model could not provide us the property we require
+                if(model.isProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT)){
+                  final IWorkspace ws = ResourcesPlugin.getWorkspace();
+                  final IPath pjpath = project.getFullPath();
+
+                  final IPath contentdir = setContentPropertyIfNeeded(model, pjpath, project);
+                  mkdirs(ws.getRoot().getFolder(contentdir), monitor);
+                  IVirtualFolder contentRootFolder = c.getRootFolder();
+                  WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(contentRootFolder, contentdir, monitor);
+
+                  String contextRoot = model.getStringProperty(IWebFacetInstallDataModelProperties.CONTEXT_ROOT);
+                  setContextRootPropertyIfNeeded(c, contextRoot);
+
+
+                  IDataModelOperation notificationOperation = ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION));
+                  if (notificationOperation != null) {
+                    notificationOperation.execute(monitor, null);
+                  }
+                }
               }
+            }catch (ExecutionException e) {
+              LOG.error("Unable to notify Dynamic Web version change", e);
             }
           }
-        } catch (ExecutionException e) {
-          LOG.error("Unable to notify Dynamic Web version change", e);
         }
-        
-        if (monitor != null) {
-          monitor.worked(1);
-        }
-      }
-    } finally {
-      if (monitor != null) {
-        monitor.done();
+      }catch(CoreException e) {
+        LOG.error("Unable to read project nature", e);
       }
     }
   }
 
-  
+
   private static void mkdirs(final IFolder folder, IProgressMonitor monitor) throws CoreException {
     if (!folder.exists()) {
       if (folder.getParent() instanceof IFolder) {
@@ -106,12 +113,12 @@ public class WarVersionChangeDelegate implements IDelegate {
     }
     else
     {
-        IContainer x = folder;
-        while( x instanceof IFolder && x.isDerived() )
-        {
-            x.setDerived( false, monitor);
-            x = x.getParent();
-        }
+      IContainer x = folder;
+      while( x instanceof IFolder && x.isDerived() )
+      {
+        x.setDerived( false, monitor);
+        x = x.getParent();
+      }
     }
   }
 

@@ -8,6 +8,8 @@
 
 package org.eclipse.m2e.wtp.internal.facets;
 
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
 
 
 /**
@@ -15,5 +17,12 @@ package org.eclipse.m2e.wtp.internal.facets;
  * 
  * @author Fred Bricon
  */
-public class NoOpVersionChangeDelegate extends NoOpUninstallDelegate {
+public class NoOpVersionChangeDelegate implements IFacetedProjectListener {
+  
+    /* (non-Javadoc)
+     * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)
+     */
+    public void handleEvent(IFacetedProjectEvent event) {
+        //Does nothing
+    }
 }
