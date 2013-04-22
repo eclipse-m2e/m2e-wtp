@@ -34,7 +34,12 @@ import org.eclipse.m2e.core.internal.markers.SourceLocationHelper;
 import org.eclipse.m2e.wtp.internal.StringUtils;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.PatternBasedFileNameMapping;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -51,12 +56,24 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
  */
 @SuppressWarnings("restriction")
 public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin implements IMavenPackageFilter {
+
+  private static final Logger LOG = LoggerFactory.getLogger(WarPluginConfiguration.class);
+  
   private static final String WAR_SOURCE_FOLDER = "/src/main/webapp";
 
   private static final String WAR_PACKAGING = "war";
 
   private static final String WEB_XML = "WEB-INF/web.xml";
 
+  private static final int WEB_3_1_ID = 31;
+
+  private static final String WEB_3_1_TEXT = "3.1";
+  
+  //Keep backward compat with WTP < Kepler
+  private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
+                                                              WebFacetUtils.WEB_FACET.getVersion(WEB_3_1_TEXT)
+                                                             :WebFacetUtils.WEB_30;
+  
   private IProject project;
   
   private MavenProject mavenProject;
@@ -200,9 +217,10 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
               return WebFacetUtils.WEB_24;
             case J2EEVersionConstants.WEB_2_5_ID:
               return WebFacetUtils.WEB_25;
-            //MNGECLIPSE-1978  
             case J2EEVersionConstants.WEB_3_0_ID:
               return WebFacetUtils.WEB_30;
+            case WEB_3_1_ID:
+              return WEB_31;
           }
         } finally {
           is.close();
@@ -214,9 +232,23 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       }
     }
    
+    //If no web.xml found and the project depends on some java EE 7 jar, then set web facet to 3.1
+    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.WebConnection")) {
+      return WEB_31;
+    }
     //MNGECLIPSE-1978 If no web.xml found and the project depends on some java EE 6 jar, then set web facet to 3.0
     if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.annotation.WebServlet")) {
       return WebFacetUtils.WEB_30;
+    }
+    
+    //If no web.xml found, don't change existing facet version
+    try {
+      IFacetedProject fProject = ProjectFacetsManager.create(project);
+      if (fProject != null && fProject.hasProjectFacet(WebFacetUtils.WEB_FACET)) {
+        return fProject.getProjectFacetVersion(WebFacetUtils.WEB_FACET);
+      }
+    } catch (Exception e) {
+      LOG.warn(NLS.bind("Can not read project '{0}' facets", project.getName()), e);
     }
     
     //MNGECLIPSE-984 web.xml is optional for 2.5 Web Projects
