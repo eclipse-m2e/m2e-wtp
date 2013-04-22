@@ -13,12 +13,16 @@ package org.eclipse.m2e.wtp.internal.jdt.launch;
 import java.util.Set;
 
 import org.apache.maven.model.Plugin;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.AbstractClassifierClasspathProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adds main classes of EJB project referenced using the "client" classifier to the runtime classpath. 
@@ -27,6 +31,8 @@ import org.eclipse.m2e.jdt.AbstractClassifierClasspathProvider;
  */
 public class EjbClientClassifierClasspathProvider extends AbstractClassifierClasspathProvider {
 
+  private static final Logger LOG = LoggerFactory.getLogger(EjbClientClassifierClasspathProvider .class);
+  
   /**
    * Applies if project of type <code>ejb</code> and having maven-ejb-plugin > configuration > generateClient = true 
    */
@@ -38,7 +44,14 @@ public class EjbClientClassifierClasspathProvider extends AbstractClassifierClas
   }
 
   private boolean generatesClient(IMavenProjectFacade mavenProjectFacade) {
-    Plugin ejbPlugin = mavenProjectFacade.getMavenProject().getPlugin("org.apache.maven.plugins:maven-ejb-plugin");
+    MavenProject mavenProject;
+    try {
+      mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
+    } catch(CoreException ex) {
+      LOG.error("Could not load mavenProject instance ", ex);
+      return false;
+    }
+    Plugin ejbPlugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-ejb-plugin");
     if (ejbPlugin != null) {
       Xpp3Dom config = (Xpp3Dom)ejbPlugin.getConfiguration();
       if (config != null) {
