@@ -17,7 +17,7 @@ import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
  * 
  * @author Fred Bricon
  */
-public class NoOpVersionChangeDelegate implements IFacetedProjectListener {
+public class NoOpVersionChangeListener implements IFacetedProjectListener {
   
     /* (non-Javadoc)
      * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)

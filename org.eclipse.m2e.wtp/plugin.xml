@@ -148,23 +148,23 @@
    <extension
         point="org.eclipse.wst.common.project.facet.core.listeners">
      <listener
-           class="org.eclipse.m2e.wtp.internal.facets.EarVersionChangeDelegate"
+           class="org.eclipse.m2e.wtp.internal.facets.EarVersionChangeListener"
            eventTypes="POST_VERSION_CHANGE">
      </listener>
      <listener
-           class="org.eclipse.m2e.wtp.internal.facets.EjbVersionChangeDelegate"
+           class="org.eclipse.m2e.wtp.internal.facets.EjbVersionChangeListener"
            eventTypes="POST_VERSION_CHANGE">
      </listener>
      <listener
-           class="org.eclipse.m2e.wtp.internal.facets.WarVersionChangeDelegate"
+           class="org.eclipse.m2e.wtp.internal.facets.WarVersionChangeListener"
            eventTypes="POST_VERSION_CHANGE">
      </listener>
      <listener
-           class="org.eclipse.m2e.wtp.internal.facets.RarVersionChangeDelegate"
+           class="org.eclipse.m2e.wtp.internal.facets.RarVersionChangeListener"
            eventTypes="POST_VERSION_CHANGE">
      </listener>
      <listener
-           class="org.eclipse.m2e.wtp.internal.facets.AppClientVersionChangeDelegate"
+           class="org.eclipse.m2e.wtp.internal.facets.AppClientVersionChangeListener"
            eventTypes="POST_VERSION_CHANGE">
      </listener>
   </extension>

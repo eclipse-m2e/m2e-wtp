@@ -37,13 +37,13 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * War update delegate. Based off the org.eclipse.jst.j2ee.web.project.facet.WebFacetInstallDelegate
+ * War Facet update Listener. Based off the org.eclipse.jst.j2ee.web.project.facet.WebFacetInstallDelegate
  * 
  * @author Fred Bricon
  */
-public class WarVersionChangeDelegate implements IFacetedProjectListener {
+public class WarVersionChangeListener implements IFacetedProjectListener {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WarVersionChangeDelegate.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WarVersionChangeListener.class);
 
   /* (non-Javadoc)
    * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)

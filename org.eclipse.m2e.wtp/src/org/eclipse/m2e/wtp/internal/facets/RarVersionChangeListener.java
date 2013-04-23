@@ -11,9 +11,9 @@ package org.eclipse.m2e.wtp.internal.facets;
 
 
 /**
- * RAR version change delegate
+ * RAR version change listener
  * 
  * @author Fred Bricon
  */
-public class RarVersionChangeDelegate extends NoOpVersionChangeDelegate {
+public class RarVersionChangeListener extends NoOpVersionChangeListener {
 }

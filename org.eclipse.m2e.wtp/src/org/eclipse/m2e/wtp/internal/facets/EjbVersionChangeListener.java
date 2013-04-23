@@ -11,9 +11,9 @@ package org.eclipse.m2e.wtp.internal.facets;
 
 
 /**
- * EJB version change delegate
+ * EJB version change listener
  * 
  * @author Fred Bricon
  */
-public class EjbVersionChangeDelegate extends NoOpVersionChangeDelegate {
+public class EjbVersionChangeListener extends NoOpVersionChangeListener {
 }
