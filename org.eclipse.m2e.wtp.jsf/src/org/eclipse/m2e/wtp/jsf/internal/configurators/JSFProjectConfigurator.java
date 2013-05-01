@@ -61,7 +61,9 @@ import org.slf4j.LoggerFactory;
 public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JSFProjectConfigurator.class);
-
+	
+	private static final String M2E_JSF_ACTIVATION_PROPERTY = "m2e.jsf.activation";
+	
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
@@ -77,8 +79,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 		
-		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
-		if (!enabled) {
+		if (!isConfigurationEnabled(mavenProject)) {
 			return;
 		}
 		
@@ -100,6 +101,17 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 		
 	}
 
+	private boolean isConfigurationEnabled(MavenProject mavenProject) {
+		Object pomActivationValue = mavenProject.getProperties().get(M2E_JSF_ACTIVATION_PROPERTY);
+		boolean enabled;
+		if (pomActivationValue == null) {
+			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		} else {
+			enabled = Boolean.parseBoolean(pomActivationValue.toString());
+		}	
+		return enabled;
+	}
+	
 	private void installJSFFacet(IFacetedProject fproj, MavenProject mavenProject,
 			IProjectFacetVersion facetVersion, IProgressMonitor monitor)
 			throws CoreException {
