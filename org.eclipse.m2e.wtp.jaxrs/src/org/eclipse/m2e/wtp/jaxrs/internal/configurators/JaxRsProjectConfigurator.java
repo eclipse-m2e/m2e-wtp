@@ -63,6 +63,8 @@ import org.slf4j.LoggerFactory;
 public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 
 	private static final String WAR_PACKAGING = "war";
+	
+	private static final String M2E_JAXRS_ACTIVATION_PROPERTY = "m2e.jaxrs.activation";
 
 	private static final Logger LOG = LoggerFactory.getLogger(JaxRsProjectConfigurator.class);
 		
@@ -80,8 +82,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 
-		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
-		if (!enabled) {
+		if (!isConfigurationEnabled(mavenProject)) {
 			return;
 		}
 		
@@ -101,6 +102,17 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 	      installJaxRsFacet(fproj, jaxRsVersion, mavenProject, monitor);
 	    }
 
+	}
+
+	private boolean isConfigurationEnabled(MavenProject mavenProject) {
+		Object pomActivationValue = mavenProject.getProperties().get(M2E_JAXRS_ACTIVATION_PROPERTY);
+		boolean enabled;
+		if (pomActivationValue == null) {
+			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		} else {
+			enabled = Boolean.parseBoolean(pomActivationValue.toString());
+		}	
+		return enabled;
 	}
 
 	@SuppressWarnings("restriction")
