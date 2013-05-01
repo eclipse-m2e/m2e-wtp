@@ -13,6 +13,7 @@ package org.eclipse.m2e.wtp.jpa.internal.configurators;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -68,13 +69,15 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 	private static final String JPA_NO_OP_LIBRARY_PROVIDER = "jpa-no-op-library-provider";
+	
+	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation";
 
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
 		IProject project = request.getProject();
 		
-		if(!canConfigure(project)) {
+		if(!canConfigure(project, request.getMavenProject())) {
 			return;
 		}
 
@@ -181,8 +184,8 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return dm;
 	}
 
-	private boolean canConfigure(IProject project) throws CoreException {
-		boolean enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+	private boolean canConfigure(IProject project, MavenProject mavenProject) throws CoreException {
+		boolean enabled = isConfigurationEnabled(mavenProject);
 		if (!enabled || !project.hasNature(JavaCore.NATURE_ID)) {
 			return false;
 		}
@@ -190,6 +193,17 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return  fProj == null || !fProj.hasProjectFacet(JpaProject.FACET);
 	}
 
+	private boolean isConfigurationEnabled(MavenProject mavenProject) {
+		Object pomActivationValue = mavenProject.getProperties().get(M2E_JPA_ACTIVATION_PROPERTY);
+		boolean enabled;
+		if (pomActivationValue == null) {
+			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
+		} else {
+			enabled = Boolean.parseBoolean(pomActivationValue.toString());
+		}	
+		return enabled;
+	}
+	
 	private LibraryInstallDelegate getNoOpLibraryProvider(IFacetedProject facetedProject, IProjectFacetVersion facetVersion) {
 		LibraryInstallDelegate libraryDelegate = new LibraryInstallDelegate(facetedProject, facetVersion);
 		ILibraryProvider provider = LibraryProviderFramework.getProvider(JPA_NO_OP_LIBRARY_PROVIDER); 
