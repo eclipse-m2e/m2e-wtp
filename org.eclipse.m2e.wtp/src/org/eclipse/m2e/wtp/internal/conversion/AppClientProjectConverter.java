@@ -56,11 +56,11 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
     setAcrPlugin(component, model);
   }
 
-  private void setAcrPlugin(IVirtualComponent component, Model model) throws CoreException {
+  private void setAcrPlugin(IVirtualComponent component, Model model) {
     Build build = getCloneOrCreateBuild(model);
-    Plugin acrPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-acr-plugin", "1.0");
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.0");
+    Plugin acrPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-acr-plugin", pluginVersion);
     acrPlugin.setExtensions(true);
-
     
     String mainClass = getMainClass(component.getProject());
     if (mainClass != null) {

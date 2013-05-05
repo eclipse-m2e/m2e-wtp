@@ -69,7 +69,8 @@ public class ConnectorProjectConverter extends AbstractWtpProjectConversionParti
 
   private void setRarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    Plugin rarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-rar-plugin", "2.2");
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-rar-plugin", "2.2");
+    Plugin rarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-rar-plugin", pluginVersion);
     IFile raXml = findRaXml(component);
     if (raXml != null) {
       String raXmlPath = raXml.getProjectRelativePath().toPortableString();
