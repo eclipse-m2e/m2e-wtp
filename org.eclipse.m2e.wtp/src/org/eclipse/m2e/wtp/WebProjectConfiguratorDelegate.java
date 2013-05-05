@@ -12,6 +12,7 @@ import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,6 +83,19 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   static final IClasspathAttribute DEPENDENCY_ATTRIBUTE = JavaCore.newClasspathAttribute(
       IClasspathDependencyConstants.CLASSPATH_COMPONENT_DEPENDENCY, "/WEB-INF/lib");
 
+  private static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
+  
+  static {
+    String archiveNameAttribute = null;
+    try {
+      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE");
+      archiveNameAttribute = (String)classpathArchiveNameField.get(null);
+    } catch (Exception e) {
+      LOG.warn("Renamed dependencies will be copied under target");
+    }
+    CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
+  }
+  
   /**
   * Name of maven property that overrides WTP context root.
   */
@@ -399,16 +413,20 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         continue;
       }
     
-      //If custom fileName is used, check if the underlying file already exists
-      // if it doesn't, copy and rename the artifact under the build dir
       String fileName = descriptor.getPath().lastSegment(); 
       if (!deployedName.equals(fileName)) {
-        IPath newPath = descriptor.getPath().removeLastSegments(1).append(deployedName);
-        if (!new File(newPath.toOSString()).exists()) {
-          newPath = renameArtifact(targetDir, descriptor.getPath(), deployedName );
-        }
-        if (newPath != null) {
-          descriptor.setPath(newPath);
+        if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
+          //If custom fileName is used, check if the underlying file already exists
+          // if it doesn't, copy and rename the artifact under the build dir
+          IPath newPath = descriptor.getPath().removeLastSegments(1).append(deployedName);
+          if (!new File(newPath.toOSString()).exists()) {
+            newPath = renameArtifact(targetDir, descriptor.getPath(), deployedName );
+          } 
+          if (newPath != null) {
+            descriptor.setPath(newPath);
+          }
+        } else {
+          descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, deployedName);
         }
       }
       
@@ -427,15 +445,20 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       }
       if (dups.contains(descriptor.getPath().lastSegment())) {
         String newName = descriptor.getGroupId() + "-" + descriptor.getPath().lastSegment();
-        IPath newPath = renameArtifact(targetDir, descriptor.getPath(), newName );
-        if (newPath != null) {
-          descriptor.setPath(newPath);
+        if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
+          IPath newPath = renameArtifact(targetDir, descriptor.getPath(), newName );
+          if (newPath != null) {
+            descriptor.setPath(newPath);
+          }
+        } else {
+          descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, newName);
         }
       }
     }
   }
 
 
+  @Deprecated
   private IPath renameArtifact(String targetDir, IPath source, String newName) {
     File src = new File(source.toOSString());
     File dst = new File(targetDir, newName);
@@ -463,6 +486,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
 	
   }
 
+  @Deprecated
   private static boolean isDifferent(File src, File dst) {
     if (!dst.exists()) {
       return true;
