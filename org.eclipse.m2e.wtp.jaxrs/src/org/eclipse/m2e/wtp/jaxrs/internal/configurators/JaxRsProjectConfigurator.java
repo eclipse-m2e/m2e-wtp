@@ -14,6 +14,7 @@ import static org.eclipse.m2e.wtp.WTPProjectsUtil.isWTPProject;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_0;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_1;
+import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_2_0;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IMarker;
@@ -162,6 +163,11 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 		if (javaProject != null) {
 			IType type = null;
 			try {
+				type = javaProject.findType("javax.ws.rs.client.Client");
+				if (type != null) {
+					   return JAX_RS_FACET_2_0;
+				}
+				
 				type = javaProject.findType("javax.ws.rs.ApplicationPath");//$NON-NLS-1$ 
 				if (type != null) {
 				   return JAX_RS_FACET_1_1;
