@@ -11,6 +11,7 @@
 
 package org.eclipse.m2e.wtp.jsf.internal.utils;
 
+import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_1;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_2;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_0;
@@ -39,6 +40,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.jsf.internal.utils.xpl.JSFAppConfigUtils;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -96,6 +98,9 @@ public class JSFUtils {
 		return version;
 	}
 	
+	/**
+	 * Checks if the webXml {@link IFile} declares the Faces servlet.
+	 */
 	public static boolean hasFacesServlet(IFile webXml) {
 		//We look for javax.faces.webapp.FacesServlet in web.xml
 		if (webXml == null || !webXml.isAccessible()) {
@@ -114,6 +119,9 @@ public class JSFUtils {
 		return false;
 	}	
 	
+	/**
+	 * Checks if the webXml {@link InputStream} declares the Faces servlet.
+	 */
 	public static boolean hasFacesServlet(InputStream input) {
 		if (input == null) {
 			return false;
@@ -141,7 +149,7 @@ public class JSFUtils {
 	 * Determines the JSF version by searching for the methods of javax.faces.application.Application 
 	 * in the project's classpath.
 	 * @param project : the java project to analyze
-	 * @return the JSF version (1.1, 1.2, 2.0, 2.1) found in the classpath, 
+	 * @return the JSF version (1.1, 1.2, 2.0, 2.1, 2.2) found in the classpath, 
 	 * or null if the project doesn't depend on JSF 
 	 */
 	public static String getJSFVersionFromClasspath(IProject project) {
@@ -174,5 +182,32 @@ public class JSFUtils {
 		}
 		return version;
 	}
-		
+	
+	/**
+	 * Transforms a JSF version string into the equivalent {@link IProjectFacetVersion}.
+	 * If no equivalent {@link IProjectFacetVersion} is available, it's assumed the version 
+	 * is not supported and the latest available JSF version is returned.
+	 *  
+	 * @param version
+	 * @return
+	 * @since 0.18.0
+	 */
+	public static IProjectFacetVersion getSafeJSFFacetVersion(String version) {
+		IProjectFacetVersion facetVersion = null;
+		if (version != null && version.trim().length() > 0) {
+			try {
+				facetVersion = JSF_FACET.getVersion(version);
+			} catch (Exception e) {
+				LOG.error("Can not get JSF Facet version "+version, e);
+				try {
+					//We assume the detected version is not supported *yet* so take the latest.
+					facetVersion = JSF_FACET.getLatestVersion();
+				} catch(CoreException cex) {
+					LOG.error("Can not get Latest JSF Facet version", cex);
+					facetVersion =  JSF_FACET.getDefaultVersion();		
+				}
+			}
+		}
+		return facetVersion;
+	}
 }

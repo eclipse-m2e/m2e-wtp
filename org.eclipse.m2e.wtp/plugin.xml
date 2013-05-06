@@ -37,6 +37,7 @@
   </extension>
   
    <extension-point id="dependencyConfigurators" name="Dependency Configurators" schema="schema/dependencyConfigurators.exsd"/>
+   <extension-point id="facetDetectors" name="Project Facet detectors" schema="schema/facetDetectors.exsd"/>
 
    <extension point="org.eclipse.m2e.core.projectConfigurators">
       <configurator 

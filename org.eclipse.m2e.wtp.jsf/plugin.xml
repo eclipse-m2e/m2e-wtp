@@ -37,5 +37,23 @@
            configuratorIds="org.eclipse.m2e.wtp.jsf.configurator"
          />
     </extension>
-   
+
+   <extension
+         point="org.eclipse.m2e.wtp.facetDetectors">
+         <facetDetector
+           facetId="jst.jsf"
+           class="org.eclipse.m2e.wtp.jsf.internal.configurators.FacesConfigJSFFacetDetector"
+           priority="10"
+         />
+         <facetDetector
+           facetId="jst.jsf"
+           class="org.eclipse.m2e.wtp.jsf.internal.configurators.ClasspathJSFFacetDetector"
+           priority="20"
+         />
+         <facetDetector
+           facetId="jst.jsf"
+           class="org.eclipse.m2e.wtp.jsf.internal.configurators.WebXmlJSFFacetDetector"
+           priority="30"
+         />
+   </extension>    
 </plugin>

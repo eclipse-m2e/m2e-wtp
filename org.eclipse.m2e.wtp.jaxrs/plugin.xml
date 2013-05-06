@@ -38,5 +38,14 @@
            description="%jaxrs_enabler_description"
            configuratorIds="org.eclipse.m2e.wtp.jaxrs.configurator"
          />
-   </extension>    
+   </extension> 
+   
+   <extension
+         point="org.eclipse.m2e.wtp.facetDetectors">
+         <facetDetector
+           facetId="jst.jaxrs"
+           class="org.eclipse.m2e.wtp.jaxrs.internal.configurators.ClasspathJaxRsFacetDetector"
+           priority="10"
+         />
+   </extension>   
 </plugin>

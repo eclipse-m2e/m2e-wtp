@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (c) 2011-2012 Red Hat, Inc. and others.
+ * Copyright (c) 2011-2013 Red Hat, Inc. and others.
  * All rights reserved. This program and the accompanying materials 
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
+import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants;
 import org.eclipse.m2e.wtp.jaxrs.internal.Messages;
 import org.eclipse.osgi.util.NLS;
@@ -98,7 +99,8 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 		
-	    IProjectFacetVersion jaxRsVersion = getJaxRsVersion(project);
+		FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
+		IProjectFacetVersion jaxRsVersion = facetDetectorManager.findFacetVersion(project, mavenProject, JAX_RS_FACET.getId(), monitor);
 	    if (jaxRsVersion != null) {
 	      installJaxRsFacet(fproj, jaxRsVersion, mavenProject, monitor);
 	    }
@@ -156,32 +158,6 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 		libraryDelegate.setLibraryProvider(provider);
 		config.setProperty(IJAXRSFacetInstallDataModelProperties.LIBRARY_PROVIDER_DELEGATE, libraryDelegate);
 		return config;
-	}
-
-	private IProjectFacetVersion getJaxRsVersion(IProject project) {
-		IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject != null) {
-			IType type = null;
-			try {
-				type = javaProject.findType("javax.ws.rs.client.Client");
-				if (type != null) {
-					   return JAX_RS_FACET_2_0;
-				}
-				
-				type = javaProject.findType("javax.ws.rs.ApplicationPath");//$NON-NLS-1$ 
-				if (type != null) {
-				   return JAX_RS_FACET_1_1;
-				}
-
-				type = javaProject.findType("javax.ws.rs.Path");//$NON-NLS-1$ 
-				if (type != null) {
-				   return JAX_RS_FACET_1_0;
-				}
-			} catch (JavaModelException e) {
-				LOG.error("Unable to determine JAX-RS version", e);
-			}
-		}
-		return null;
 	}
 
 	@SuppressWarnings("restriction")

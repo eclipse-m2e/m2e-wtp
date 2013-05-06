@@ -13,8 +13,6 @@
 package org.eclipse.m2e.wtp.jsf.internal.configurators;
 
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_FACET;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_1_2;
-import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_0;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
@@ -40,8 +38,8 @@ import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.ResourceCleaner;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
+import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
-import org.eclipse.m2e.wtp.jsf.internal.utils.JSFUtils;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -91,12 +89,11 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 				return;
 			}
 			
-			IProjectFacetVersion jsfVersion = getJSFVersion(mavenProject, fproj);
+			FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
+			IProjectFacetVersion jsfVersion = facetDetectorManager.findFacetVersion(project, mavenProject, JSF_FACET.getId(), monitor);
 			if (fproj != null && jsfVersion != null) { 
 				installJSFFacet(fproj, mavenProject, jsfVersion, monitor);
 			}
-			
-			
 		}
 		
 	}
@@ -163,54 +160,6 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	    		message
 	    		,-1,  IMarker.SEVERITY_ERROR);
 		
-	}
-
-	private IProjectFacetVersion getJSFVersion(MavenProject mavenProject, IFacetedProject fproj) {
-		String version = null;
-		IProject project = fproj.getProject();
-		version = JSFUtils.getVersionFromFacesconfig(project);
-		
-		if (version == null) {
-			//JBIDE-9242 determine JSF version from classpath  
-			version = JSFUtils.getJSFVersionFromClasspath(project);
-		}
-		
-		if (version == null && hasFacesServletInWebXml(mavenProject, project)) {
-			//No faces-config, no dependency on JSF, but uses faces-servlet
-			//so we try to best guess the version depending on the installed web facet
-			IProjectFacetVersion webVersion = fproj.getInstalledVersion(IJ2EEFacetConstants.DYNAMIC_WEB_FACET);
-			if (webVersion.compareTo(IJ2EEFacetConstants.DYNAMIC_WEB_30) < 0) {
-				version = JSF_VERSION_1_2;
-			} else {
-				version = JSF_VERSION_2_0;
-			}
-		}
-		
-		IProjectFacetVersion facetVersion = null;
-		if (version != null && version.trim().length() > 0) {
-			try {
-				facetVersion = JSF_FACET.getVersion(version);
-			} catch (Exception e) {
-				LOG.error("Can not get JSF Facet version "+version, e);
-				try {
-					//We assume the detected version is not supported *yet* so take the latest.
-					facetVersion = JSF_FACET.getLatestVersion();
-				} catch(CoreException cex) {
-					LOG.error("Can not get Latest JSF Facet version", cex);
-					facetVersion =  JSF_FACET.getDefaultVersion();		
-				}
-			}
-		}
-
-	    return facetVersion;
-	}
-
-	private boolean hasFacesServletInWebXml(MavenProject mavenProject, IProject project) {
-		//We look for javax.faces.webapp.FacesServlet in web.xml
-		//We should look for a custom web.xml at this point, but WTP would then crash on the JSF Facet installation
-		//if it's not in a standard location, so we stick with the regular file.
-		IFile webXml = ProjectUtils.getWebResourceFile(project, "WEB-INF/web.xml");
-		return webXml != null && webXml.exists() && JSFUtils.hasFacesServlet(webXml);
 	}
 
 	@SuppressWarnings("restriction")
