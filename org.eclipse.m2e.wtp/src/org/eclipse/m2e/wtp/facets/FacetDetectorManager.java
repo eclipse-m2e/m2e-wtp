@@ -13,10 +13,9 @@ package org.eclipse.m2e.wtp.facets;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
@@ -52,15 +51,14 @@ public class FacetDetectorManager {
    * If a detector fails to detect the corresponding Facet version or throws an error, the next detector is invoked, 
    * in order of its priority.
    * 
-   * @param project an {@link IProject} instance
-   * @param mavenProject the corresponding {@link MavenProject} instance
+   * @param mavenProjectFacade an {@link IMavenProjectFacade} instance
    * @param facetId the id of the {@link IProjectFacet} to look for.
    * @param monitor a progress monitor, can be <code>null</code>;
    * @return an {@link IProjectFacetVersion} corresponding the facetId
    * @throws CoreException
    */
-  public IProjectFacetVersion findFacetVersion(IProject project, MavenProject mavenProject, String facetId, IProgressMonitor monitor) throws CoreException {
-    return findFacetVersion(project, mavenProject, facetId, null, monitor);
+  public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, String facetId, IProgressMonitor monitor) throws CoreException {
+    return findFacetVersion(mavenProjectFacade, facetId, null, monitor);
   }
   
   /**
@@ -69,15 +67,14 @@ public class FacetDetectorManager {
    * If a detector fails to detect the corresponding Facet version or throws an error, the next detector is invoked, 
    * in order of its priority. An optional context map can be used by the different detectors to determine the facet version.  
    * 
-   * @param project an {@link IProject} instance
-   * @param mavenProject the corresponding {@link MavenProject} instance
+   * @param mavenProjectFacade an {@link IMavenProjectFacade} instance
    * @param facetId the id of the {@link IProjectFacet} to look for.
    * @param context an optional context map, can be <code>null</code> 
    * @param monitor a progress monitor, can be <code>null</code>;
    * @return an {@link IProjectFacetVersion} corresponding the facetId
    * @throws CoreException
    */
-  public IProjectFacetVersion findFacetVersion(IProject project, MavenProject mavenProject, String facetId, Map<?, ?> context, IProgressMonitor monitor) throws CoreException {
+  public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, String facetId, Map<?, ?> context, IProgressMonitor monitor) throws CoreException {
     if (facetId == null) {
       return null;
     }
@@ -91,7 +88,7 @@ public class FacetDetectorManager {
         break;
       }
       try {
-        version = detector.findFacetVersion(project, mavenProject, context, monitor);
+        version = detector.findFacetVersion(mavenProjectFacade, context, monitor);
         if (version != null) {
           if (!facetId.equals(version.getProjectFacet().getId())) {
             //throws exception 

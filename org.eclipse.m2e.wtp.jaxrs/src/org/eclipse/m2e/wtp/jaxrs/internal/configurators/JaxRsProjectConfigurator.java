@@ -12,9 +12,6 @@ package org.eclipse.m2e.wtp.jaxrs.internal.configurators;
 
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.isWTPProject;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET;
-import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_0;
-import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_1;
-import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_2_0;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IMarker;
@@ -24,10 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryInstallDelegate;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramework;
@@ -72,14 +65,14 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 		
 	@Override
 	public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-		MavenProject mavenProject = request.getMavenProject();
-		IProject project = request.getProject();
-		configureInternal(mavenProject, project, monitor);
+		configureInternal(request.getMavenProjectFacade(), monitor);
 	}
 
-	private void configureInternal(MavenProject mavenProject,IProject project,
+	private void configureInternal(IMavenProjectFacade mavenProjectFacade,
 			IProgressMonitor monitor) throws CoreException {
 
+		MavenProject mavenProject = mavenProjectFacade.getMavenProject();
+		IProject project = mavenProjectFacade.getProject();
 		if(!WAR_PACKAGING.equals(mavenProject.getPackaging())) { //$NON-NLS-1$
 			return;
 		}
@@ -100,7 +93,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 		}
 		
 		FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
-		IProjectFacetVersion jaxRsVersion = facetDetectorManager.findFacetVersion(project, mavenProject, JAX_RS_FACET.getId(), monitor);
+		IProjectFacetVersion jaxRsVersion = facetDetectorManager.findFacetVersion(mavenProjectFacade, JAX_RS_FACET.getId(), monitor);
 	    if (jaxRsVersion != null) {
 	      installJaxRsFacet(fproj, jaxRsVersion, mavenProject, monitor);
 	    }
@@ -184,7 +177,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 		    		return;
 		    	}
 		    }
-	        configureInternal(mavenProject, project, monitor);
+	        configureInternal(facade, monitor);
 	      }
 	    }
 	}

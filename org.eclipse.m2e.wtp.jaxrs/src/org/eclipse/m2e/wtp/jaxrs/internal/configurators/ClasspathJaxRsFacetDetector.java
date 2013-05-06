@@ -16,13 +16,13 @@ import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACE
 
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
@@ -39,9 +39,12 @@ public class ClasspathJaxRsFacetDetector extends AbstractFacetDetector {
 	private static final Logger LOG = LoggerFactory.getLogger(ClasspathJaxRsFacetDetector.class);
 
 	@Override
-	public IProjectFacetVersion findFacetVersion(IProject project,
-			MavenProject mavenProject, Map<?, ?> context, IProgressMonitor monitor) {
-
+	public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, Map<?, ?> context, IProgressMonitor monitor) {
+		IProject project = mavenProjectFacade.getProject();
+		if (project == null) {
+			return null;
+		}
+		
 		IJavaProject javaProject = JavaCore.create(project);
 		if (javaProject != null) {
 			IType type = null;

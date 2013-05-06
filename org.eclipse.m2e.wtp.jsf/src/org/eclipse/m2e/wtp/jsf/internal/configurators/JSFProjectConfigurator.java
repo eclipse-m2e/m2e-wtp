@@ -32,6 +32,7 @@ import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramewor
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jsf.core.internal.project.facet.IJSFFacetInstallDataModelProperties;
 import org.eclipse.jst.jsf.core.internal.project.facet.JSFFacetInstallDataModelProvider;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
@@ -65,13 +66,13 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
-		MavenProject mavenProject = request.getMavenProject();
-		IProject project = request.getProject();
-		configureInternal(mavenProject,project, monitor);
+		configureInternal(request.getMavenProjectFacade(), monitor);
 	}
 	
-	private void configureInternal(MavenProject mavenProject,IProject project,
+	private void configureInternal(IMavenProjectFacade mavenProjectFacade,
 			IProgressMonitor monitor) throws CoreException {
+		MavenProject mavenProject = mavenProjectFacade.getMavenProject();
+		IProject project = mavenProjectFacade.getProject();
 		
 		if (!"war".equals(mavenProject.getPackaging()))  {//$NON-NLS-1$
 			return;
@@ -90,7 +91,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			}
 			
 			FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
-			IProjectFacetVersion jsfVersion = facetDetectorManager.findFacetVersion(project, mavenProject, JSF_FACET.getId(), monitor);
+			IProjectFacetVersion jsfVersion = facetDetectorManager.findFacetVersion(mavenProjectFacade, JSF_FACET.getId(), monitor);
 			if (fproj != null && jsfVersion != null) { 
 				installJSFFacet(fproj, mavenProject, jsfVersion, monitor);
 			}

@@ -12,12 +12,11 @@ package org.eclipse.m2e.wtp.facets;
 
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -61,13 +60,15 @@ public abstract class AbstractFacetDetector implements IExecutableExtension, Com
   
 
   /**
-   * Identify the project Facet version.
+   * Identify the project Facet version for the given maven project facade.
    * 
-   * @param context 
-   * @throws CoreException 
-   *  
+   * @param mavenProjectFacade
+   * @param context - an optional map containing context sensitive data
+   * @param monitor a progress monitor
+   * @return the {@link IProjectFacetVersion} of the corresponding facetId, or <code>null</code> if not facet could be identified  
+   * @throws CoreException
    */
-  public abstract IProjectFacetVersion findFacetVersion(IProject project, MavenProject mavenProject, Map<?, ?> context, IProgressMonitor monitor) throws CoreException;
+  public abstract IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, Map<?, ?> context, IProgressMonitor monitor) throws CoreException;
 
   /**
    * Returns the priority

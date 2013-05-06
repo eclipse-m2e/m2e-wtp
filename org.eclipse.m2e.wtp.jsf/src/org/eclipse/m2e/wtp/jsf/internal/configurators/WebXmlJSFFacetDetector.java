@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
@@ -39,7 +40,16 @@ public class WebXmlJSFFacetDetector extends AbstractFacetDetector {
 	private static final Logger LOG = LoggerFactory.getLogger(WebXmlJSFFacetDetector.class);
 
 	@Override
-	public IProjectFacetVersion findFacetVersion(IProject project, MavenProject mavenProject, Map<?, ?> context, IProgressMonitor monitor) {
+	public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, Map<?, ?> context, IProgressMonitor monitor) throws CoreException {
+		IProject project = mavenProjectFacade.getProject();
+		if (project == null) {
+			return null;
+		}
+		MavenProject mavenProject = mavenProjectFacade.getMavenProject(monitor);
+		if (mavenProject == null) {
+			return null;
+		}
+
 		IProjectFacetVersion version = null;
 		if (hasFacesServletInWebXml(mavenProject, project)) {
 			//Uses faces-servlet so we try to best guess the version depending on the installed web facet

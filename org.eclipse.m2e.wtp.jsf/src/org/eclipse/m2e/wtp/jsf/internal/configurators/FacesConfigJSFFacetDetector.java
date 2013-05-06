@@ -12,9 +12,9 @@ package org.eclipse.m2e.wtp.jsf.internal.configurators;
 
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
 import org.eclipse.m2e.wtp.jsf.internal.utils.JSFUtils;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -28,8 +28,11 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 public class FacesConfigJSFFacetDetector extends AbstractFacetDetector {
 
 	@Override
-	public IProjectFacetVersion findFacetVersion(IProject project,
-			MavenProject mavenProject, Map<?, ?> context, IProgressMonitor monitor) {
+	public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, Map<?, ?> context, IProgressMonitor monitor) {
+		IProject project = mavenProjectFacade.getProject();
+		if (project == null) {
+			return null;
+		}
 		String version = JSFUtils.getVersionFromFacesconfig(project);
 		return version == null ? null : JSFUtils.getSafeJSFFacetVersion(version);
 	}
