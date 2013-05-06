@@ -10,7 +10,9 @@
  ************************************************************************************/
 package org.eclipse.m2e.wtp.jpa.internal.configurators;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
@@ -49,6 +51,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.ResourceCleaner;
+import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
 import org.eclipse.m2e.wtp.jpa.internal.util.JptUtils;
@@ -71,13 +74,16 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	private static final String JPA_NO_OP_LIBRARY_PROVIDER = "jpa-no-op-library-provider";
 	
 	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation";
+	
+	static final String PERSISTENCE_XML_KEY = "persistencexml"; 
 
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
 		IProject project = request.getProject();
 		
-		if(!canConfigure(project, request.getMavenProject())) {
+		MavenProject mavenProject = request.getMavenProject();
+		if(!canConfigure(project, mavenProject )) {
 			return;
 		}
 
@@ -98,7 +104,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 			ResourceCleaner cleaner = new ResourceCleaner(facetedProject.getProject());
 			addFoldersToClean(cleaner, request.getMavenProjectFacade());
 			try {
-				configureFacets(facetedProject, persistenceXml, monitor);
+				configureFacets(facetedProject, mavenProject, persistenceXml, monitor);
 			} finally {
 				cleaner.cleanUp();
 			}
@@ -116,7 +122,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return persistenceXml;
 	}
 
-	private void configureFacets(IFacetedProject facetedProject, IFile persistenceXml, IProgressMonitor monitor)
+	private void configureFacets(IFacetedProject facetedProject, MavenProject mavenProject, IFile persistenceXml, IProgressMonitor monitor)
 			throws CoreException {
 		
 		//Need to refresh the persistence.xml as the resource provider might crash badly on some occasions
@@ -126,8 +132,14 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		PersistenceXmlResourceProvider provider = PersistenceXmlResourceProvider.getXmlResourceProvider(persistenceXml);
 		
 		JptXmlResource jpaXmlResource = provider.getXmlResource(); 
-		 
-		IProjectFacetVersion version = JptUtils.getVersion(jpaXmlResource);
+		Map<?,?> context = Collections.singletonMap(PERSISTENCE_XML_KEY, jpaXmlResource);
+		FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
+		
+		IProjectFacetVersion version = facetDetectorManager.findFacetVersion(facetedProject.getProject(), 
+				mavenProject, JpaProject.FACET.getId(), context, monitor);
+		if (version == null) {
+			return;
+		}
 		
 		JpaPlatform.Config platform = getPlatform(jpaXmlResource, version);
 		

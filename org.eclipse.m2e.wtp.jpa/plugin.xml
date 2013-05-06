@@ -27,5 +27,13 @@
            configuratorIds="org.eclipse.m2e.wtp.jpa.configurator.wtp,org.eclipse.m2e.wtp.jpa.configurator.jdt"
          />
     </extension>
+    <extension
+          point="org.eclipse.m2e.wtp.facetDetectors">
+       <facetDetector
+             class="org.eclipse.m2e.wtp.jpa.internal.configurators.PersistenceXmlJpaFacetDetector"
+             facetId="jpt.jpa"
+             priority="10">
+       </facetDetector>
+    </extension>
 
 </plugin>
