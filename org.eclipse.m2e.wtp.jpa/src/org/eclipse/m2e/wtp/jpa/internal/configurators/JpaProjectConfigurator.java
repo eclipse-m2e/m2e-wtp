@@ -102,7 +102,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 			ResourceCleaner cleaner = new ResourceCleaner(facetedProject.getProject());
 			addFoldersToClean(cleaner, request.getMavenProjectFacade());
 			try {
-				configureFacets(facetedProject, mavenProject, persistenceXml, monitor);
+				configureFacets(facetedProject, request.getMavenProjectFacade(), persistenceXml, monitor);
 			} finally {
 				cleaner.cleanUp();
 			}
@@ -119,7 +119,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return persistenceXml;
 	}
 
-	private void configureFacets(IFacetedProject facetedProject, MavenProject mavenProject, IFile persistenceXml, IProgressMonitor monitor)
+	private void configureFacets(IFacetedProject facetedProject, IMavenProjectFacade mavenProjectFacade, IFile persistenceXml, IProgressMonitor monitor)
 			throws CoreException {
 		
 		//Need to refresh the persistence.xml as the resource provider might crash badly on some occasions
@@ -133,8 +133,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		Map<?,?> context = Collections.singletonMap(PERSISTENCE_XML_KEY, jpaXmlResource);
 		FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
 		
-		IProjectFacetVersion version = facetDetectorManager.findFacetVersion(facetedProject.getProject(), 
-				mavenProject, JpaFacet.FACET.getId(), context, monitor);
+		IProjectFacetVersion version = facetDetectorManager.findFacetVersion(mavenProjectFacade, JpaFacet.FACET.getId(), context, monitor);
 		if (version == null) {
 			return;
 		}
