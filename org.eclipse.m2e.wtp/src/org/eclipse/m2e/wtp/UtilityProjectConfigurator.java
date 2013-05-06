@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +26,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.eclipse.wst.validation.ValidationFramework;
 
 /**
  * Utility Project Configurator. Allows to update the WTP configuration of Utility projects
@@ -64,6 +66,9 @@ public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
 
       //MECLIPSEWTP-125 Remove "MAVEN2_CLASSPATH_CONTAINER will not be exported or published" warning.
       setNonDependencyAttributeToContainer(project, monitor);
+      
+      IFolder buildFolder = project.getFolder(ProjectUtils.getBuildFolder(mavenProject, project));
+      ValidationFramework.getDefault().disableValidation(buildFolder);
     }
     
   }

@@ -164,7 +164,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     if (!contextRoot.equals(J2EEProjectUtilities.getServerContextRoot(project))) {
       J2EEProjectUtilities.setServerContextRoot(project, contextRoot);
     }
-
+    
     if (customWebXml != null) {
       linkFileFirst(project, customWebXml, "/WEB-INF/web.xml", monitor);
     }
@@ -204,6 +204,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(component.getRootFolder(), warPath, monitor);
 
       addComponentExclusionPatterns(component, config);
+      
     }
     
     WTPProjectsUtil.removeWTPClasspathContainer(project);

@@ -68,11 +68,20 @@ public class ProjectUtils {
    * @return the &lt;project&gt;/&lt;buildOutputDir&gt;/m2e-wtp/ folder
    */
   public static IPath getM2eclipseWtpFolder(MavenProject mavenProject, IProject project) {
-    String buildOutputDir = mavenProject.getBuild().getDirectory();
-    String relativeBuildOutputDir = getRelativePath(project, buildOutputDir);
-    return new Path(relativeBuildOutputDir).append(MavenWtpConstants.M2E_WTP_FOLDER);
+    return getBuildFolder(mavenProject, project).append(MavenWtpConstants.M2E_WTP_FOLDER);
   }
 
+  /**
+   * Returns the project build output folder
+   * @since 0.18.0
+   */
+  public static IPath getBuildFolder(MavenProject mavenProject, IProject project) {
+    String buildOutputDir = mavenProject.getBuild().getDirectory();
+    String relativeBuildOutputDir = getRelativePath(project, buildOutputDir);
+    return new Path(relativeBuildOutputDir);
+  }
+
+  
   /**
    * @return the &lt;project&gt;/&lt;buildOutputDir&gt;/m2e-wtp/web-resources folder
    */

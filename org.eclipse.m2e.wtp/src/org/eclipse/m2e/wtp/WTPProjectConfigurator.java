@@ -10,6 +10,7 @@ package org.eclipse.m2e.wtp;
 
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +24,7 @@ import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.IJavaProjectConfigurator;
 import org.eclipse.m2e.wtp.internal.filtering.ResourceFilteringBuildParticipant;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
+import org.eclipse.wst.validation.ValidationFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,9 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
       } catch(MarkedException ex) {
         LOG.error(ex.getMessage(), ex);
       }
+      
+      IFolder buildFolder = project.getFolder(ProjectUtils.getBuildFolder(mavenProject, project));
+      ValidationFramework.getDefault().disableValidation(buildFolder);
     }
   }
 
