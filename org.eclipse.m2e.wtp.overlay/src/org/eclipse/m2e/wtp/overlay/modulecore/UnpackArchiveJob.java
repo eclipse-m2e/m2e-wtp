@@ -44,6 +44,11 @@ public class UnpackArchiveJob extends WorkspaceJob {
 		this.archive = archive;
 		setRule(unpackFolder);
 	}
+	
+	@Override
+	public boolean belongsTo(Object family) {
+		return unpackFolder.equals(family);
+	}
 
 	@Override
 	public IStatus runInWorkspace(IProgressMonitor monitor)
@@ -54,6 +59,9 @@ public class UnpackArchiveJob extends WorkspaceJob {
 				final IResource[] members = unpackFolder.members(IContainer.INCLUDE_HIDDEN | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 				for (final IResource member : members)
 				{
+					if (monitor.isCanceled()) {
+						return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, "Deleting "+member.getName() + " was cancelled");
+					}
 					member.delete(true, monitor);
 				}
 			}
@@ -70,7 +78,9 @@ public class UnpackArchiveJob extends WorkspaceJob {
 			@Override
 			public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException
 			{
-				unpackFolder.refreshLocal(IFolder.DEPTH_INFINITE, null);
+				if (!monitor.isCanceled()) {
+					unpackFolder.refreshLocal(IFolder.DEPTH_INFINITE, monitor);
+				}
 				return Status.OK_STATUS;
 			}
 		}.schedule();

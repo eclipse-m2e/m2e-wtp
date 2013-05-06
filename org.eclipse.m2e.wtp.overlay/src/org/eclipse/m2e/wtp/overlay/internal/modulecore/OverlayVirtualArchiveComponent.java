@@ -11,10 +11,12 @@ package org.eclipse.m2e.wtp.overlay.internal.modulecore;
 import java.io.File;
 import java.util.Set;
 
+import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.m2e.wtp.overlay.modulecore.UnpackArchiveJob;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -61,7 +63,11 @@ public class OverlayVirtualArchiveComponent extends VirtualArchiveComponent impl
 		if (component != null && archive != null) {
 			IFolder unpackedFolder = getUnpackedArchiveFolder(archive);
 			if (isUnpackNeeded(archive, unpackedFolder)) {
-			  new UnpackArchiveJob("Unpacking "+archive.getName(), archive, unpackedFolder).schedule();
+			  Job[] currentJobs = Job.getJobManager().find(unpackedFolder);
+			  if (currentJobs.length == 0) {
+				  Job job = new UnpackArchiveJob("Unpacking "+archive.getName(), archive, unpackedFolder);
+				  job.schedule();
+			  }
 			  root = new ResourceListVirtualFolder(getProject(), getRuntimePath(), new IContainer[] {}); 	
 			} else {
 			  IContainer[] containers = new IContainer[] {unpackedFolder};

@@ -64,42 +64,51 @@ public class CompressionUtil {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-		
-		while (e.hasMoreElements()) {
-			ZipEntry zipEntry = (ZipEntry) e.nextElement();
-			File file = new File(projectFolderFile, zipEntry.getName());
-
-			if (!zipEntry.isDirectory()) {
-
-				File parentFile = file.getParentFile();
-				if (null != parentFile && !parentFile.exists()) {
-					parentFile.mkdirs();
-				}
-
-				InputStream is = null;
-				OutputStream os = null;
-
-				try {
-					is = zipFile.getInputStream(zipEntry);
-					os = new FileOutputStream(file);
-
-					byte[] buffer = new byte[BUFFER];
-					while (true) {
-						int len = is.read(buffer);
-						if (len < 0)
-							break;
-						os.write(buffer, 0, len);
+		try {
+			while (e.hasMoreElements()) {
+				ZipEntry zipEntry = (ZipEntry) e.nextElement();
+				File file = new File(projectFolderFile, zipEntry.getName());
+				
+				if (!zipEntry.isDirectory()) {
+					
+					File parentFile = file.getParentFile();
+					if (null != parentFile && !parentFile.exists()) {
+						parentFile.mkdirs();
 					}
-				} finally {
-					FileUtils.close(is);
-					FileUtils.close(os);
+					
+					InputStream is = null;
+					OutputStream os = null;
+					
+					try {
+						is = zipFile.getInputStream(zipEntry);
+						os = new FileOutputStream(file);
+						
+						byte[] buffer = new byte[BUFFER];
+						while (true) {
+							int len = is.read(buffer);
+							if (len < 0)
+								break;
+							os.write(buffer, 0, len);
+						}
+					} finally {
+						FileUtils.close(is);
+						FileUtils.close(os);
+					}
+				}
+				
+				monitor.worked(1);
+				
+				if (monitor.isCanceled()) {
+					throw new InterruptedException(" unzipping " +archive.getAbsolutePath() + " to "+ projectFolderFile.getAbsolutePath() +" was interrupted");
 				}
 			}
-
-			monitor.worked(1);
-
-			if (monitor.isCanceled()) {
-				throw new InterruptedException(" unzipping " +archive.getAbsolutePath() + " to "+ projectFolderFile.getAbsolutePath() +" was interrupted");
+		} finally {
+			if (zipFile != null) {
+				try {
+					zipFile.close();
+				} catch (IOException ioe) {
+					//ignore
+				}
 			}
 		}
 	}
