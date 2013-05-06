@@ -12,11 +12,9 @@ package org.eclipse.m2e.wtp.jpa.internal.configurators;
 
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jpt.common.core.resource.xml.JptXmlResource;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
 import org.eclipse.m2e.wtp.jpa.internal.util.JptUtils;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -30,9 +28,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 public class PersistenceXmlJpaFacetDetector extends AbstractFacetDetector {
 
 	@Override
-	public IProjectFacetVersion findFacetVersion(IProject project,
-			MavenProject mavenProject, Map<?, ?> context,
-			IProgressMonitor monitor) throws CoreException {
+	public IProjectFacetVersion findFacetVersion(IMavenProjectFacade mavenProjectFacade, Map<?, ?> context, IProgressMonitor monitor) {
 		IProjectFacetVersion version = null; 
 		if (context != null) {
 			JptXmlResource jpaXmlResource = (JptXmlResource)context.get(JpaProjectConfigurator.PERSISTENCE_XML_KEY);
