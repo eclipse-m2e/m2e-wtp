@@ -76,7 +76,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation"; //$NON-NLS-1$
 	
 	static final String PERSISTENCE_XML_KEY = "persistencexml";  //$NON-NLS-1$
-
+	
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
@@ -187,7 +187,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 		dm.setProperty(IFacetDataModelProperties.FACET_VERSION_STR, version.getVersionString()); 
 		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platformConfig); 
-		dm.setProperty(JpaFacetInstallDataModelProperties.CREATE_ORM_XML, false);
+		//Gone in Kepler M7 dm.setProperty(JpaFacetInstallDataModelProperties.CREATE_ORM_XML, false);
 		dm.setProperty(JpaFacetInstallDataModelProperties.DISCOVER_ANNOTATED_CLASSES, true);
 		LibraryInstallDelegate libraryInstallDelegate = getNoOpLibraryProvider(facetedProject, version);
 		dm.setProperty(JpaFacetInstallDataModelProperties.LIBRARY_PROVIDER_DELEGATE, libraryInstallDelegate);
