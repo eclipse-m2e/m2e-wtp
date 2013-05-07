@@ -48,9 +48,9 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 @SuppressWarnings("restriction")
 public class MavenResourceLocator implements ResourceLocator {
 
-	private static IPath META_INF_PATH = new Path("META-INF");
+	private static IPath META_INF_PATH = new Path("META-INF"); //$NON-NLS-1$
 	
-	private static final IProjectFacet WEB_FACET = ProjectFacetsManager.getProjectFacet("jst.web");
+	private static final IProjectFacet WEB_FACET = ProjectFacetsManager.getProjectFacet("jst.web"); //$NON-NLS-1$
 
 	/**
 	 * Accepts all resources not under the build output and test build output

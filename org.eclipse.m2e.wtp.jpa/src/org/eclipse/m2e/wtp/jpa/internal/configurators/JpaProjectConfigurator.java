@@ -71,11 +71,11 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 @SuppressWarnings("restriction")
 public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
-	private static final String JPA_NO_OP_LIBRARY_PROVIDER = "jpa-no-op-library-provider";
+	private static final String JPA_NO_OP_LIBRARY_PROVIDER = "jpa-no-op-library-provider"; //$NON-NLS-1$
 	
-	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation";
+	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation"; //$NON-NLS-1$
 	
-	static final String PERSISTENCE_XML_KEY = "persistencexml"; 
+	static final String PERSISTENCE_XML_KEY = "persistencexml";  //$NON-NLS-1$
 
 	@Override
 	public void configure(ProjectConfigurationRequest request,
@@ -114,7 +114,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	private IFile getPersistenceXml(IProject project) {
 		ResourceLocator resourceLocator = new MavenResourceLocator();
 		
-		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml"));
+		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml")); //$NON-NLS-1$
 		IFile persistenceXml = null;
 		if (path != null) {
 			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		
@@ -242,15 +242,15 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	 protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
 		    for (IPath p : facade.getCompileSourceLocations()) {
 		      if (p != null) {
-		        fileCleaner.addFiles(p.append("META-INF/persistence.xml"));
-		        fileCleaner.addFiles(p.append("META-INF/orm.xml"));
+		        fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
+		        fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
 				fileCleaner.addFolder(p);
 		      }
 		    }
 		    for (IPath p : facade.getResourceLocations()) {
 		      if (p != null) {
-			    fileCleaner.addFiles(p.append("META-INF/persistence.xml"));
-			    fileCleaner.addFiles(p.append("META-INF/orm.xml"));
+			    fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
+			    fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
 		        fileCleaner.addFolder(p);
 		      }
 		    }

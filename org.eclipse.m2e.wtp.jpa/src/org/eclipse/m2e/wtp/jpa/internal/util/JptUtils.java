@@ -26,6 +26,8 @@ import org.eclipse.jpt.common.core.resource.xml.JptXmlResource;
 import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.core.resource.persistence.XmlPersistence;
 import org.eclipse.jpt.jpa.core.resource.persistence.XmlPersistenceUnit;
+import org.eclipse.m2e.wtp.jpa.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,7 @@ public class JptUtils {
 		if (resourceLocator == null) {
 			return null;
 		}
-		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml"));
+		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml")); //$NON-NLS-1$
 		IFile persistenceXml = null;
 		if (path != null) {
 			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		
@@ -81,12 +83,12 @@ public class JptUtils {
 			try {
 				return JpaProject.FACET.getVersion(version);
 			} catch (Exception e) {
-				LOG.error("Can not get JPA Facet version "+version, e);
+				LOG.error(NLS.bind(Messages.JptUtils_Error_Cant_Get_JPA_Version,version), e);
 				try {
 					//We assume the detected version is not supported *yet* so take the latest.
 					return JpaProject.FACET.getLatestVersion();
 				} catch(CoreException cex) {
-					LOG.error("Can not get Latest JPA Facet version", cex);
+					LOG.error(Messages.JptUtils_Error_Cant_Get_Latest_JPA_Version, cex);
 				}
 			}
 		}
