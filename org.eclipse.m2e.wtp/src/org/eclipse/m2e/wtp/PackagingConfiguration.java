@@ -35,7 +35,8 @@ public class PackagingConfiguration implements IPackagingConfiguration {
     matcher = new AntPathMatcher();
   }
 
-  public boolean isPackaged(String virtualPath) {
+  @Override
+public boolean isPackaged(String virtualPath) {
     if (virtualPath == null) {
       return false;
     }
@@ -75,7 +76,7 @@ public class PackagingConfiguration implements IPackagingConfiguration {
   }
   
   private String toPortablePath(String path) {
-    return (path==null)?null:path.replace("\\", "/");
+    return (path==null)?null:path.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
   }
   
 }

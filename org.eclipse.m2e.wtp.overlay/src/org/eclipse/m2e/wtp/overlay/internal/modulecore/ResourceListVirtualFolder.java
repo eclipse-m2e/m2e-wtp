@@ -101,22 +101,27 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 		this.children.addAll(Arrays.asList(resources));
 	}
 	
+	@Override
 	public IResource getUnderlyingResource() {
 		return getUnderlyingFolder();
 	}
 	
+	@Override
 	public IResource[] getUnderlyingResources() {
 		return getUnderlyingFolders();
 	}
 
+	@Override
 	public IContainer getUnderlyingFolder() { 
 		return underlying.size() > 0 ? underlying.get(0) : null;
 	}
 	
+	@Override
 	public IContainer[] getUnderlyingFolders() {
 		return (IContainer[]) underlying.toArray(new IContainer[underlying.size()]);
 	}
 
+	@Override
 	public IVirtualResource[] members(int memberFlags) throws CoreException {
 		HashMap<String, IVirtualResource> virtualResources = new HashMap<String, IVirtualResource>(); // result
 		IResource[] resources = (IResource[]) this.children.toArray(new IResource[this.children.size()]);

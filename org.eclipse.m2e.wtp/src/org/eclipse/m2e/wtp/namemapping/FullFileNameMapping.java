@@ -34,9 +34,10 @@ public class FullFileNameMapping
     extends AbstractFileNameMapping
 {
 
-    public String mapFileName( final Artifact a )
+    @Override
+	public String mapFileName( final Artifact a )
     {
         final String dashedGroupId = a.getGroupId().replace( '.', '-' );
-        return dashedGroupId + "-" + generateFileName( a, true );
+        return dashedGroupId + "-" + generateFileName( a, true ); //$NON-NLS-1$
     }
 }

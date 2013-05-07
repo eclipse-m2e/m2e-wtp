@@ -42,10 +42,11 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
  */
 public class AppClientProjectConverter extends AbstractWtpProjectConversionParticipant {
 
-  private static final String MAIN_CLASS = "Main-Class";
+  private static final String MAIN_CLASS = "Main-Class"; //$NON-NLS-1$
   
-  public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) || !"app-client".equals(model.getPackaging())) {
+  @Override
+public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
+    if (!accept(project) || !"app-client".equals(model.getPackaging())) { //$NON-NLS-1$
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
@@ -58,8 +59,8 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
 
   private void setAcrPlugin(IVirtualComponent component, Model model) {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.0");
-    Plugin acrPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-acr-plugin", pluginVersion);
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Plugin acrPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-acr-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
     acrPlugin.setExtensions(true);
     
     String mainClass = getMainClass(component.getProject());
@@ -73,7 +74,7 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
   private void configureManifest(Plugin acrPlugin, String mainClass) {
     Xpp3Dom archiver = getArchiver(acrPlugin);
     
-    Xpp3Dom manifestEntriesDom = getOrCreateChildNode(archiver, "manifestEntries");
+    Xpp3Dom manifestEntriesDom = getOrCreateChildNode(archiver, "manifestEntries"); //$NON-NLS-1$
     
     for (Xpp3Dom entry : manifestEntriesDom.getChildren()) {
       if (MAIN_CLASS.equals(entry.getName()) && StringUtils.isNotEmpty(entry.getValue())) {
@@ -90,7 +91,7 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
   private Xpp3Dom getArchiver(Plugin plugin) {
     Xpp3Dom config = getOrCreateConfiguration(plugin);
     plugin.setConfiguration(config);
-    return getOrCreateChildNode(config, "archive");
+    return getOrCreateChildNode(config, "archive"); //$NON-NLS-1$
   }
   
   private String getMainClass(IProject project) {
@@ -106,7 +107,7 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
       classpath = javaProject.getRawClasspath();
       for (IClasspathEntry cpe : classpath) {
         if (IClasspathEntry.CPE_SOURCE == cpe.getEntryKind()) {
-          IFile sourceManifest = root.getFile(cpe.getPath().append("META-INF/MANIFEST.MF"));  
+          IFile sourceManifest = root.getFile(cpe.getPath().append("META-INF/MANIFEST.MF"));   //$NON-NLS-1$
           if (sourceManifest.exists()) {
             manifest = sourceManifest;
             break;
@@ -136,7 +137,8 @@ public class AppClientProjectConverter extends AbstractWtpProjectConversionParti
     return null;
   }
 
-  protected IProjectFacet getRequiredFaced() {
+  @Override
+protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.APP_CLIENT_FACET;
   }
 

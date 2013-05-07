@@ -43,7 +43,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 /**
- * Configures Connector (RAR) projects based on their mavenè-rar-plugin configuration.
+ * Configures Connector (RAR) projects based on their maven-rar-plugin configuration.
  *
  * @author Fred Bricon
  */
@@ -54,7 +54,8 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
   /* (non-Javadoc)
    * @see org.eclipse.m2e.wtp.AbstractProjectConfiguratorDelegate#configure(org.eclipse.core.resources.IProject, org.apache.maven.project.MavenProject, org.eclipse.core.runtime.IProgressMonitor)
    */
-  protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
+  @Override
+protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     if (facetedProject == null) {
       return;
@@ -101,9 +102,9 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
       ResourceCleaner fileCleaner = new ResourceCleaner(project);
       try {
         addFoldersToClean(fileCleaner, facade);
-        fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath());
+        fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath()); //$NON-NLS-1$
         if (customRaXml != null) {
-          fileCleaner.addFiles(contentFolder.getFile("META-INF/ra.xml").getProjectRelativePath());
+          fileCleaner.addFiles(contentFolder.getFile("META-INF/ra.xml").getProjectRelativePath()); //$NON-NLS-1$
         }
         
         facetedProject.modify(actions, monitor);
@@ -126,11 +127,11 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
         removeSourceLinks(component, mavenProject, monitor);
       }
       
-      removeTestFolderLinks(project, mavenProject, monitor, "/"); 
+      removeTestFolderLinks(project, mavenProject, monitor, "/");  //$NON-NLS-1$
       
-      linkFileFirst(project, customRaXml, "META-INF/ra.xml", monitor);
+      linkFileFirst(project, customRaXml, "META-INF/ra.xml", monitor); //$NON-NLS-1$
 
-      IPath contentDirPath = new Path("/").append(contentDir);
+      IPath contentDirPath = new Path("/").append(contentDir); //$NON-NLS-1$
       
       if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, contentDirPath, monitor)) {
         component.getRootFolder().createLink(contentDirPath, IVirtualResource.NONE, monitor); 
@@ -186,7 +187,8 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
   /**
    * @see org.eclipse.m2e.wtp.IProjectConfiguratorDelegate#setModuleDependencies(org.eclipse.core.resources.IProject, org.apache.maven.project.MavenProject, org.eclipse.core.runtime.IProgressMonitor)
    */
-  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
 
     IVirtualComponent rarComponent = ComponentCore.createComponent(project);
@@ -199,7 +201,7 @@ class ConnectorProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
     for(Artifact artifact : artifacts) {
     	ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
       //Don't deploy pom, non runtime or optional dependencies
-      if("pom".equals(artifact.getType()) || !SCOPE_FILTER_RUNTIME.include(artifact) || artifact.isOptional()) {
+      if("pom".equals(artifact.getType()) || !SCOPE_FILTER_RUNTIME.include(artifact) || artifact.isOptional()) { //$NON-NLS-1$
         continue;
       }
       

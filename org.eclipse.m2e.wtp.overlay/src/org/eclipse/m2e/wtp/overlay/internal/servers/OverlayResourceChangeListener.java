@@ -128,7 +128,7 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 			if (vc instanceof IOverlayVirtualComponent){
 			  IProject overlaidProject = vc.getProject(); 
 			  if (vc instanceof OverlaySelfComponent) {
-			    IPath componentFilePath = overlaidProject.getFile(".settings/org.eclipse.wst.common.component").getFullPath();
+			    IPath componentFilePath = overlaidProject.getFile(".settings/org.eclipse.wst.common.component").getFullPath(); //$NON-NLS-1$
 			    if (delta.findMember(componentFilePath) != null) {
 			      return true;
 			    }

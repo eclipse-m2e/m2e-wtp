@@ -50,7 +50,8 @@ public class ConfiguratorEnablerComposite extends Composite {
     }
   }
   
-  public void dispose() {
+  @Override
+public void dispose() {
     enabler = null;
     enableConfigurator.dispose();
     super.dispose();

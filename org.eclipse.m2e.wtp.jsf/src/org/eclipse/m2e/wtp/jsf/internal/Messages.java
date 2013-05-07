@@ -19,7 +19,18 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.m2e.wtp.jsf.internal.messages"; //$NON-NLS-1$
+	public static String JSFAppConfigUtils_Error_Reading_WebXml;
+	public static String JSFProjectConfigurator_Marker_Facet_Version_Cant_Be_Installed;
 	public static String JSFProjectConfigurator_The_project_does_not_contain_the_Web_Module_facet;
+	public static String JSFUtils_Error_Finding_Faces_Servlet;
+	public static String JSFUtils_Error_Finding_Faces_Servlet_In_WebXml;
+	public static String JSFUtils_Error_Finding_JSF_Version;
+	public static String JSFUtils_Error_Finding_Latest_JSF_Version;
+	public static String JSFUtils_Error_Reading_FacesConfig;
+	public static String JSFUtils_Error_Searching_For_JSF_Type;
+	public static String MavenJSFConstants_Warning_JSF21_Unavailable;
+	public static String MavenJSFConstants_Warning_JSF22_Unavailable;
+	public static String WebXmlJSFFacetDetector_Error_Cant_Detect_JSF_From_WebXml;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

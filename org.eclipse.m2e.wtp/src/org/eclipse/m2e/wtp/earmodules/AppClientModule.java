@@ -40,10 +40,10 @@ public class AppClientModule extends AbstractEarModule {
   }
 
   public String getType() {
-    return "app-client";
+    return "app-client"; //$NON-NLS-1$
   }
 
   protected String getModuleType() {
-    return "appClientModule";
+    return "appClientModule"; //$NON-NLS-1$
   }
 }

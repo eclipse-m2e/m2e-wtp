@@ -24,7 +24,8 @@ public class MavenWtpPreferenceInitializer extends AbstractPreferenceInitializer
   /**
    * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
    */
-  public void initializeDefaultPreferences() {
+  @Override
+public void initializeDefaultPreferences() {
     IPreferenceStore store = MavenWtpPlugin.getDefault().getPreferenceStore();
     store.setDefault(MavenWtpPreferencesConstants.P_APPLICATION_XML_IN_BUILD_DIR, true);
     store.setDefault(MavenWtpPreferencesConstants.P_WEB_MAVENARCHIVER_IN_BUILD_DIR, true);

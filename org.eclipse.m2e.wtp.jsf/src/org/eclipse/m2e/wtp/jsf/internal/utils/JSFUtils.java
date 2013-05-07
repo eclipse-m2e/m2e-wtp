@@ -39,7 +39,9 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.m2e.wtp.ProjectUtils;
+import org.eclipse.m2e.wtp.jsf.internal.Messages;
 import org.eclipse.m2e.wtp.jsf.internal.utils.xpl.JSFAppConfigUtils;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +51,9 @@ public class JSFUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JSFUtils.class);
 
-	public static final String FACES_SERVLET = "javax.faces.webapp.FacesServlet";
+	public static final String FACES_SERVLET = "javax.faces.webapp.FacesServlet"; //$NON-NLS-1$
 
-	private static final String FACES_SERVLET_XPATH = "//servlet[servlet-class=\"" + FACES_SERVLET + "\"]";
+	private static final String FACES_SERVLET_XPATH = "//servlet[servlet-class=\"" + FACES_SERVLET + "\"]"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	private JSFUtils() {
 		// no public constructor
@@ -70,7 +72,7 @@ public class JSFUtils {
 				return facesConfig;
 			}
 		}
-		facesConfig = ProjectUtils.getWebResourceFile(project, "WEB-INF/faces-config.xml");
+		facesConfig = ProjectUtils.getWebResourceFile(project, "WEB-INF/faces-config.xml"); //$NON-NLS-1$
 		
 		return facesConfig;
 	}
@@ -90,7 +92,7 @@ public class JSFUtils {
 				version = peek.getVersion();
 			} catch (CoreException e) {
 				// ignore
-				LOG.error("Error reading face-config.xml", e);
+				LOG.error(Messages.JSFUtils_Error_Reading_FacesConfig, e);
 			} finally {
 				IOUtil.close(in);
 			}
@@ -112,7 +114,7 @@ public class JSFUtils {
 			is = webXml.getContents();
 			return hasFacesServlet(is);
 		} catch (Exception e) {
-			LOG.error("An error occured trying to find to "+FACES_SERVLET+" in "+ webXml.getLocation().toOSString(), e);
+			LOG.error(NLS.bind(Messages.JSFUtils_Error_Finding_Faces_Servlet_In_WebXml, FACES_SERVLET, webXml.getLocation().toOSString()), e);
 		} finally {
 			IOUtil.close(is);
 		}
@@ -140,7 +142,7 @@ public class JSFUtils {
 			XPathExpression expr = xpath.compile(FACES_SERVLET_XPATH);
 			hasFacesServlet = null != expr.evaluate(doc, XPathConstants.NODE);
 		} catch (Exception e) {
-			LOG.error("An error occured trying to find to "+FACES_SERVLET+" :", e);
+			LOG.error(NLS.bind(Messages.JSFUtils_Error_Finding_Faces_Servlet,FACES_SERVLET), e);
 		}
 		return hasFacesServlet;
 	}		
@@ -160,21 +162,21 @@ public class JSFUtils {
 			try {
 				type = javaProject.findType("javax.faces.context.FacesContext");//$NON-NLS-1$ 
 			} catch (JavaModelException e) {
-				LOG.error("Error searching for javax.faces.context.FacesContext", e) ;
+				LOG.error(Messages.JSFUtils_Error_Searching_For_JSF_Type, e) ;
 			}
 			if (type != null) {
 				String[] emptyParams = new String[0];
-				if (type.getMethod("getResourceLibraryContracts", emptyParams).exists()) {
+				if (type.getMethod("getResourceLibraryContracts", emptyParams).exists()) { //$NON-NLS-1$
 					return JSF_VERSION_2_2;
 				}
-				if (type.getMethod("isReleased", emptyParams).exists()) {
+				if (type.getMethod("isReleased", emptyParams).exists()) { //$NON-NLS-1$
 					return JSF_VERSION_2_1;					
 				}
-				if (type.getMethod("getAttributes", emptyParams).exists() &&    
-					type.getMethod("getPartialViewContext", emptyParams).exists()) {      
+				if (type.getMethod("getAttributes", emptyParams).exists() &&     //$NON-NLS-1$
+					type.getMethod("getPartialViewContext", emptyParams).exists()) {       //$NON-NLS-1$
 					return JSF_VERSION_2_0;
 			    }
-				if (type.getMethod("getELContext", emptyParams).exists()) { 
+				if (type.getMethod("getELContext", emptyParams).exists()) {  //$NON-NLS-1$
 					return JSF_VERSION_1_2;
 				} 
 				version = JSF_VERSION_1_1;
@@ -198,12 +200,12 @@ public class JSFUtils {
 			try {
 				facetVersion = JSF_FACET.getVersion(version);
 			} catch (Exception e) {
-				LOG.error("Can not get JSF Facet version "+version, e);
+				LOG.error(NLS.bind(Messages.JSFUtils_Error_Finding_JSF_Version,version), e);
 				try {
 					//We assume the detected version is not supported *yet* so take the latest.
 					facetVersion = JSF_FACET.getLatestVersion();
 				} catch(CoreException cex) {
-					LOG.error("Can not get Latest JSF Facet version", cex);
+					LOG.error(Messages.JSFUtils_Error_Finding_Latest_JSF_Version, cex);
 					facetVersion =  JSF_FACET.getDefaultVersion();		
 				}
 			}

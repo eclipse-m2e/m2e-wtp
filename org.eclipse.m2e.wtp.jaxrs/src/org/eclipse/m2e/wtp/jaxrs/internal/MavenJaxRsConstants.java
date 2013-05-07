@@ -22,7 +22,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 public class MavenJaxRsConstants {
 	
-	public static final String JAXRS_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jaxrs.configuration";
+	public static final String JAXRS_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jaxrs.configuration"; //$NON-NLS-1$
 
 	public static final IProjectFacet JAX_RS_FACET; 
 
@@ -36,8 +36,8 @@ public class MavenJaxRsConstants {
 		JAX_RS_FACET = ProjectFacetsManager.getProjectFacet(IJAXRSCoreConstants.JAXRS_FACET_ID);
 		JAX_RS_FACET_1_0 = JAX_RS_FACET.getVersion(IJAXRSCoreConstants.JAXRS_VERSION_1_0);
 		JAX_RS_FACET_1_1 = JAX_RS_FACET.getVersion(IJAXRSCoreConstants.JAXRS_VERSION_1_1);
-		if (JAX_RS_FACET.hasVersion("2.0")) {
-			JAX_RS_FACET_2_0 = JAX_RS_FACET.getVersion("2.0");
+		if (JAX_RS_FACET.hasVersion("2.0")) { //$NON-NLS-1$
+			JAX_RS_FACET_2_0 = JAX_RS_FACET.getVersion("2.0"); //$NON-NLS-1$
 		} else {
 			JAX_RS_FACET_2_0 = JAX_RS_FACET_1_1; 
 		}

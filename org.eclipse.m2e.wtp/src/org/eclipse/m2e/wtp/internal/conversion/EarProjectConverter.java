@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.j2ee.project.EarUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
+import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -36,18 +38,19 @@ import org.slf4j.LoggerFactory;
  */
 public class EarProjectConverter extends AbstractWtpProjectConversionParticipant {
 
-  private static final String DEFAULT_APPLICATION_FOLDER = "src/main/application";
+  private static final String DEFAULT_APPLICATION_FOLDER = "src/main/application"; //$NON-NLS-1$
   
-  private static final String EAR_SOURCE_DIRECTORY_KEY = "earSourceDirectory";
+  private static final String EAR_SOURCE_DIRECTORY_KEY = "earSourceDirectory"; //$NON-NLS-1$
 
-  private static final String EAR_VERSION = "version";
+  private static final String EAR_VERSION = "version"; //$NON-NLS-1$
 
-  private static final String GENERATE_APPLICATION_XML = "generateApplicationXml";
+  private static final String GENERATE_APPLICATION_XML = "generateApplicationXml"; //$NON-NLS-1$
   
   private static final Logger LOG = LoggerFactory.getLogger(EarProjectConverter.class);
 
-  public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) || !"ear".equals(model.getPackaging())) {
+  @Override
+public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
+    if (!accept(project) || !"ear".equals(model.getPackaging())) { //$NON-NLS-1$
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
@@ -60,8 +63,8 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
 
   private void setEarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.8");
-    Plugin earPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ear-plugin", pluginVersion);
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.8"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Plugin earPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ear-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     // Set  <earSourceDirectory>EarContent</earSourceDirectory>
     IFolder applicationContentFolder = findEarContentFolder(component);
@@ -73,11 +76,11 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
         configure(earPlugin, EAR_SOURCE_DIRECTORY_KEY, applicationContent);
         customized = true;
       }
-      hasApplicationXml = applicationContentFolder.getFile("META-INF/application.xml").exists();
+      hasApplicationXml = applicationContentFolder.getFile("META-INF/application.xml").exists(); //$NON-NLS-1$
     }
     else{
       IProject project = component.getProject();
-      String msg =  "The EAR project " + (project!= null?project.getName():component.getName()) + " does not have a content folder or uses root as content folder";
+      String msg =  NLS.bind(Messages.EarProjectConverter_Error_EAR_Root_Content_Folder, (project!= null?project.getName():component.getName())); 
       LOG.warn(msg);
     }
     
@@ -91,7 +94,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
           // maven-ear-plugin needs version 5 instead of 5.0
           version = earVersion.getVersionString().substring(0, 1);//Yuck!
           if (!hasApplicationXml){
-            configure(earPlugin, GENERATE_APPLICATION_XML, "false");
+            configure(earPlugin, GENERATE_APPLICATION_XML, "false"); //$NON-NLS-1$
           }
         } else {
           version = earVersion.getVersionString();
@@ -105,7 +108,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
         libDir = inspectDefaultLibDirs(applicationContentFolder);
       }
       if (libDir != null) {
-        configure(earPlugin, "defaultLibBundleDir", libDir);
+        configure(earPlugin, "defaultLibBundleDir", libDir); //$NON-NLS-1$
         customized = true;
       }
       
@@ -122,7 +125,7 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
    */
   private String inspectDefaultLibDirs(IFolder applicationContentFolder) {
     
-    for (String candidate : new String[] {"lib", "APP-INF/lib"}) {
+    for (String candidate : new String[] {"lib", "APP-INF/lib"}) { //$NON-NLS-1$ //$NON-NLS-2$
       if  (applicationContentFolder.getFolder(candidate).exists()) {
         return candidate;
       }
@@ -134,7 +137,8 @@ public class EarProjectConverter extends AbstractWtpProjectConversionParticipant
     return WTPProjectsUtil.getDefaultDeploymentDescriptorFolder(component.getRootFolder());
   }
 
-  protected IProjectFacet getRequiredFaced() {
+  @Override
+protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.EAR_FACET;
   }
 

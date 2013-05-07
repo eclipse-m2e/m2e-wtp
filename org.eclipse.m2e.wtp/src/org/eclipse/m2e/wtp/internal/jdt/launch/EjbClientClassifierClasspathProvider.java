@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.AbstractClassifierClasspathProvider;
+import org.eclipse.m2e.wtp.JEEPackaging;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public class EjbClientClassifierClasspathProvider extends AbstractClassifierClas
   @Override
   public boolean applies(IMavenProjectFacade mavenProjectFacade, String classifier) {
     return getClassifier().equals(classifier) 
-        && "ejb".equals(mavenProjectFacade.getPackaging()) 
+        && JEEPackaging.EJB.getName().equals(mavenProjectFacade.getPackaging())
         && generatesClient(mavenProjectFacade);
   }
 
@@ -48,14 +50,14 @@ public class EjbClientClassifierClasspathProvider extends AbstractClassifierClas
     try {
       mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
     } catch(CoreException ex) {
-      LOG.error("Could not load mavenProject instance ", ex);
+      LOG.error(Messages.ClassifierClasspathProvider_Error_Loading_Maven_Instance, ex);
       return false;
     }
-    Plugin ejbPlugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-ejb-plugin");
+    Plugin ejbPlugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-ejb-plugin"); //$NON-NLS-1$
     if (ejbPlugin != null) {
       Xpp3Dom config = (Xpp3Dom)ejbPlugin.getConfiguration();
       if (config != null) {
-        Xpp3Dom generateClient = config.getChild("generateClient");
+        Xpp3Dom generateClient = config.getChild("generateClient"); //$NON-NLS-1$
         if (generateClient != null && Boolean.parseBoolean(generateClient.getValue())) {
          return true; 
         }
@@ -65,22 +67,26 @@ public class EjbClientClassifierClasspathProvider extends AbstractClassifierClas
   }
 
   
-  public String getClassifier() {
-    return "client";
+  @Override
+public String getClassifier() {
+    return "client"; //$NON-NLS-1$
   }
   
-  public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+  @Override
+public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
       IProgressMonitor monitor) throws CoreException {
     addMainFolder(runtimeClasspath, mavenProjectFacade, monitor);
   }
 
-  public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+  @Override
+public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
       IProgressMonitor monitor) throws CoreException {
     setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor);
   }
   
-  public String getName() {
-    return "EJB Client Classifier Classpath Provider";
+  @Override
+public String getName() {
+    return Messages.EjbClientClassifierClasspathProvider_EJB_Client_Classpath_Provider;
   }
 
 }

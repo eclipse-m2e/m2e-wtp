@@ -35,7 +35,8 @@ public class WTPResourcesSorter extends ViewerSorter {
     return 1;
   }
   
-  public int compare(Viewer viewer, Object e1, Object e2) {
+  @Override
+public int compare(Viewer viewer, Object e1, Object e2) {
 //    if(e1 instanceof WebResourcesNode) {
 //      if(e2 instanceof IResource) {
 //        return 1;

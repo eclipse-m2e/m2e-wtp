@@ -48,6 +48,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.IClasspathEntryDescriptor;
 import org.eclipse.m2e.wtp.internal.ExtensionReader;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.filtering.WebResourceFilteringConfiguration;
 import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
@@ -81,17 +82,17 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
    * See http://wiki.eclipse.org/ClasspathEntriesPublishExportSupport
    */
   static final IClasspathAttribute DEPENDENCY_ATTRIBUTE = JavaCore.newClasspathAttribute(
-      IClasspathDependencyConstants.CLASSPATH_COMPONENT_DEPENDENCY, "/WEB-INF/lib");
+      IClasspathDependencyConstants.CLASSPATH_COMPONENT_DEPENDENCY, "/WEB-INF/lib"); //$NON-NLS-1$
 
   private static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
   
   static {
     String archiveNameAttribute = null;
     try {
-      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE");
+      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE"); //$NON-NLS-1$
       archiveNameAttribute = (String)classpathArchiveNameField.get(null);
     } catch (Exception e) {
-      LOG.warn("Renamed dependencies will be copied under target");
+      LOG.warn(Messages.WebProjectConfiguratorDelegate_Renamed_Dependencies_Will_Be_Copied); 
     }
     CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
   }
@@ -99,9 +100,10 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   /**
   * Name of maven property that overrides WTP context root.
   */
-  private static final String M2ECLIPSE_WTP_CONTEXT_ROOT = "m2eclipse.wtp.contextRoot";
+  private static final String M2ECLIPSE_WTP_CONTEXT_ROOT = "m2eclipse.wtp.contextRoot"; //$NON-NLS-1$
   
-  protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), true, monitor);
@@ -139,10 +141,10 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       ResourceCleaner fileCleaner = new ResourceCleaner(project, contentFolder);
       try {
         addFoldersToClean(fileCleaner, facade);
-        fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath());
-        fileCleaner.addFolder(contentFolder.getFolder("WEB-INF/lib"));
+        fileCleaner.addFiles(contentFolder.getFile("META-INF/MANIFEST.MF").getProjectRelativePath()); //$NON-NLS-1$
+        fileCleaner.addFolder(contentFolder.getFolder("WEB-INF/lib")); //$NON-NLS-1$
         if (customWebXml != null) {
-          fileCleaner.addFiles(contentFolder.getFile("WEB-INF/web.xml").getProjectRelativePath());
+          fileCleaner.addFiles(contentFolder.getFile("WEB-INF/web.xml").getProjectRelativePath()); //$NON-NLS-1$
         }
         
         facetedProject.modify(actions, monitor);
@@ -156,7 +158,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     fixMissingModuleCoreNature(project, monitor);
     
     // MNGECLIPSE-632 remove test sources/resources from WEB-INF/classes
-    removeTestFolderLinks(project, mavenProject, monitor, "/WEB-INF/classes");
+    removeTestFolderLinks(project, mavenProject, monitor, "/WEB-INF/classes"); //$NON-NLS-1$
 
     addContainerAttribute(project, DEPENDENCY_ATTRIBUTE, monitor);
 
@@ -166,13 +168,13 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     }
     
     if (customWebXml != null) {
-      linkFileFirst(project, customWebXml, "/WEB-INF/web.xml", monitor);
+      linkFileFirst(project, customWebXml, "/WEB-INF/web.xml", monitor); //$NON-NLS-1$
     }
 
     
     component = ComponentCore.createComponent(project, true);
     if(component != null) {      
-      IPath warPath = new Path("/").append(contentFolder.getProjectRelativePath());
+      IPath warPath = new Path("/").append(contentFolder.getProjectRelativePath()); //$NON-NLS-1$
       List<IPath> sourcePaths = new ArrayList<IPath>();
       sourcePaths.add(warPath);
       if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, warPath, monitor)) {
@@ -180,7 +182,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       }
       //MECLIPSEWTP-22 support web filtered resources. Filtered resources directory must be declared BEFORE
       //the regular web source directory. First resources discovered take precedence on deployment
-      IPath filteredFolder = new Path("/").append(WebResourceFilteringConfiguration.getTargetFolder(mavenProject, project));
+      IPath filteredFolder = new Path("/").append(WebResourceFilteringConfiguration.getTargetFolder(mavenProject, project)); //$NON-NLS-1$
       
       boolean useBuildDir = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project).isWebMavenArchiverUsesBuildDirectory();
       boolean useWebresourcefiltering = config.getWebResources() != null 
@@ -194,7 +196,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
                                       Messages.markers_mavenarchiver_output_settings_ignored_warning, -1, IMarker.SEVERITY_WARNING);
         }
         sourcePaths.add(filteredFolder);
-        WTPProjectsUtil.insertLinkBefore(project, filteredFolder, warPath, new Path("/"), monitor);
+        WTPProjectsUtil.insertLinkBefore(project, filteredFolder, warPath, new Path("/"), monitor); //$NON-NLS-1$
       } else {
         component.getRootFolder().removeLink(filteredFolder,IVirtualResource.NONE, monitor);
       }
@@ -220,7 +222,8 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     return webModelCfg;
   }
 
-  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     IVirtualComponent component = ComponentCore.createComponent(project);
     //if the attempt to create dependencies happens before the project is actually created, abort. 
@@ -231,7 +234,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
-    DebugUtilities.debug("==============Processing "+project.getName()+" dependencies ===============");
+    DebugUtilities.debug("==============Processing "+project.getName()+" dependencies ==============="); //$NON-NLS-1$ //$NON-NLS-2$
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
     FileNameMapping fileNameMapping = config.getFileNameMapping();
@@ -247,9 +250,9 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     Map<IVirtualReference, Artifact> referenceMapping = new HashMap<IVirtualReference, Artifact>(exportedDependencies.size()); 
     for(IMavenProjectFacade dependency : exportedDependencies) {
       String depPackaging = dependency.getPackaging();
-      if ("pom".equals(depPackaging) //MNGECLIPSE-744 pom dependencies shouldn't be deployed
-          || "war".equals(depPackaging) //Overlays are dealt with the overlay configurator
-          || "zip".equals(depPackaging)) {
+      if ("pom".equals(depPackaging) //MNGECLIPSE-744 pom dependencies shouldn't be deployed //$NON-NLS-1$
+          || "war".equals(depPackaging) //Overlays are dealt with the overlay configurator //$NON-NLS-1$
+          || "zip".equals(depPackaging)) { //$NON-NLS-1$
         continue;
       }
       
@@ -274,12 +277,12 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
         String deployedName = fileNameMapping.mapFileName(artifact);
         
-        boolean isDeployed = !artifact.isOptional() && opts.isPackaged("WEB-INF/lib/"+deployedName);
+        boolean isDeployed = !artifact.isOptional() && opts.isPackaged("WEB-INF/lib/"+deployedName); //$NON-NLS-1$
           
     		//an artifact in mavenProject.getArtifacts() doesn't have the "optional" value as depMavenProject.getArtifact();  
     		if (isDeployed) {
     		  IVirtualReference reference = ComponentCore.createReference(component, depComponent);
-    		  IPath path = new Path("/WEB-INF/lib");
+    		  IPath path = new Path("/WEB-INF/lib"); //$NON-NLS-1$
     		  reference.setArchiveName(deployedName);
     		  reference.setRuntimePath(path);
     		  references.add(reference);
@@ -291,7 +294,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     		}
       } catch(RuntimeException ex) {
         //Should probably be NPEs at this point
-        String dump = DebugUtilities.dumpProjectState("An error occured while configuring a dependency of  "+project.getName()+DebugUtilities.SEP, dependency.getProject());
+        String dump = DebugUtilities.dumpProjectState("An error occured while configuring a dependency of  "+project.getName()+DebugUtilities.SEP, dependency.getProject()); //$NON-NLS-1$
         LOG.error(dump); 
         throw ex;
       }
@@ -300,7 +303,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     for (IVirtualReference reference : references) {
       if (dups.contains(reference.getArchiveName())) {
         Artifact a = referenceMapping.get(reference); 
-        String newName = a.getGroupId() + "-" + reference.getArchiveName();
+        String newName = a.getGroupId() + "-" + reference.getArchiveName(); //$NON-NLS-1$
         reference.setArchiveName(newName);
       }
     }
@@ -346,7 +349,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
    if (StringUtils.isBlank(property)) {
   		String finalName = warName;
   		if (StringUtils.isBlank(finalName) 
-  		   || finalName.equals(mavenProject.getArtifactId() + "-" + mavenProject.getVersion())) {
+  		   || finalName.equals(mavenProject.getArtifactId() + "-" + mavenProject.getVersion())) { //$NON-NLS-1$
   		  contextRoot = mavenProject.getArtifactId();
   		}  else {
   		  contextRoot = finalName;
@@ -355,10 +358,11 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   		contextRoot = property;
   	}
 
-    return contextRoot.trim().replace(" ", "_");
+    return contextRoot.trim().replace(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
+  @Override
+public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
     
     //Improve skinny war support by generating the manifest classpath
@@ -403,7 +407,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     
       boolean isDeployed = (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope)) 
     		  				&& !descriptor.isOptionalDependency()
-    		  				&& opts.isPackaged("WEB-INF/lib/"+deployedName)
+    		  				&& opts.isPackaged("WEB-INF/lib/"+deployedName) //$NON-NLS-1$
     		  				&& !isWorkspaceProject(artifact);
       
       // add non-dependency attribute if this classpathentry is not meant to be deployed
@@ -445,7 +449,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         continue;
       }
       if (dups.contains(descriptor.getPath().lastSegment())) {
-        String newName = descriptor.getGroupId() + "-" + descriptor.getPath().lastSegment();
+        String newName = descriptor.getGroupId() + "-" + descriptor.getPath().lastSegment(); //$NON-NLS-1$
         if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
           IPath newPath = renameArtifact(targetDir, descriptor.getPath(), newName );
           if (newPath != null) {
@@ -472,7 +476,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         return Path.fromOSString(dst.getCanonicalPath());
       }
     } catch(IOException ex) {
-      LOG.error("File copy failed", ex);
+      LOG.error(Messages.WebProjectConfiguratorDelegate_File_Copy_Failed, ex);
     }
     return null;
   }

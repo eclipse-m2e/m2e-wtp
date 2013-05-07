@@ -31,13 +31,13 @@ import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 */
 public abstract class AbstractDependencyConfigurator {
 
-  public static final String ATTR_ID = "id";
+  public static final String ATTR_ID = "id"; //$NON-NLS-1$
   
-  public static final String ATTR_PRIORITY = "priority";
+  public static final String ATTR_PRIORITY = "priority"; //$NON-NLS-1$
 
-  public static final String ATTR_NAME = "name";
+  public static final String ATTR_NAME = "name"; //$NON-NLS-1$
   
-  public static final String ATTR_CLASS = "class";
+  public static final String ATTR_CLASS = "class"; //$NON-NLS-1$
   
   private int priority;
   private String id;
@@ -87,7 +87,7 @@ public abstract class AbstractDependencyConfigurator {
 
   @Override
   public String toString() {
-    return id + ":" + name + "(" + priority + ")";
+    return id + ":" + name + "(" + priority + ")";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
   }
 
   public void init() {

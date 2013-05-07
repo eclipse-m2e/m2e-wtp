@@ -41,7 +41,8 @@ import org.eclipse.wst.validation.ValidationFramework;
  */
 public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
 
-  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+  @Override
+public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 
     IProject project = request.getProject();
     if (!project.isAccessible()) {
@@ -62,7 +63,7 @@ public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
 
       removeWTPClasspathContainer(project);
       
-      removeTestFolderLinks(project, mavenProject, monitor, "/"); 
+      removeTestFolderLinks(project, mavenProject, monitor, "/");  //$NON-NLS-1$
 
       //MECLIPSEWTP-125 Remove "MAVEN2_CLASSPATH_CONTAINER will not be exported or published" warning.
       setNonDependencyAttributeToContainer(project, monitor);

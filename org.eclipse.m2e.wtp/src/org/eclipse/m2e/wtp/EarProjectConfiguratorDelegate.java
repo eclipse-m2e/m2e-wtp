@@ -37,7 +37,9 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.earmodules.EarModule;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.utilities.PathUtil;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -64,10 +66,11 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
 
   private static final Logger LOG = LoggerFactory.getLogger(EarProjectConfiguratorDelegate.class); 
 
-  protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     
-    monitor.setTaskName("Configuring EAR project " + project.getName());
+    monitor.setTaskName(NLS.bind(Messages.EarProjectConfiguratorDelegate_Configuring_EAR_Project,project.getName()));
     
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), true, monitor);
@@ -81,7 +84,7 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
 
     ResourceCleaner fileCleaner = new ResourceCleaner(project);
     addFoldersToClean(fileCleaner, facade);
-    fileCleaner.addFiles(contentFolder.getFile("META-INF/application.xml").getProjectRelativePath());
+    fileCleaner.addFiles(contentFolder.getFile("META-INF/application.xml").getProjectRelativePath()); //$NON-NLS-1$
 
     IProjectFacetVersion earFv = config.getEarFacetVersion();
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.EAR_FACET)) {
@@ -105,14 +108,14 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
         //Remove any WTP created files (extras application.xml and manifest) 
         fileCleaner.cleanUp();
       } catch (CoreException cex) {
-        LOG.error("Error while cleaning up WTP's created files", cex);
+        LOG.error(Messages.Error_Cleaning_WTP_Files, cex);
       }
     }
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
     IVirtualComponent earComponent = ComponentCore.createComponent(project);
-    IPath contentDirPath = new Path((contentDir.startsWith("/"))?contentDir:"/"+contentDir);
+    IPath contentDirPath = new Path((contentDir.startsWith("/"))?contentDir:"/"+contentDir); //$NON-NLS-1$ //$NON-NLS-2$
     //Ensure the EarContent link has been created
     if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, contentDirPath, monitor)) {
       earComponent.getRootFolder().createLink(contentDirPath, IVirtualResource.NONE, monitor);
@@ -126,7 +129,7 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     sourcePaths.add(contentDirPath);
     
     if (useBuildDirectory) {
-      IPath m2eclipseWtpFolderPath = new Path("/").append(ProjectUtils.getM2eclipseWtpFolder(mavenProject, project));
+      IPath m2eclipseWtpFolderPath = new Path("/").append(ProjectUtils.getM2eclipseWtpFolder(mavenProject, project)); //$NON-NLS-1$
       ProjectUtils.hideM2eclipseWtpFolder(mavenProject, project);
       IPath generatedResourcesPath = m2eclipseWtpFolderPath.append(Path.SEPARATOR+MavenWtpConstants.EAR_RESOURCES_FOLDER);
       sourcePaths.add(generatedResourcesPath);
@@ -138,13 +141,13 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     //MECLIPSEWTP-161 remove stale source paths
     WTPProjectsUtil.deleteLinks(project, ROOT_PATH, sourcePaths, monitor);
     
-    removeTestFolderLinks(project, mavenProject, monitor, "/");
+    removeTestFolderLinks(project, mavenProject, monitor, "/"); //$NON-NLS-1$
     
     ProjectUtils.removeNature(project, JavaCore.NATURE_ID, monitor);
 
     String finalName = config.getFinalName();
-    if (!finalName.endsWith(".ear")) {
-      finalName += ".ear";
+    if (!finalName.endsWith(".ear")) { //$NON-NLS-1$
+      finalName += ".ear"; //$NON-NLS-1$
     }
     configureDeployedName(project, finalName);
     project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
@@ -161,7 +164,8 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     return earModelCfg;
   }
 
-  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.EAR_FACET)) {
@@ -203,7 +207,7 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
       
       if (depComponent != null && packagingConfig.isPackaged(earModule.getUri())) {
         IVirtualReference depRef = ComponentCore.createReference(earComponent, depComponent);
-        String bundleDir = (StringUtils.isBlank(earModule.getBundleDir()))?"/":earModule.getBundleDir();
+        String bundleDir = (StringUtils.isBlank(earModule.getBundleDir()))?"/":earModule.getBundleDir(); //$NON-NLS-1$
         depRef.setRuntimePath(new Path(bundleDir));
         depRef.setArchiveName(earModule.getBundleFileName());
         newRefs.add(depRef);
@@ -237,18 +241,19 @@ class EarProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     }
     final Application app = (Application)earModel.getModelObject();
     if (app != null) {
-      if (newLibDir == null || "/".equals(newLibDir)) {
-        newLibDir = "lib";
+      if (newLibDir == null || "/".equals(newLibDir)) { //$NON-NLS-1$
+        newLibDir = "lib"; //$NON-NLS-1$
       } 
       //MECLIPSEWTP-167 : lib directory mustn't start with a slash
-      else if (newLibDir.startsWith("/")) {
+      else if (newLibDir.startsWith("/")) { //$NON-NLS-1$
         newLibDir = newLibDir.substring(1);
       }
       String oldLibDir = app.getLibraryDirectory();
       if (newLibDir.equals(oldLibDir)) return;
       final String libDir = newLibDir;
       earModel.modify(new Runnable() {
-        public void run() {     
+        @Override
+		public void run() {     
         app.setLibraryDirectory(libDir);
       }}, null);
     }

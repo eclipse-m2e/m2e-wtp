@@ -41,10 +41,10 @@ public class EjbModule extends AbstractEarModule {
   }
 
   public String getType() {
-    return "ejb";
+    return "ejb"; //$NON-NLS-1$
   }
   
   protected String getModuleType() {
-    return "ejbModule";
+    return "ejbModule"; //$NON-NLS-1$
   }
 }

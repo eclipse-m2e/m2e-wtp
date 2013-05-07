@@ -83,34 +83,34 @@ public final class EarModuleFactory {
     // Get the standard artifact type based on default config and user-defined mapping(s)
     final String artifactType = artifactTypeMappingService.getStandardType(artifact.getType());
     AbstractEarModule earModule = null;
-    if("jar".equals(artifactType)) {
+    if("jar".equals(artifactType)) { //$NON-NLS-1$
       earModule = new JarModule(artifact);
       ((JarModule)earModule).setIncludeInApplicationXml(defaultIncludeInApplicationXml);
       ((JarModule)earModule).setLibBundleDir(defaultLibBundleDir);
-    } else if("ejb".equals(artifactType) || "ejb3".equals(artifactType)) {
+    } else if("ejb".equals(artifactType) || "ejb3".equals(artifactType)) { //$NON-NLS-1$ //$NON-NLS-2$
       earModule  = new EjbModule(artifact);
-    } else if("par".equals(artifactType)) {
+    } else if("par".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new ParModule(artifact);
-    } else if("ejb-client".equals(artifactType)) {
+    } else if("ejb-client".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new EjbClientModule(artifact);
       if (javaEEVersion.compareTo(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_14) >  0)
       {
         ((EjbClientModule)earModule).setLibBundleDir(defaultLibBundleDir);
       }
-    } else if("rar".equals(artifactType)) {
+    } else if("rar".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new RarModule(artifact);
-    } else if("war".equals(artifactType)) {
+    } else if("war".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new WebModule(artifact);
-    } else if("sar".equals(artifactType)) {
+    } else if("sar".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new SarModule(artifact);
-    } else if("wsr".equals(artifactType)) {
+    } else if("wsr".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new WsrModule(artifact);
-    } else if("har".equals(artifactType)) {
+    } else if("har".equals(artifactType)) { //$NON-NLS-1$
       earModule  = new HarModule(artifact);
-    } else if("app-client".equals(artifactType)) {
+    } else if("app-client".equals(artifactType)) { //$NON-NLS-1$
         earModule  = new AppClientModule(artifact);
     } else {
-      throw new IllegalStateException("Could not handle artifact type[" + artifactType + "]");
+      throw new IllegalStateException("Could not handle artifact type[" + artifactType + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     earModule.setBundleFileName(fileNameMapping.mapFileName(artifact));
@@ -121,83 +121,83 @@ public final class EarModuleFactory {
 
   public EarModule newEarModule(Xpp3Dom domModule, String defaultLibBundleDir, IProjectFacetVersion javaEEVersion, boolean defaultIncludeInApplicationXml) throws EarPluginException {
     String artifactType = domModule.getName();
-    String groupId      = getChildValue(domModule, "groupId");
-    String artifactId   = getChildValue(domModule, "artifactId");
-    String classifier   = getChildValue(domModule, "classifier");
+    String groupId      = getChildValue(domModule, "groupId"); //$NON-NLS-1$
+    String artifactId   = getChildValue(domModule, "artifactId"); //$NON-NLS-1$
+    String classifier   = getChildValue(domModule, "classifier"); //$NON-NLS-1$
     
     AbstractEarModule earModule = null;
     // Get the standard artifact type based on default config and user-defined mapping(s)
-    if ( "jarModule".equals(artifactType) || "javaModule".equals(artifactType)) {
+    if ( "jarModule".equals(artifactType) || "javaModule".equals(artifactType)) { //$NON-NLS-1$ //$NON-NLS-2$
       JarModule jarModule = new JarModule();
       jarModule.setBundleDir(defaultLibBundleDir);
       
-      if (domModule.getChild("includeInApplicationXml") == null) {
+      if (domModule.getChild("includeInApplicationXml") == null) { //$NON-NLS-1$
         jarModule.setIncludeInApplicationXml(defaultIncludeInApplicationXml);
       } else {
-        jarModule.setIncludeInApplicationXml(getBooleanChildValue(domModule, "includeInApplicationXml"));  
+        jarModule.setIncludeInApplicationXml(getBooleanChildValue(domModule, "includeInApplicationXml"));   //$NON-NLS-1$
       }
       earModule = jarModule;
     } 
-    else if ( "ejbModule".equals(artifactType) || "ejb3Module".equals(artifactType)) {
+    else if ( "ejbModule".equals(artifactType) || "ejb3Module".equals(artifactType)) { //$NON-NLS-1$ //$NON-NLS-2$
       earModule  = new EjbModule();
     } 
-    else if ( "webModule".equals(artifactType)){
+    else if ( "webModule".equals(artifactType)){ //$NON-NLS-1$
       WebModule webModule  = new WebModule();
-      webModule.setContextRoot(getChildValue(domModule, "contextRoot"));
+      webModule.setContextRoot(getChildValue(domModule, "contextRoot")); //$NON-NLS-1$
       earModule = webModule;
     }
-    else if ( "parModule".equals(artifactType)){
+    else if ( "parModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new ParModule();
     }
-    else if ( "ejbClientModule".equals(artifactType)){
+    else if ( "ejbClientModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new EjbClientModule();
       if (javaEEVersion.compareTo(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_14) >  0)
       {
         ((EjbClientModule)earModule).setLibBundleDir(defaultLibBundleDir);
       }
     }
-    else if ( "rarModule".equals(artifactType)){
+    else if ( "rarModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new RarModule();
     }
-    else if ( "warModule".equals(artifactType)){
+    else if ( "warModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new WebModule();
     }
-    else if ( "sarModule".equals(artifactType)){
+    else if ( "sarModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new SarModule();
     }
-    else if ( "wsrModule".equals(artifactType)){
+    else if ( "wsrModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new WsrModule();
     }
-    else if ( "harModule".equals(artifactType)){
+    else if ( "harModule".equals(artifactType)){ //$NON-NLS-1$
       earModule = new HarModule();
     }
-    else if ( "appClientModule".equals(artifactType)){
+    else if ( "appClientModule".equals(artifactType)){ //$NON-NLS-1$
         earModule = new AppClientModule();
     }
     else {
-        throw new IllegalStateException( "Could not handle artifact type[" + artifactType + "]" );
+        throw new IllegalStateException( "Could not handle artifact type[" + artifactType + "]" ); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     Artifact artifact   = artifactRepository.resolveArtifact(groupId, artifactId, earModule.getType(), classifier);
     earModule.setArtifact(artifact);
     
-    String bundleDir = getChildValue(domModule, "bundleDir");
+    String bundleDir = getChildValue(domModule, "bundleDir"); //$NON-NLS-1$
     if (StringUtils.isNotBlank(bundleDir)){
       earModule.setBundleDir(bundleDir);      
     }
     //To this point, we're sure to have a valid earModule ...
-    String bundleFileName  = getChildValue(domModule, "bundleFileName");
+    String bundleFileName  = getChildValue(domModule, "bundleFileName"); //$NON-NLS-1$
     if (null==bundleFileName){
       bundleFileName = fileNameMapping.mapFileName(artifact);
     }
     earModule.setBundleFileName(bundleFileName);
-    earModule.setUri(getChildValue(domModule, "uri"));
-    earModule.setExcluded(getBooleanChildValue(domModule, "excluded"));
+    earModule.setUri(getChildValue(domModule, "uri")); //$NON-NLS-1$
+    earModule.setExcluded(getBooleanChildValue(domModule, "excluded")); //$NON-NLS-1$
 
-    earModule.setAltDeploymentDescriptor(getChildValue(domModule, "altDeploymentDescriptor"));
+    earModule.setAltDeploymentDescriptor(getChildValue(domModule, "altDeploymentDescriptor")); //$NON-NLS-1$
     
     //The following will be ignored by WTP - so far
-    String unpack = getChildValue(domModule, "unpack");
+    String unpack = getChildValue(domModule, "unpack"); //$NON-NLS-1$
     earModule.setShouldUnpack(unpack==null?null:Boolean.valueOf(unpack));
     
     return earModule;

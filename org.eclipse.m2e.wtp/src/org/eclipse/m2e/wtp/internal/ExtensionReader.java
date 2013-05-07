@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
  */
 public class ExtensionReader {
 
-  public static final String EXTENSION_DEPENDENCY_CONFIGURATORS = "org.eclipse.m2e.wtp.dependencyConfigurators";
+  public static final String EXTENSION_DEPENDENCY_CONFIGURATORS = "org.eclipse.m2e.wtp.dependencyConfigurators"; //$NON-NLS-1$
   
   private static final Logger LOG = LoggerFactory.getLogger(ExtensionReader.class);
       
-  private static final String ELEMENT_CONFIGURATOR = "configurator";
+  private static final String ELEMENT_CONFIGURATOR = "configurator"; //$NON-NLS-1$
   
   private static ArrayList<AbstractDependencyConfigurator> dependencyConfigurators;
 
@@ -64,7 +64,7 @@ public class ExtensionReader {
                 
                 dependencyConfigurators.add(projectConfigurator);
               } catch(CoreException ex) {
-                LOG.error("Error configuring dependency configurator", ex);
+                LOG.error("Error configuring dependency configurator", ex); //$NON-NLS-1$
               }
             }
           }

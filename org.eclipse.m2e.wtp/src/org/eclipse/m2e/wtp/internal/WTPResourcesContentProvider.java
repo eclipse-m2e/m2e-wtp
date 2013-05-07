@@ -36,16 +36,20 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
 
   private static final Logger LOG = LoggerFactory.getLogger(WTPResourcesContentProvider.class); 
   
-  public void init(ICommonContentExtensionSite config) {
+  @Override
+public void init(ICommonContentExtensionSite config) {
   }
 
-  public void restoreState(IMemento memento) {
+  @Override
+public void restoreState(IMemento memento) {
   }
 
-  public void saveState(IMemento memento) {
+  @Override
+public void saveState(IMemento memento) {
   }
 
-  public Object[] getChildren(Object element) {
+  @Override
+public Object[] getChildren(Object element) {
     if(element instanceof WTPResourcesNode) {
       return ((WTPResourcesNode) element).getResources();
     }
@@ -54,11 +58,13 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
 
   // IPipelinedTreeContentProvider
 
-  @SuppressWarnings("rawtypes")
+  @Override
+@SuppressWarnings("rawtypes")
   public void getPipelinedElements(Object element, Set currentElements) {
   }
   
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @Override
+@SuppressWarnings({"unchecked", "rawtypes"})
   public void getPipelinedChildren(Object parent, Set currentChildren) {
     if (parent instanceof IProject) {
       IProject project = (IProject) parent;
@@ -75,29 +81,34 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
             currentChildren.addAll(newChildren);
           }
         } catch(CoreException ex) {
-          LOG.error("Error getting pipelined children", ex);
+          LOG.error(Messages.WTPResourcesContentProvider_Error_Getting_Pipelined_Children, ex);
         }
       }
     }
   }
 
-  public Object getPipelinedParent(Object element, Object suggestedParent) {
+  @Override
+public Object getPipelinedParent(Object element, Object suggestedParent) {
     return suggestedParent;
   }
 
-  public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {
+  @Override
+public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {
     return false;
   }
   
-  public boolean interceptUpdate(PipelinedViewerUpdate updateSynchronization) {
+  @Override
+public boolean interceptUpdate(PipelinedViewerUpdate updateSynchronization) {
     return false;
   }
   
-  public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
+  @Override
+public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
     return addModification;
   }
 
-  public PipelinedShapeModification interceptRemove(PipelinedShapeModification removeModification) {
+  @Override
+public PipelinedShapeModification interceptRemove(PipelinedShapeModification removeModification) {
     return removeModification;
   }
   

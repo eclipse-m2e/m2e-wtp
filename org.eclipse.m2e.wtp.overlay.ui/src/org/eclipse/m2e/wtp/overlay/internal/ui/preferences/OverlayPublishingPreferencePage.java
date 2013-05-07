@@ -10,6 +10,7 @@ package org.eclipse.m2e.wtp.overlay.internal.ui.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.m2e.wtp.overlay.OverlayConstants;
+import org.eclipse.m2e.wtp.overlay.internal.ui.Messages;
 import org.eclipse.m2e.wtp.overlay.internal.ui.OverlayUIPluginActivator;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -24,7 +25,7 @@ public class OverlayPublishingPreferencePage  extends FieldEditorPreferencePage 
   @Override
   protected void createFieldEditors() {
     addField(new BooleanFieldEditor(OverlayConstants.P_REPUBLISH_ON_PROJECT_CHANGE, 
-                                    "Automatically republish servers on overlay modifications",
+                                    Messages.OverlayPublishingPreferencePage_Automatically_Republish_Servers_On_Overlay_Modifications,
                                     getFieldEditorParent()));
   }
 

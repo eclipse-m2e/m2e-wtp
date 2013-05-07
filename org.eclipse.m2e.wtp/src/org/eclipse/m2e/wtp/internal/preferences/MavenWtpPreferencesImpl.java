@@ -24,49 +24,56 @@ public class MavenWtpPreferencesImpl implements IMavenWtpPreferences {
   
   private boolean isWebMavenArchiverUsesBuildDirectory;
   
-  public boolean isApplicationXmGeneratedInBuildDirectory() {
+  @Override
+public boolean isApplicationXmGeneratedInBuildDirectory() {
     return isApplicationXmGeneratedInBuildDirectory;
   }
 
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences#setApplicationXmGeneratedInBuildDirectory(boolean)
    */
-  public void setApplicationXmGeneratedInBuildDirectory(boolean isEnabled) {
+  @Override
+public void setApplicationXmGeneratedInBuildDirectory(boolean isEnabled) {
     isApplicationXmGeneratedInBuildDirectory = isEnabled;
   }
 
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences#isEnabledProjectSpecificSettings()
    */
-  public boolean isEnabledProjectSpecificSettings() {
+  @Override
+public boolean isEnabledProjectSpecificSettings() {
     return isEnabledProjectSpecificSettings;
   }
 
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences#setEnabledProjectSpecificSettings(boolean)
    */
-  public void setEnabledProjectSpecificSettings(boolean isEnabled) {
+  @Override
+public void setEnabledProjectSpecificSettings(boolean isEnabled) {
     isEnabledProjectSpecificSettings = isEnabled;    
   }
 
   /**
    * @return Returns the isWebMavenArchiverUsesBuildDirectory.
    */
-  public boolean isWebMavenArchiverUsesBuildDirectory() {
+  @Override
+public boolean isWebMavenArchiverUsesBuildDirectory() {
     return isWebMavenArchiverUsesBuildDirectory;
   }
 
   /**
    * @param isWebMavenArchiverUsesBuildDirectory The isWebMavenArchiverUsesBuildDirectory to set.
    */
-  public void setWebMavenArchiverUsesBuildDirectory(boolean isWebMavenArchiverUsesBuildDirectory) {
+  @Override
+public void setWebMavenArchiverUsesBuildDirectory(boolean isWebMavenArchiverUsesBuildDirectory) {
     this.isWebMavenArchiverUsesBuildDirectory = isWebMavenArchiverUsesBuildDirectory;
   }
 
   /* (non-Javadoc)
    * @see java.lang.Object#hashCode()
    */
-  public int hashCode() {
+  @Override
+public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + (isApplicationXmGeneratedInBuildDirectory ? 1231 : 1237);
@@ -78,7 +85,8 @@ public class MavenWtpPreferencesImpl implements IMavenWtpPreferences {
   /* (non-Javadoc)
    * @see java.lang.Object#equals(java.lang.Object)
    */
-  public boolean equals(Object obj) {
+  @Override
+public boolean equals(Object obj) {
     if(this == obj)
       return true;
     if(obj == null)

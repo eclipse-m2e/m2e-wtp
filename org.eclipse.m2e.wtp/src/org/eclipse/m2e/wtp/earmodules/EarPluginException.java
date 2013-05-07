@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.internal.IMavenConstants;
+import org.eclipse.m2e.wtp.internal.Messages;
 
 
 /**
@@ -36,7 +37,7 @@ import org.eclipse.m2e.core.internal.IMavenConstants;
 public class EarPluginException extends CoreException {
   private static final long serialVersionUID = -819727447130647982L;
 
-  private static final String DEFAULT_MESSAGE = "Error in ear plugin configuration";
+  private static final String DEFAULT_MESSAGE = Messages.EarPluginException_Default_Message;
 
   public EarPluginException() {
     super(new Status(IStatus.ERROR, IMavenConstants.PLUGIN_ID, DEFAULT_MESSAGE));

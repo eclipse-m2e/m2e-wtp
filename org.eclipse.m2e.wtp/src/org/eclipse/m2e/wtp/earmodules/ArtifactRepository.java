@@ -125,17 +125,17 @@ public class ArtifactRepository {
     // If the artifact is already set no need to resolve it
     // Make sure that at least the groupId and the artifactId are specified
     if(groupId == null || artifactId == null) {
-      throw new IllegalArgumentException("Could not resolve artifact[" + type + ":" + groupId + ":" + artifactId +"]");
+      throw new IllegalArgumentException("Could not resolve artifact[" + type + ":" + groupId + ":" + artifactId +"]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
     Artifact artifact = getUniqueArtifact(groupId, artifactId, type, classifier);
     // Artifact has not been found
     if(artifact == null) {
       Set<Artifact> candidates = getArtifacts(groupId, artifactId, type);
       if(candidates.size() > 1) {
-        throw new EarPluginException("Artifact[" + type + ":" + groupId + ":" + artifactId +"] has " + candidates.size()
-            + " candidates, please provide a classifier.");
+        throw new EarPluginException("Artifact[" + type + ":" + groupId + ":" + artifactId +"] has " + candidates.size() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            + " candidates, please provide a classifier."); //$NON-NLS-1$
       } else {
-        throw new EarPluginException("Artifact[" + type + ":" + groupId + ":" + artifactId +"] is not a dependency of the project.");
+        throw new EarPluginException("Artifact[" + type + ":" + groupId + ":" + artifactId +"] is not a dependency of the project."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       }
     }
     return artifact;

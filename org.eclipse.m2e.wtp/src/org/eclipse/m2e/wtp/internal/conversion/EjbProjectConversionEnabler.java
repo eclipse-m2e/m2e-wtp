@@ -30,7 +30,8 @@ public class EjbProjectConversionEnabler extends AbstractProjectFacetConversionE
   /**
    * Returns the <code>ejb</code> packaging
    */
-  public String[] getPackagingTypes(IProject project) {
+  @Override
+public String[] getPackagingTypes(IProject project) {
     return new String[]{JEEPackaging.EJB.getName()};
   }
 }

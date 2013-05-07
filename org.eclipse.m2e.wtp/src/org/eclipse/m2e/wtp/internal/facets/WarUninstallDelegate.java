@@ -31,7 +31,8 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
  */
 public class WarUninstallDelegate implements IDelegate {
 
-  public void execute(IProject project, IProjectFacetVersion fv, Object config, IProgressMonitor monitor)
+  @Override
+public void execute(IProject project, IProjectFacetVersion fv, Object config, IProgressMonitor monitor)
       throws CoreException {
     // remove web containers
     ArrayList<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
@@ -39,8 +40,8 @@ public class WarUninstallDelegate implements IDelegate {
     IClasspathEntry[] cp = JavaCore.create(project).getRawClasspath();
     for(IClasspathEntry entry : cp) {
       String segment = entry.getPath().segment(0);
-      if(!"org.eclipse.jst.j2ee.internal.web.container".equals(segment)
-          && !"org.eclipse.jst.j2ee.internal.module.container".equals(segment)) {
+      if(!"org.eclipse.jst.j2ee.internal.web.container".equals(segment) //$NON-NLS-1$
+          && !"org.eclipse.jst.j2ee.internal.module.container".equals(segment)) { //$NON-NLS-1$
         entries.add(entry);
       }
     }

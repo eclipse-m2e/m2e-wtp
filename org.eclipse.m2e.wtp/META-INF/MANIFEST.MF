@@ -52,6 +52,7 @@ Export-Package: org.eclipse.m2e.wtp;x-friends:="org.eclipse.m2e.wtp.tests";
    org.eclipse.wst.common.project.facet.core,
    org.apache.maven.plugin",
  org.eclipse.m2e.wtp.facets,
+ org.eclipse.m2e.wtp.internal;x-friends:="org.eclipse.m2e.wtp.tests",
  org.eclipse.m2e.wtp.preferences
 Bundle-Activator: org.eclipse.m2e.wtp.MavenWtpPlugin
 Bundle-ActivationPolicy: lazy

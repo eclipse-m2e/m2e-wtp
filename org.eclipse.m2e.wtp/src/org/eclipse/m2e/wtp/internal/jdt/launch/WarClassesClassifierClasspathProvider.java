@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.AbstractClassifierClasspathProvider;
+import org.eclipse.m2e.wtp.JEEPackaging;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public class WarClassesClassifierClasspathProvider extends AbstractClassifierCla
   @Override
   public boolean applies(IMavenProjectFacade mavenProjectFacade, String classifier) {
     return getClassifier().equals(classifier) 
-           && "war".equals(mavenProjectFacade.getPackaging()) 
+           && JEEPackaging.WAR.getName().equals(mavenProjectFacade.getPackaging()) 
            && hasAttachedClasses(mavenProjectFacade);
   }
 
@@ -48,14 +50,14 @@ public class WarClassesClassifierClasspathProvider extends AbstractClassifierCla
     try {
       mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
     } catch(CoreException ex) {
-      LOG.error("Could not load mavenProject instance ", ex);
+      LOG.error(Messages.ClassifierClasspathProvider_Error_Loading_Maven_Instance, ex); 
       return false;
     }
-    Plugin warPlugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-war-plugin");
+    Plugin warPlugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-war-plugin"); //$NON-NLS-1$
     if (warPlugin != null) {
       Xpp3Dom config = (Xpp3Dom)warPlugin.getConfiguration();
       if (config != null) {
-        Xpp3Dom attachClasses = config.getChild("attachClasses");
+        Xpp3Dom attachClasses = config.getChild("attachClasses"); //$NON-NLS-1$
         if (attachClasses != null && Boolean.parseBoolean(attachClasses.getValue())) {
          return true; 
         }
@@ -64,22 +66,26 @@ public class WarClassesClassifierClasspathProvider extends AbstractClassifierCla
     return false;
   }
 
-  public String getClassifier() {
-    return "classes";
+  @Override
+public String getClassifier() {
+    return "classes"; //$NON-NLS-1$
   }
   
-  public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+  @Override
+public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
       IProgressMonitor monitor) throws CoreException {
     addMainFolder(runtimeClasspath, mavenProjectFacade, monitor);
   }
   
-  public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+  @Override
+public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
       IProgressMonitor monitor) throws CoreException {
     setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor);
   }
 
-  public String getName() {
-    return "War classes Classifier Classpath Provider";
+  @Override
+public String getName() {
+    return Messages.WarClassesClassifierClasspathProvider_WAR_Classes_Classifier_Classpath_Provider;
   }
 
 }

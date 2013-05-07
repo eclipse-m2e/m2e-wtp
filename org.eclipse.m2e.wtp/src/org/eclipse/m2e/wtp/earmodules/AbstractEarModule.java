@@ -86,13 +86,13 @@ public abstract class AbstractEarModule implements EarModule {
   public String getUri() {
     if(uri == null) {
       String bd = getBundleDir();
-      if(StringUtils.isEmpty(bd) || "/".equals(bd)) {
+      if(StringUtils.isEmpty(bd) || "/".equals(bd)) { //$NON-NLS-1$
         uri = getBundleFileName();
       } else {
-        if(!bd.endsWith("/")) {
-          bd = bd + "/";
+        if(!bd.endsWith("/")) { //$NON-NLS-1$
+          bd = bd + "/"; //$NON-NLS-1$
         } 
-        if (bd.startsWith("/")) {
+        if (bd.startsWith("/")) { //$NON-NLS-1$
           bd = bd.substring(1);
         }
         uri =  bd + getBundleFileName();
@@ -178,12 +178,12 @@ public abstract class AbstractEarModule implements EarModule {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(getType()).append(":").append(groupId).append(":").append(artifactId);
+    sb.append(getType()).append(":").append(groupId).append(":").append(artifactId); //$NON-NLS-1$ //$NON-NLS-2$
     if(classifier != null) {
-      sb.append(":").append(classifier);
+      sb.append(":").append(classifier); //$NON-NLS-1$
     }
     if(artifact != null) {
-      sb.append(":").append(artifact.getVersion());
+      sb.append(":").append(artifact.getVersion()); //$NON-NLS-1$
     }
     return sb.toString();
   }
@@ -203,8 +203,8 @@ public abstract class AbstractEarModule implements EarModule {
     bundleDir = bundleDir.replace('\\', '/');
 
     //WTP needs the bundle dir to start with a '/'
-    if(!bundleDir.startsWith("/")) {
-      bundleDir = "/" + bundleDir ;
+    if(!bundleDir.startsWith("/")) { //$NON-NLS-1$
+      bundleDir = "/" + bundleDir ; //$NON-NLS-1$
     }
 
     return bundleDir;
@@ -241,18 +241,18 @@ public abstract class AbstractEarModule implements EarModule {
     if (StringUtils.isNotBlank(uri)) {
       int lastSlash = uri.lastIndexOf('/');
       if (lastSlash == uri.length()-1){
-        throw new IllegalArgumentException("module uri ("+uri+") : can not end with a / ");
+        throw new IllegalArgumentException("module uri ("+uri+") : can not end with a / "); //$NON-NLS-1$ //$NON-NLS-2$
       }
       if (lastSlash>0) {
         bundleDir = uri.substring(0,lastSlash);
         bundleFileName = uri.substring(lastSlash+1);
       } else {
-        bundleFileName = uri.replace("/","");
+        bundleFileName = uri.replace("/",""); //$NON-NLS-1$ //$NON-NLS-2$
       }
       bundleDir = cleanBundleDir(bundleDir);
 
       if (StringUtils.isBlank(bundleFileName)){
-        throw new IllegalArgumentException("module uri must contain a file name ");
+        throw new IllegalArgumentException("module uri must contain a file name "); //$NON-NLS-1$
       }
     }
   }
@@ -272,19 +272,19 @@ public abstract class AbstractEarModule implements EarModule {
   
   public Xpp3Dom getAsDom() {
     Xpp3Dom moduleDom = new Xpp3Dom(getModuleType());
-    Xpp3Dom groupIdDom = new Xpp3Dom("groupId");
+    Xpp3Dom groupIdDom = new Xpp3Dom("groupId"); //$NON-NLS-1$
     groupIdDom.setValue(getGroupId());  
     moduleDom.addChild(groupIdDom);
-    Xpp3Dom artifactIdDom = new Xpp3Dom("artifactId");
+    Xpp3Dom artifactIdDom = new Xpp3Dom("artifactId"); //$NON-NLS-1$
     artifactIdDom.setValue(getArtifactId());  
     moduleDom.addChild(artifactIdDom);
-    Xpp3Dom uriDom = new Xpp3Dom("uri");
+    Xpp3Dom uriDom = new Xpp3Dom("uri"); //$NON-NLS-1$
     uriDom.setValue(getUri());  
     moduleDom.addChild(uriDom);
-    Xpp3Dom altDdDom = new Xpp3Dom("altDeploymentDescriptor");
+    Xpp3Dom altDdDom = new Xpp3Dom("altDeploymentDescriptor"); //$NON-NLS-1$
     altDdDom.setValue(getAltDeploymentDescriptor());  
     moduleDom.addChild(altDdDom);
-    Xpp3Dom excludedDom = new Xpp3Dom("excluded");
+    Xpp3Dom excludedDom = new Xpp3Dom("excluded"); //$NON-NLS-1$
     excludedDom.setValue(Boolean.toString(isExcluded()));  
     moduleDom.addChild(excludedDom);
     setCustomValues(moduleDom);
@@ -295,7 +295,7 @@ public abstract class AbstractEarModule implements EarModule {
    * @return
    */
   protected String getModuleType() {
-    return "jarModule";
+    return "jarModule"; //$NON-NLS-1$
   }
   
   protected void setCustomValues(Xpp3Dom module) {

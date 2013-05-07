@@ -42,7 +42,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 @SuppressWarnings("restriction")
 class EjbProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate {
 
-  protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 
@@ -79,11 +80,11 @@ class EjbProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
-    removeTestFolderLinks(project, mavenProject, monitor, "/");
+    removeTestFolderLinks(project, mavenProject, monitor, "/"); //$NON-NLS-1$
 
     IVirtualComponent ejbComponent = ComponentCore.createComponent(project);
     if (ejbComponent != null) {
-      IPath contentDirPath = new Path("/").append(contentDir);
+      IPath contentDirPath = new Path("/").append(contentDir); //$NON-NLS-1$
       WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(ejbComponent.getRootFolder(), contentDirPath, monitor);
     }
     
@@ -100,7 +101,8 @@ class EjbProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
     return ejbModelCfg;
   }
 
-  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     // TODO check if there's anything to do!
   }

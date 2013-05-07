@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
  */
 public class MavenWtpPlugin extends AbstractUIPlugin {
 
-  public static final String ID = "org.eclipse.m2e.wtp";
+  public static final String ID = "org.eclipse.m2e.wtp"; //$NON-NLS-1$
   
   private static MavenWtpPlugin instance;
 

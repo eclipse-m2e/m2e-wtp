@@ -32,10 +32,11 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 public class EjbProjectConverter extends AbstractWtpProjectConversionParticipant {
 
-  private static final String EJB_VERSION= "ejbVersion";
+  private static final String EJB_VERSION= "ejbVersion"; //$NON-NLS-1$
 
-  public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) || !"ejb".equals(model.getPackaging())) {
+  @Override
+public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
+    if (!accept(project) || !"ejb".equals(model.getPackaging())) { //$NON-NLS-1$
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
@@ -48,8 +49,8 @@ public class EjbProjectConverter extends AbstractWtpProjectConversionParticipant
 
   private void setEjbPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ejb-plugin", "2.3");
-    Plugin ejbPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ejb-plugin", pluginVersion);
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ejb-plugin", "2.3"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Plugin ejbPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ejb-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());
     boolean customized = false;
@@ -66,7 +67,8 @@ public class EjbProjectConverter extends AbstractWtpProjectConversionParticipant
     }
   }
 
-  protected IProjectFacet getRequiredFaced() {
+  @Override
+protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.EJB_FACET;
   }
 

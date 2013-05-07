@@ -93,7 +93,8 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
     return ModuleCoreNature.isFlexibleProject(project);
   }
 
-  public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
+  @Override
+public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
       throws CoreException {
     MavenProject mavenProject = facade.getMavenProject(monitor);
     //Lookup the project configurator 
@@ -109,7 +110,8 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
     }
   }
 
-  public void configureRawClasspath(ProjectConfigurationRequest request, IClasspathDescriptor classpath,
+  @Override
+public void configureRawClasspath(ProjectConfigurationRequest request, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
     // we do not change raw project classpath, do we? 
   }
@@ -119,9 +121,9 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
       IPluginExecutionMetadata executionMetadata) {
     
     //FIXME should refactor that by removing the project configurator delegates
-      if ("maven-war-plugin".equals(execution.getArtifactId()) && "war".equals(execution.getGoal()) 
-        || "maven-ear-plugin".equals(execution.getArtifactId()) && "generate-application-xml".equals(execution.getGoal())
-        || "maven-acr-plugin".equals(execution.getArtifactId()) && "acr".equals(execution.getGoal()))
+      if ("maven-war-plugin".equals(execution.getArtifactId()) && "war".equals(execution.getGoal())  //$NON-NLS-1$ //$NON-NLS-2$
+        || "maven-ear-plugin".equals(execution.getArtifactId()) && "generate-application-xml".equals(execution.getGoal()) //$NON-NLS-1$ //$NON-NLS-2$
+        || "maven-acr-plugin".equals(execution.getArtifactId()) && "acr".equals(execution.getGoal())) //$NON-NLS-1$ //$NON-NLS-2$
       {
         return new ResourceFilteringBuildParticipant(); 
       }

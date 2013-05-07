@@ -27,6 +27,8 @@ import org.eclipse.m2e.core.internal.index.IndexedArtifactFile;
 import org.eclipse.m2e.core.internal.index.SearchExpression;
 import org.eclipse.m2e.core.internal.index.SourcedSearchExpression;
 import org.eclipse.m2e.jdt.internal.JavaProjectConversionParticipant;
+import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public class MavenPluginUtils {
 
   private static Logger log = LoggerFactory.getLogger(MavenPlugin.class);
   
-  private static final String CONFIGURATION_KEY = "configuration";
+  private static final String CONFIGURATION_KEY = "configuration"; //$NON-NLS-1$
 
   private MavenPluginUtils() {
   }
@@ -75,8 +77,8 @@ public class MavenPluginUtils {
    */
   @SuppressWarnings("restriction")
   public static String getMostRecentPluginVersion(String groupId, String artifactId, String referenceVersion) {
-      Assert.isNotNull(groupId, "groupId can not be null");
-      Assert.isNotNull(artifactId, "artifactId can not be null");
+      Assert.isNotNull(groupId, Messages.MavenPluginUtils_GroupId_Cant_Be_Null);
+      Assert.isNotNull(artifactId, Messages.MavenPluginUtils_ArtifactId_Cant_Be_Null);
       String version = referenceVersion;
       String partialKey = artifactId + " : " + groupId; //$NON-NLS-1$
       try {
@@ -100,7 +102,7 @@ public class MavenPluginUtils {
               continue;
             }
             for(IndexedArtifactFile f : e.getValue().getFiles()) {
-              if(groupId.equals(f.group) && artifactId.equals(f.artifact) && !f.version.contains("SNAPSHOT")) {
+              if(groupId.equals(f.group) && artifactId.equals(f.artifact) && !f.version.contains("-SNAPSHOT")) { //$NON-NLS-1$
                 ComparableVersion v = new ComparableVersion(f.version);
                 if(referenceComparableVersion == null || v.compareTo(referenceComparableVersion) > 0) {
                   versions.add(v);
@@ -118,7 +120,7 @@ public class MavenPluginUtils {
           }
         }
       } catch(CoreException e) {
-        log.error("Can not retrieve latest version of " + partialKey, e);
+        log.error(NLS.bind(Messages.MavenPluginUtils_Error_Cant_Retrieve_Latest_Plugin_Version, partialKey), e);
       }
       return version;
     }

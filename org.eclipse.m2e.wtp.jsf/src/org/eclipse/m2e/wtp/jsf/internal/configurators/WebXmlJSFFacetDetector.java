@@ -22,6 +22,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
+import org.eclipse.m2e.wtp.jsf.internal.Messages;
 import org.eclipse.m2e.wtp.jsf.internal.utils.JSFUtils;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
@@ -65,7 +66,7 @@ public class WebXmlJSFFacetDetector extends AbstractFacetDetector {
 					}
 				}
 			} catch (CoreException e) {
-				LOG.error("Can't detect JSF version from web.xml", e);
+				LOG.error(Messages.WebXmlJSFFacetDetector_Error_Cant_Detect_JSF_From_WebXml, e);
 			}
 		}
 		return version;
@@ -75,7 +76,7 @@ public class WebXmlJSFFacetDetector extends AbstractFacetDetector {
 		//We look for javax.faces.webapp.FacesServlet in web.xml
 		//We should look for a custom web.xml at this point, but WTP would then crash on the JSF Facet installation
 		//if it's not in a standard location, so we stick with the regular file.
-		IFile webXml = ProjectUtils.getWebResourceFile(project, "WEB-INF/web.xml");
+		IFile webXml = ProjectUtils.getWebResourceFile(project, "WEB-INF/web.xml"); //$NON-NLS-1$
 		return webXml != null && webXml.exists() && JSFUtils.hasFacesServlet(webXml);
 	}
 

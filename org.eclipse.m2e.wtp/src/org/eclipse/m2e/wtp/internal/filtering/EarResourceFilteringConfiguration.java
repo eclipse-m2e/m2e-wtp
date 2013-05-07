@@ -35,7 +35,8 @@ public class EarResourceFilteringConfiguration extends AbstractResourceFiltering
     pluginConfiguration = earPluginConfiguration;
   }
 
-  public IPath getTargetFolder() {
+  @Override
+public IPath getTargetFolder() {
     return getTargetFolder(mavenProjectFacade.getMavenProject(), mavenProjectFacade.getProject());
   }
 
@@ -43,16 +44,17 @@ public class EarResourceFilteringConfiguration extends AbstractResourceFiltering
     return ProjectUtils.getM2eclipseWtpFolder(mavenProject, project).append(MavenWtpConstants.EAR_RESOURCES_FOLDER);
   }
 
-  public List<Xpp3Dom> getResources() {
+  @Override
+public List<Xpp3Dom> getResources() {
     if (!earPluginConfiguration.isFilteringDeploymentDescriptorsEnabled()) {
       return null;
     }
     String earContentDir = earPluginConfiguration.getEarContentDirectory(mavenProjectFacade.getProject());
-    Xpp3Dom resource = new Xpp3Dom("resource");
-    Xpp3Dom directory = new Xpp3Dom("directory");
+    Xpp3Dom resource = new Xpp3Dom("resource"); //$NON-NLS-1$
+    Xpp3Dom directory = new Xpp3Dom("directory"); //$NON-NLS-1$
     directory.setValue(earContentDir);
     resource.addChild(directory);
-    Xpp3Dom filter = new Xpp3Dom("filtering");
+    Xpp3Dom filter = new Xpp3Dom("filtering"); //$NON-NLS-1$
     filter.setValue(Boolean.TRUE.toString());
     resource.addChild(filter);
     

@@ -33,13 +33,15 @@ public class AppClientResourceFilteringConfiguration extends AbstractResourceFil
     acrPluginConfiguration = new AcrPluginConfiguration(mavenProjectFacade);
   }
 
-  public IPath getTargetFolder() {
+  @Override
+public IPath getTargetFolder() {
     String buildOutputDir = mavenProjectFacade.getMavenProject().getBuild().getOutputDirectory();
     String relativeBuildOutputDir = ProjectUtils.getRelativePath(mavenProjectFacade.getProject(), buildOutputDir);
     return new Path(relativeBuildOutputDir);
   }
 
-  public List<Xpp3Dom> getResources() {
+  @Override
+public List<Xpp3Dom> getResources() {
     if (!acrPluginConfiguration.isFilteringDeploymentDescriptorsEnabled()) {
       return null;
     }
@@ -47,19 +49,19 @@ public class AppClientResourceFilteringConfiguration extends AbstractResourceFil
     if (applicationClientXml == null) {
       return null;
     }
-    Xpp3Dom resource = new Xpp3Dom("resource");
-    Xpp3Dom directory = new Xpp3Dom("directory");
+    Xpp3Dom resource = new Xpp3Dom("resource"); //$NON-NLS-1$
+    Xpp3Dom directory = new Xpp3Dom("directory"); //$NON-NLS-1$
     directory.setValue(applicationClientXml.getParent().getProjectRelativePath().toPortableString());
     resource.addChild(directory);
-    Xpp3Dom filter = new Xpp3Dom("filtering");
+    Xpp3Dom filter = new Xpp3Dom("filtering"); //$NON-NLS-1$
     filter.setValue(Boolean.TRUE.toString());
-    Xpp3Dom includes = new Xpp3Dom("includes");
-    Xpp3Dom include = new Xpp3Dom("include");
+    Xpp3Dom includes = new Xpp3Dom("includes"); //$NON-NLS-1$
+    Xpp3Dom include = new Xpp3Dom("include"); //$NON-NLS-1$
     include.setValue(applicationClientXml.getName());
     includes.addChild(include);
     resource.addChild(includes);
-    Xpp3Dom targetPath = new Xpp3Dom("targetPath");
-    targetPath.setValue("META-INF/");
+    Xpp3Dom targetPath = new Xpp3Dom("targetPath"); //$NON-NLS-1$
+    targetPath.setValue("META-INF/"); //$NON-NLS-1$
     resource.addChild(targetPath);
     resource.addChild(filter);
     

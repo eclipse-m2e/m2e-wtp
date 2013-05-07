@@ -40,11 +40,11 @@ public class SarModule extends AbstractEarModule implements JbossEarModule {
   }
 
   public String getType() {
-    return "sar";
+    return "sar"; //$NON-NLS-1$
   }
 
   protected String getModuleType() {
-    return "sarModule";
+    return "sarModule"; //$NON-NLS-1$
   }
   
 }

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.StringUtils;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
@@ -36,22 +37,23 @@ import org.slf4j.LoggerFactory;
  */
 public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManager {
 
-  private static final String ATTR_ENABLER_ID = "id";
-  private static final String ATTR_CONFIGURATOR_IDS = "configuratorIds";
-  private static final String ATTR_LABEL = "label";
-  private static final String ATTR_DESCRIPTION = "description";
+  private static final String ATTR_ENABLER_ID = "id"; //$NON-NLS-1$
+  private static final String ATTR_CONFIGURATOR_IDS = "configuratorIds"; //$NON-NLS-1$
+  private static final String ATTR_LABEL = "label"; //$NON-NLS-1$
+  private static final String ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
 
 
   private static Logger LOG = LoggerFactory.getLogger(MavenWtpPreferencesManagerImpl.class);
   
-  private static final String CONFIGURATOR_ENABLER_EXTENSION_POINT = MavenWtpPlugin.ID+".javaeeConfiguratorEnabler";
+  private static final String CONFIGURATOR_ENABLER_EXTENSION_POINT = MavenWtpPlugin.ID+".javaeeConfiguratorEnabler"; //$NON-NLS-1$
 
   private List<ConfiguratorEnabler> enablers;
 
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#getPreferences(org.eclipse.core.resources.IProject)
    */
-  public IMavenWtpPreferences getPreferences(IProject project) {
+  @Override
+public IMavenWtpPreferences getPreferences(IProject project) {
     if (project == null) {
       return loadWorkspacePreferences();
     }
@@ -66,14 +68,16 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#createNewPreferences()
    */
-  public IMavenWtpPreferences createNewPreferences() {
+  @Override
+public IMavenWtpPreferences createNewPreferences() {
     return new MavenWtpPreferencesImpl();
   }
   
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#getWorkspacePreferences()
    */
-  public IMavenWtpPreferences getWorkspacePreferences() {
+  @Override
+public IMavenWtpPreferences getWorkspacePreferences() {
     return loadWorkspacePreferences();
   }
 
@@ -81,7 +85,8 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
   /**
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#savePreferences(org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences, org.eclipse.core.resources.IProject)
    */
-  public void savePreferences(IMavenWtpPreferences preferences, IProject project) {
+  @Override
+public void savePreferences(IMavenWtpPreferences preferences, IProject project) {
     if (preferences == null) return;
     
     IEclipsePreferences eclipsePrefs;
@@ -100,7 +105,7 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
     try {
       eclipsePrefs.flush();
     } catch (BackingStoreException e) { 
-      LOG.error("can't store m2e-wtp preferences", e);
+      LOG.error(Messages.MavenWtpPreferencesManagerImpl_0, e);
     } 
   }
   
@@ -137,7 +142,8 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
     return new ProjectScope(project).getNode(MavenWtpPreferencesConstants.PREFIX);    
   }
 
-  public ConfiguratorEnabler[] getConfiguratorEnablers() {
+  @Override
+public ConfiguratorEnabler[] getConfiguratorEnablers() {
     if (enablers == null) {
       enablers = loadConfiguratorEnablers();
     }
@@ -164,13 +170,14 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
   }
 
   private static String[] split(String str) {
-    return StringUtils.tokenizeToStringArray(str, ",");
+    return StringUtils.tokenizeToStringArray(str, ","); //$NON-NLS-1$
   }
 
   /* (non-Javadoc)
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#isEnabled(java.lang.String)
    */
-  public boolean isEnabled(String configuratorId) {
+  @Override
+public boolean isEnabled(String configuratorId) {
     for (ConfiguratorEnabler enabler : getConfiguratorEnablers()) {
       if (enabler.appliesTo(configuratorId)) {
         return enabler.isEnabled();

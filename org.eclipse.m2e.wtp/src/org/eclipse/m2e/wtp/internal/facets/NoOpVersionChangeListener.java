@@ -22,7 +22,8 @@ public class NoOpVersionChangeListener implements IFacetedProjectListener {
     /* (non-Javadoc)
      * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)
      */
-    public void handleEvent(IFacetedProjectEvent event) {
+    @Override
+	public void handleEvent(IFacetedProjectEvent event) {
         //Does nothing
     }
 }

@@ -20,7 +20,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.m2e.wtp.jaxrs.internal.messages"; //$NON-NLS-1$
+	public static String ClasspathJaxRsFacetDetector_Unable_To_Determine_JAXRS_Version;
 	public static String JaxrsProjectConfigurator_facet_cannot_be_installed;
+	public static String JaxRsProjectConfigurator_Unknown_Error;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

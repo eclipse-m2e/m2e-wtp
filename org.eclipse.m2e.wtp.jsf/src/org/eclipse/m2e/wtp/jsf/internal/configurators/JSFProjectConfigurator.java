@@ -41,12 +41,12 @@ import org.eclipse.m2e.wtp.ResourceCleaner;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
 import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
+import org.eclipse.m2e.wtp.jsf.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * JSF maven project configurator.
@@ -59,9 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(JSFProjectConfigurator.class);
-	
-	private static final String M2E_JSF_ACTIVATION_PROPERTY = "m2e.jsf.activation";
+	private static final String M2E_JSF_ACTIVATION_PROPERTY = "m2e.jsf.activation"; //$NON-NLS-1$
 	
 	@Override
 	public void configure(ProjectConfigurationRequest request,
@@ -128,13 +126,13 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			IFolder warSourceDir  = project.getFolder(warConfig.getWarSourceDirectory());
 
 			//We don't want to generate any files automatically
-			IPath facesConfigPath = new Path("WEB-INF/faces-config.xml");
+			IPath facesConfigPath = new Path("WEB-INF/faces-config.xml"); //$NON-NLS-1$
 			IFile defaultFacesConfig = warSourceDir.getFile(facesConfigPath);
 			IFolder generatedWebResourcesFolder = ProjectUtils.getGeneratedWebResourcesFolder(mavenProject, project);
 			IFile generatedFacesConfig = generatedWebResourcesFolder.getFile(facesConfigPath);
 			
 			ResourceCleaner cleaner = new ResourceCleaner(project);
-			cleaner.addFolder(warSourceDir.getFolder("WEB-INF/lib"));
+			cleaner.addFolder(warSourceDir.getFolder("WEB-INF/lib")); //$NON-NLS-1$
 			cleaner.addFiles(defaultFacesConfig, generatedFacesConfig);
 			
 			IStatus status = facetVersion.getConstraint().check(fproj.getProjectFacets());
@@ -144,7 +142,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 					model.setBooleanProperty(IJSFFacetInstallDataModelProperties.CONFIGURE_SERVLET, false);
 					fproj.installProjectFacet(facetVersion, model, monitor);
 				} else {
-					addErrorMarker(fproj.getProject(), facetVersion + " can not be installed : "+ status.getMessage());
+					addErrorMarker(fproj.getProject(), NLS.bind(Messages.JSFProjectConfigurator_Marker_Facet_Version_Cant_Be_Installed, facetVersion, status.getMessage()));
 					for (IStatus st : status.getChildren()) {
 						addErrorMarker(fproj.getProject(), st.getMessage());
 					}

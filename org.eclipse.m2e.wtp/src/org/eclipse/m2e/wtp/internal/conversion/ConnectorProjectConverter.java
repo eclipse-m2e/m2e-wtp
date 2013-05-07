@@ -33,10 +33,11 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
  */
 public class ConnectorProjectConverter extends AbstractWtpProjectConversionParticipant {
 
-  private static final String DEFAULT_RA_XML = "src/main/rar/META-INF/ra.xml";
+  private static final String DEFAULT_RA_XML = "src/main/rar/META-INF/ra.xml"; //$NON-NLS-1$
 
-  public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) || !"rar".equals(model.getPackaging())) {
+  @Override
+public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
+    if (!accept(project) || !"rar".equals(model.getPackaging())) { //$NON-NLS-1$
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
@@ -54,14 +55,14 @@ public class ConnectorProjectConverter extends AbstractWtpProjectConversionParti
     Build build = getCloneOrCreateBuild(model);
     //maven-jar-plugin 2.4 is not supported by the mavenarchiver plugin
     //see https://github.com/sonatype/m2eclipse-extras/issues/10
-    Plugin jarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-jar-plugin", "2.3.2");
+    Plugin jarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-jar-plugin", "2.3.2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     PluginExecution jarExecution = new PluginExecution();
-    jarExecution.setId("build_jar");
+    jarExecution.setId("build_jar"); //$NON-NLS-1$
     //Tell maven to package the project classes as a jar
-    jarExecution.addGoal("jar");
+    jarExecution.addGoal("jar"); //$NON-NLS-1$
     //The .jar must be created before the rar is packaged.
-    jarExecution.setPhase("process-classes");
+    jarExecution.setPhase("process-classes"); //$NON-NLS-1$
     jarPlugin.addExecution(jarExecution);
 
     model.setBuild(build);
@@ -69,21 +70,22 @@ public class ConnectorProjectConverter extends AbstractWtpProjectConversionParti
 
   private void setRarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-rar-plugin", "2.2");
-    Plugin rarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-rar-plugin", pluginVersion);
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-rar-plugin", "2.2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Plugin rarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-rar-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
     IFile raXml = findRaXml(component);
     if (raXml != null) {
       String raXmlPath = raXml.getProjectRelativePath().toPortableString();
       if (!DEFAULT_RA_XML.equals(raXmlPath)) {
         //Failing to set up non default ra.xml would make maven-rar-plugin crash
-        configure(rarPlugin, "raXmlFile", raXmlPath);
+        configure(rarPlugin, "raXmlFile", raXmlPath); //$NON-NLS-1$
         model.setBuild(build);
       }
     }
     
   }
 
-  protected IProjectFacet getRequiredFaced() {
+  @Override
+protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.JCA_FACET;
   }
 
@@ -91,8 +93,8 @@ public class ConnectorProjectConverter extends AbstractWtpProjectConversionParti
     for (IVirtualResource vr : component.getRootFolder().members()) {
       if (vr instanceof IVirtualFolder) {
         IFolder f = (IFolder)((IVirtualFolder) vr).getUnderlyingFolder();
-        if ("META-INF".equals(f.getName())) {
-          IFile ra = f.getFile("ra.xml");
+        if ("META-INF".equals(f.getName())) { //$NON-NLS-1$
+          IFile ra = f.getFile("ra.xml"); //$NON-NLS-1$
           if (ra.isAccessible()) {
             return ra;
           }

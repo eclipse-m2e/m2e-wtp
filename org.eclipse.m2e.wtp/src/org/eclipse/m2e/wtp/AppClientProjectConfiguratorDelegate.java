@@ -42,7 +42,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 class AppClientProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate {
 
-  protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
    
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
@@ -82,11 +83,11 @@ class AppClientProjectConfiguratorDelegate extends AbstractProjectConfiguratorDe
     fixMissingModuleCoreNature(project, monitor);
     
     //Remove test folder links to prevent exporting them when packaging the project
-    removeTestFolderLinks(project, mavenProject, monitor, "/");
+    removeTestFolderLinks(project, mavenProject, monitor, "/"); //$NON-NLS-1$
     
     IVirtualComponent component = ComponentCore.createComponent(project);
     if (component != null) {
-      IPath contentDirPath = new Path("/").append(contentDir);
+      IPath contentDirPath = new Path("/").append(contentDir); //$NON-NLS-1$
       WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(component.getRootFolder(), contentDirPath, monitor);
     }
     

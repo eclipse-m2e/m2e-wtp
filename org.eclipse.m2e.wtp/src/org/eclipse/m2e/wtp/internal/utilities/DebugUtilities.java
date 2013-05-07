@@ -35,7 +35,7 @@ public class DebugUtilities {
 
   private static final Logger LOG = LoggerFactory.getLogger(DebugUtilities.class);
   
-  public static String SEP = System.getProperty("line.separator");
+  public static String SEP = System.getProperty("line.separator"); //$NON-NLS-1$
 
   /**
    * Dumps the project's following informations :
@@ -52,24 +52,24 @@ public class DebugUtilities {
    * @return a dump of the project state
    */
   public static String dumpProjectState(String startMessage, IProject project) {
-    StringBuilder dump = new StringBuilder((startMessage == null) ? "" : startMessage);
-    dump.append("Current ").append(Thread.currentThread()).append(SEP);
+    StringBuilder dump = new StringBuilder((startMessage == null) ? "" : startMessage); //$NON-NLS-1$
+    dump.append("Current ").append(Thread.currentThread()).append(SEP); //$NON-NLS-1$
     String projectName = project.getName();
     IVirtualComponent component = ComponentCore.createComponent(project);
     if(component == null) {
-      dump.append(projectName).append(" is not a IVirtualComponent").append(SEP);
+      dump.append(projectName).append(" is not a IVirtualComponent").append(SEP); //$NON-NLS-1$
     } else {
-      dump.append(projectName).append(" is a ").append(component.getClass().getSimpleName()).append(SEP);
-      dump.append("Underlying resources for the root folder are :").append(SEP);
+      dump.append(projectName).append(" is a ").append(component.getClass().getSimpleName()).append(SEP); //$NON-NLS-1$
+      dump.append("Underlying resources for the root folder are :").append(SEP); //$NON-NLS-1$
       for(IResource resource : component.getRootFolder().getUnderlyingResources()) {
-        dump.append("  -").append(resource.getFullPath().append(SEP));
+        dump.append("  -").append(resource.getFullPath().append(SEP)); //$NON-NLS-1$
       }
-      dump.append("deploy-name = ").append(component.getDeployedName()).append(SEP);
-      dumpFile(dump, project.getFile(".settings/org.eclipse.wst.common.component"));
+      dump.append("deploy-name = ").append(component.getDeployedName()).append(SEP); //$NON-NLS-1$
+      dumpFile(dump, project.getFile(".settings/org.eclipse.wst.common.component")); //$NON-NLS-1$
     }
     boolean hasModulecoreNature = ModuleCoreNature.getModuleCoreNature(project) != null;
     boolean isFlexible = ModuleCoreNature.isFlexibleProject(project);
-    dump.append(projectName).append(" hasModuleCoreNature:").append(hasModulecoreNature).append(", isFlexible:")
+    dump.append(projectName).append(" hasModuleCoreNature:").append(hasModulecoreNature).append(", isFlexible:") //$NON-NLS-1$ //$NON-NLS-2$
         .append(isFlexible).append(SEP);
     dumpFacetInformations(project, dump);
     return dump.toString();
@@ -85,16 +85,16 @@ public class DebugUtilities {
     try {
       IFacetedProject fProj = ProjectFacetsManager.create(project);
       if(fProj == null) {
-        dump.append(project.getName()).append(" is not a faceted project").append(SEP);
+        dump.append(project.getName()).append(" is not a faceted project").append(SEP); //$NON-NLS-1$
       } else {
         for(IProjectFacet facet : ProjectFacetsManager.getProjectFacets()) {
           if(fProj.hasProjectFacet(facet)) {
-            dump.append("  - has ").append(fProj.getInstalledVersion(facet)).append(" facet").append(SEP);
+            dump.append("  - has ").append(fProj.getInstalledVersion(facet)).append(" facet").append(SEP); //$NON-NLS-1$ //$NON-NLS-2$
           }
         }
       }
     } catch(CoreException ex) {
-      dump.append("An exception occured while accessing facet informations ").append(ex.getMessage()).append(SEP);
+      dump.append("An exception occured while accessing facet informations ").append(ex.getMessage()).append(SEP); //$NON-NLS-1$
     }
   }
 
@@ -106,16 +106,16 @@ public class DebugUtilities {
    */
   private static void dumpFile(StringBuilder dump, IFile file) {
     if(!file.exists()) {
-      dump.append(file.getFullPath()).append(" does not exist").append(SEP);
+      dump.append(file.getFullPath()).append(" does not exist").append(SEP); //$NON-NLS-1$
       return;
     }
     InputStream ins = null;
     try {
-      dump.append("Contents of ").append(file.getFullPath()).append(SEP);
+      dump.append("Contents of ").append(file.getFullPath()).append(SEP); //$NON-NLS-1$
       ins = file.getContents();
       dump.append(IOUtil.toString(ins));
     } catch(Exception e) {
-      dump.append("An exception occured while reading ").append(file.getFullPath()).append(" :").append(e.getMessage())
+      dump.append("An exception occured while reading ").append(file.getFullPath()).append(" :").append(e.getMessage()) //$NON-NLS-1$ //$NON-NLS-2$
           .append(SEP);
     } finally {
       IOUtil.close(ins);

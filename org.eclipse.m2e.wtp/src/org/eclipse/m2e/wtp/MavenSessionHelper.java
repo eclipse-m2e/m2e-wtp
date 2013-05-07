@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.IMavenConstants;
-import org.eclipse.m2e.core.internal.Messages;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
+import org.eclipse.m2e.wtp.internal.Messages;
 
 /**
  * Helper for {@link MavenSession} manipulations.
@@ -51,7 +51,7 @@ public class MavenSessionHelper {
 
   public MavenSessionHelper(MavenProject mavenProject) {
     if (mavenProject == null) {
-      throw new IllegalArgumentException("MavenProject can not be null");
+      throw new IllegalArgumentException(Messages.Error_Maven_Project_Cant_Be_Null);
     } 
     this.project = mavenProject;
   }
@@ -115,7 +115,7 @@ public class MavenSessionHelper {
       return ((MavenImpl)MavenPlugin.getMaven()).getPlexusContainer().lookup(clazz);
     } catch(ComponentLookupException ex) {
       throw new CoreException(new Status(IStatus.ERROR, IMavenConstants.PLUGIN_ID, -1,
-          Messages.MavenImpl_error_lookup, ex));
+          Messages.MavenSessionHelper_Error_Component_Lookup, ex));
     }
   }
 

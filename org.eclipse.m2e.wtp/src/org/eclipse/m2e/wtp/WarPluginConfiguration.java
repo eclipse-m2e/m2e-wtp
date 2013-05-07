@@ -31,6 +31,7 @@ import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.internal.markers.SourceLocation;
 import org.eclipse.m2e.core.internal.markers.SourceLocationHelper;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.StringUtils;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.PatternBasedFileNameMapping;
@@ -59,15 +60,15 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   private static final Logger LOG = LoggerFactory.getLogger(WarPluginConfiguration.class);
   
-  private static final String WAR_SOURCE_FOLDER = "/src/main/webapp";
+  private static final String WAR_SOURCE_FOLDER = "/src/main/webapp"; //$NON-NLS-1$
 
-  private static final String WAR_PACKAGING = "war";
+  private static final String WAR_PACKAGING = "war"; //$NON-NLS-1$
 
-  private static final String WEB_XML = "WEB-INF/web.xml";
+  private static final String WEB_XML = "WEB-INF/web.xml"; //$NON-NLS-1$
 
   private static final int WEB_3_1_ID = 31;
 
-  private static final String WEB_3_1_TEXT = "3.1";
+  private static final String WEB_3_1_TEXT = "3.1"; //$NON-NLS-1$
   
   //Keep backward compat with WTP < Kepler
   private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
@@ -86,7 +87,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   }
 
   public Plugin getPlugin() {
-    return mavenProject.getPlugin("org.apache.maven.plugins:maven-war-plugin");
+    return mavenProject.getPlugin("org.apache.maven.plugins:maven-war-plugin"); //$NON-NLS-1$
   }
 
   static boolean isWarProject(MavenProject mavenProject) {
@@ -96,7 +97,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   public Xpp3Dom[] getWebResources() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom webResources = config.getChild("webResources");
+      Xpp3Dom webResources = config.getChild("webResources"); //$NON-NLS-1$
       if (webResources != null && webResources.getChildCount() > 0)
       {
         int count = webResources.getChildCount();  
@@ -104,11 +105,11 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
         for (int i= 0; i< count ; i++) {
           //MECLIPSEWTP-97 support old maven-war-plugin configurations which used <webResource> 
           // instead of <resource>
-          Xpp3Dom webResource = new Xpp3Dom(webResources.getChild(i),"resource"); 
+          Xpp3Dom webResource = new Xpp3Dom(webResources.getChild(i),"resource");  //$NON-NLS-1$
           
           //MECLIPSEWTP-152 : Web resource processing fails when targetPath has a leading /
-          Xpp3Dom targetPath = webResource.getChild("targetPath");
-          if(targetPath != null && targetPath.getValue().startsWith("/")) {
+          Xpp3Dom targetPath = webResource.getChild("targetPath"); //$NON-NLS-1$
+          if(targetPath != null && targetPath.getValue().startsWith("/")) { //$NON-NLS-1$
             targetPath.setValue(targetPath.getValue().substring(1));
           }
 
@@ -126,7 +127,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       return WAR_SOURCE_FOLDER;
     }
 
-    Xpp3Dom[] warSourceDirectory = dom.getChildren("warSourceDirectory");
+    Xpp3Dom[] warSourceDirectory = dom.getChildren("warSourceDirectory"); //$NON-NLS-1$
     if(warSourceDirectory != null && warSourceDirectory.length > 0) {
       // first one wins
       String dir = warSourceDirectory[0].getValue();
@@ -140,30 +141,34 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     return WAR_SOURCE_FOLDER;
   }
 
-  public String[] getPackagingExcludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingExcludes");
+  @Override
+public String[] getPackagingExcludes() {
+    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingExcludes"); //$NON-NLS-1$
   }
 
-  public String[] getPackagingIncludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingIncludes");
+  @Override
+public String[] getPackagingIncludes() {
+    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingIncludes"); //$NON-NLS-1$
   }
 
-  public String[] getSourceExcludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"warSourceExcludes");
+  @Override
+public String[] getSourceExcludes() {
+    return DomUtils.getPatternsAsArray(getConfiguration(),"warSourceExcludes"); //$NON-NLS-1$
   }
 
-  public String[] getSourceIncludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"warSourceIncludes");
+  @Override
+public String[] getSourceIncludes() {
+    return DomUtils.getPatternsAsArray(getConfiguration(),"warSourceIncludes"); //$NON-NLS-1$
   }
 
   public boolean isAddManifestClasspath() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom arch = config.getChild("archive");
+      Xpp3Dom arch = config.getChild("archive"); //$NON-NLS-1$
       if(arch != null) {
-        Xpp3Dom manifest = arch.getChild("manifest");
+        Xpp3Dom manifest = arch.getChild("manifest"); //$NON-NLS-1$
         if(manifest != null) {
-          Xpp3Dom addToClp = manifest.getChild("addClasspath");
+          Xpp3Dom addToClp = manifest.getChild("addClasspath"); //$NON-NLS-1$
           if(addToClp != null) {
             return Boolean.valueOf(addToClp.getValue());
           }
@@ -176,15 +181,15 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   public String getManifestClasspathPrefix() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom arch = config.getChild("archive");
+      Xpp3Dom arch = config.getChild("archive"); //$NON-NLS-1$
       if(arch != null) {
-        Xpp3Dom manifest = arch.getChild("manifest");
+        Xpp3Dom manifest = arch.getChild("manifest"); //$NON-NLS-1$
         if(manifest != null) {
-          Xpp3Dom prefix = manifest.getChild("classpathPrefix");
+          Xpp3Dom prefix = manifest.getChild("classpathPrefix"); //$NON-NLS-1$
           if(prefix != null && !StringUtils.nullOrEmpty(prefix.getValue())) {
             String rawPrefix = prefix.getValue().trim();
-            if (!rawPrefix.endsWith("/")){
-              rawPrefix += "/";
+            if (!rawPrefix.endsWith("/")){ //$NON-NLS-1$
+              rawPrefix += "/"; //$NON-NLS-1$
             }
             return rawPrefix;
           }
@@ -233,11 +238,11 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     }
    
     //If no web.xml found and the project depends on some java EE 7 jar, then set web facet to 3.1
-    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.WebConnection")) {
+    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.WebConnection")) { //$NON-NLS-1$
       return WEB_31;
     }
     //MNGECLIPSE-1978 If no web.xml found and the project depends on some java EE 6 jar, then set web facet to 3.0
-    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.annotation.WebServlet")) {
+    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.annotation.WebServlet")) { //$NON-NLS-1$
       return WebFacetUtils.WEB_30;
     }
     
@@ -248,7 +253,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
         return fProject.getProjectFacetVersion(WebFacetUtils.WEB_FACET);
       }
     } catch (Exception e) {
-      LOG.warn(NLS.bind("Can not read project '{0}' facets", project.getName()), e);
+      LOG.warn(NLS.bind(Messages.Error_Reading_Project_Facet, project.getName()), e); 
     }
     
     //MNGECLIPSE-984 web.xml is optional for 2.5 Web Projects
@@ -264,7 +269,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   public String getCustomWebXml(IProject project) {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom webXmlDom = config.getChild("webXml");
+      Xpp3Dom webXmlDom = config.getChild("webXml"); //$NON-NLS-1$
       if(webXmlDom != null && webXmlDom.getValue() != null) {
         String webXmlFile = webXmlDom.getValue().trim();
         webXmlFile = ProjectUtils.getRelativePath(project, webXmlFile);
@@ -298,20 +303,20 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   }
   
   public String getDependentWarIncludes() {
-    return DomUtils.getChildValue(getConfiguration(), "dependentWarIncludes", "**/**");
+    return DomUtils.getChildValue(getConfiguration(), "dependentWarIncludes", "**/**"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public String getDependentWarExcludes() {
-    return DomUtils.getChildValue(getConfiguration(), "dependentWarExcludes", "META-INF/MANIFEST.MF");
+    return DomUtils.getChildValue(getConfiguration(), "dependentWarExcludes", "META-INF/MANIFEST.MF"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public List<Overlay> getConfiguredOverlays() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom overlaysNode = config.getChild("overlays");
+      Xpp3Dom overlaysNode = config.getChild("overlays"); //$NON-NLS-1$
       if (overlaysNode != null && overlaysNode.getChildCount() > 0) {
         List<Overlay> overlays = new ArrayList<Overlay>(overlaysNode.getChildCount());
-        for (Xpp3Dom overlayNode : overlaysNode.getChildren("overlay")) {
+        for (Xpp3Dom overlayNode : overlaysNode.getChildren("overlay")) { //$NON-NLS-1$
           overlays.add(parseOverlay(overlayNode));
         }
         return overlays;
@@ -325,15 +330,15 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
    * @return
    */
   private Overlay parseOverlay(Xpp3Dom overlayNode) {
-    String artifactId = DomUtils.getChildValue(overlayNode, "artifactId");
-    String groupId = DomUtils.getChildValue(overlayNode, "groupId");
-    String[] exclusions = DomUtils.getChildrenAsStringArray(overlayNode.getChild("excludes"), "exclude");
-    String[] inclusions = DomUtils.getChildrenAsStringArray(overlayNode.getChild("includes"), "include");
-    String classifier = DomUtils.getChildValue(overlayNode, "classifier");
-    boolean filtered = DomUtils.getBooleanChildValue(overlayNode, "filtered");
-    boolean skip = DomUtils.getBooleanChildValue(overlayNode, "skip");
-    String type = DomUtils.getChildValue(overlayNode, "type", "war");
-    String targetPath = DomUtils.getChildValue(overlayNode, "targetPath", "/");
+    String artifactId = DomUtils.getChildValue(overlayNode, "artifactId"); //$NON-NLS-1$
+    String groupId = DomUtils.getChildValue(overlayNode, "groupId"); //$NON-NLS-1$
+    String[] exclusions = DomUtils.getChildrenAsStringArray(overlayNode.getChild("excludes"), "exclude"); //$NON-NLS-1$ //$NON-NLS-2$
+    String[] inclusions = DomUtils.getChildrenAsStringArray(overlayNode.getChild("includes"), "include"); //$NON-NLS-1$ //$NON-NLS-2$
+    String classifier = DomUtils.getChildValue(overlayNode, "classifier"); //$NON-NLS-1$
+    boolean filtered = DomUtils.getBooleanChildValue(overlayNode, "filtered"); //$NON-NLS-1$
+    boolean skip = DomUtils.getBooleanChildValue(overlayNode, "skip"); //$NON-NLS-1$
+    String type = DomUtils.getChildValue(overlayNode, "type", "war"); //$NON-NLS-1$ //$NON-NLS-2$
+    String targetPath = DomUtils.getChildValue(overlayNode, "targetPath", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 
     Overlay overlay = new Overlay();
     overlay.setArtifactId(artifactId);
@@ -361,20 +366,21 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     Xpp3Dom config = getConfiguration();
     String expression = null;
     if(config != null) {
-      expression = DomUtils.getChildValue(config, "outputFileNameMapping");
+      expression = DomUtils.getChildValue(config, "outputFileNameMapping"); //$NON-NLS-1$
     }
     return new PatternBasedFileNameMapping(expression);
   }
   
-  protected String getFilteringAttribute() {
-    return "filteringDeploymentDescriptors";
+  @Override
+protected String getFilteringAttribute() {
+    return "filteringDeploymentDescriptors"; //$NON-NLS-1$
   }
   
   public String getWarName() {
     Xpp3Dom config = getConfiguration();
     String warName = null;
     if (config != null) {
-      warName = DomUtils.getChildValue(config, "warName");
+      warName = DomUtils.getChildValue(config, "warName"); //$NON-NLS-1$
     }
     if (StringUtils.nullOrEmpty(warName)) {
       warName = mavenProject.getBuild().getFinalName();
@@ -382,16 +388,18 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     return warName;
   }
 
-  public SourceLocation getSourceLocation() {
+  @Override
+public SourceLocation getSourceLocation() {
     Plugin plugin = getPlugin();
     if (plugin == null) {
       return null;
     }
-    return SourceLocationHelper.findLocation(plugin, "configuration");
+    return SourceLocationHelper.findLocation(plugin, "configuration"); //$NON-NLS-1$
   }
 
-  public String getSourceIncludeParameterName() {
-    return "warSourceIncludes";
+  @Override
+public String getSourceIncludeParameterName() {
+    return "warSourceIncludes"; //$NON-NLS-1$
   }
 
   

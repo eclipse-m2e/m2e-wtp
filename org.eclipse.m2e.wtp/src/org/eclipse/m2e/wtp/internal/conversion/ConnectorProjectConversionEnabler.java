@@ -30,7 +30,8 @@ public class ConnectorProjectConversionEnabler extends AbstractProjectFacetConve
   /**
    * Returns the <code>rar</code> packaging
    */
-  public String[] getPackagingTypes(IProject project) {
+  @Override
+public String[] getPackagingTypes(IProject project) {
     return new String[]{JEEPackaging.RAR.getName()};
   }
 }

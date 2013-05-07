@@ -54,13 +54,13 @@ public class ProjectUtils {
     File basedir = project.getLocation().toFile();
     String relative;
     if(absolutePath.equals(basedir.getAbsolutePath())) {
-      relative = ".";
+      relative = "."; //$NON-NLS-1$
     } else if(absolutePath.startsWith(basedir.getAbsolutePath())) {
       relative = absolutePath.substring(basedir.getAbsolutePath().length() + 1);
     } else {
       relative = absolutePath;
     }
-    return relative.replace('\\', '/'); //$NON-NLS-1$ //$NON-NLS-2$
+    return relative.replace('\\', '/');
   }
   
 

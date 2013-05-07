@@ -28,6 +28,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 
@@ -47,14 +48,16 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
   private static final Set<String> UNSUPPORTED_DEPENDENCY_TYPES;
 
   static {
-    UNSUPPORTED_DEPENDENCY_TYPES = new HashSet<String>(Arrays.asList(new String[] {"ejb-client", "test-jar"}));
+    UNSUPPORTED_DEPENDENCY_TYPES = new HashSet<String>(Arrays.asList(new String[] {"ejb-client", "test-jar"})); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+  @Override
+public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
     //Nothing to configure
   }
 
-  public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
+  @Override
+public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
     IMavenProjectFacade facade = event.getMavenProject();
     if(facade == null) {
       return;
@@ -107,8 +110,8 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
           && StringUtils.equals(a.getVersion(), d.getVersion())
           && StringUtils.equals(a.getClassifier(), a.getClassifier())
         ) {
-        String dType = (StringUtils.isBlank(d.getType()))?"jar":d.getType();
-        String aType = (StringUtils.isBlank(a.getType()))?"jar":a.getType();
+        String dType = (StringUtils.isBlank(d.getType()))?"jar":d.getType(); //$NON-NLS-1$
+        String aType = (StringUtils.isBlank(a.getType()))?"jar":a.getType(); //$NON-NLS-1$
         if (aType.equals(dType)) {
           return d;
         }

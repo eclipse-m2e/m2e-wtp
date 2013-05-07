@@ -33,6 +33,7 @@ public class OverlaySelfComponent extends OverlayVirtualComponent implements IOv
 		super(aComponentProject);
 	}
 
+	@Override
 	public IVirtualFolder getRootFolder() {
 		IVirtualComponent component = ComponentCore.createComponent(getProject());
 		IVirtualFolder root =null;

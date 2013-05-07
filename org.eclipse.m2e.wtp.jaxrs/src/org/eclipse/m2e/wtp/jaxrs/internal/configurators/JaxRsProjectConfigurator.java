@@ -43,8 +43,6 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * JAX-RS maven project configurator.
@@ -57,12 +55,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 
-	private static final String WAR_PACKAGING = "war";
+	private static final String WAR_PACKAGING = "war"; //$NON-NLS-1$
 	
-	private static final String M2E_JAXRS_ACTIVATION_PROPERTY = "m2e.jaxrs.activation";
+	private static final String M2E_JAXRS_ACTIVATION_PROPERTY = "m2e.jaxrs.activation"; //$NON-NLS-1$
 
-	private static final Logger LOG = LoggerFactory.getLogger(JaxRsProjectConfigurator.class);
-		
 	@Override
 	public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 		configureInternal(request.getMavenProjectFacade(), monitor);
@@ -73,7 +69,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 
 		MavenProject mavenProject = mavenProjectFacade.getMavenProject();
 		IProject project = mavenProjectFacade.getProject();
-		if(!WAR_PACKAGING.equals(mavenProject.getPackaging())) { //$NON-NLS-1$
+		if(!WAR_PACKAGING.equals(mavenProject.getPackaging())) {
 			return;
 		}
 
@@ -131,7 +127,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 			model.setProperty(IJAXRSFacetInstallDataModelProperties.UPDATEDD, false);
 			fproj.installProjectFacet(facetVersion, model, monitor);
 		} else {
-			String errorMessage = status.getMessage() == null ? "<unknown error>":status.getMessage();
+			String errorMessage = status.getMessage() == null ? Messages.JaxRsProjectConfigurator_Unknown_Error:status.getMessage();
 			String markerMessage = NLS.bind(Messages.JaxrsProjectConfigurator_facet_cannot_be_installed, 
 									facetVersion, errorMessage);
 	        addErrorMarker(fproj.getProject(), markerMessage);

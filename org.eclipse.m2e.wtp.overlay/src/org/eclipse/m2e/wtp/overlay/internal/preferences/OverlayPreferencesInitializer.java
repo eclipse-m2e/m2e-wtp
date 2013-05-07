@@ -19,7 +19,8 @@ public class OverlayPreferencesInitializer extends AbstractPreferenceInitializer
   /**
    * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
    */
-  public void initializeDefaultPreferences() {
+  @Override
+public void initializeDefaultPreferences() {
     IEclipsePreferences store = ((IScopeContext) new DefaultScope()).getNode(OverlayPluginActivator.PLUGIN_ID);
     store.putBoolean(OverlayConstants.P_REPUBLISH_ON_PROJECT_CHANGE, true);
   }

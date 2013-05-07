@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,10 @@ public class EjbPluginConfiguration {
   public EjbPluginConfiguration(MavenProject mavenProject) {
 
     if (JEEPackaging.EJB != JEEPackaging.getValue(mavenProject.getPackaging()))
-      throw new IllegalArgumentException("Maven project must have ejb packaging");
+      throw new IllegalArgumentException(Messages.EjbPluginConfiguration_Project_Must_Have_ejb_Packaging);
     
     this.ejbProject = mavenProject;
-    this.plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-ejb-plugin");
+    this.plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-ejb-plugin"); //$NON-NLS-1$
   }
 
   /**
@@ -66,14 +67,14 @@ public class EjbPluginConfiguration {
       return DEFAULT_EJB_FACET_VERSION; 
     }
     
-    String ejbVersion = DomUtils.getChildValue(dom, "ejbVersion");
+    String ejbVersion = DomUtils.getChildValue(dom, "ejbVersion"); //$NON-NLS-1$
     if (ejbVersion != null) {
       try {
         return WTPProjectsUtil.EJB_FACET.getVersion(ejbVersion);
       } catch (Exception e) {
         LOG.warn(e.getMessage());
         //If ejbVersion > 3.0 and WTP < 3.2, then downgrade to ejb facet 3.0
-        if (ejbVersion.startsWith("3.")){
+        if (ejbVersion.startsWith("3.")){ //$NON-NLS-1$
           return IJ2EEFacetConstants.EJB_30;
         }
       }

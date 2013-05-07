@@ -18,6 +18,7 @@ import org.eclipse.jst.j2ee.project.facet.IAppClientFacetInstallDataModelPropert
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.datamodel.FacetDataModelProvider;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -42,7 +43,8 @@ public class AppClientVersionChangeListener implements IFacetedProjectListener {
   /* (non-Javadoc)
    * @see org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener#handleEvent(org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent)
    */
-  public void handleEvent(IFacetedProjectEvent event) {
+  @Override
+public void handleEvent(IFacetedProjectEvent event) {
     if (event.getType().equals(IFacetedProjectEvent.Type.POST_VERSION_CHANGE)) {
       IProject project = ((IProjectFacetActionEvent) event).getProject().getProject();
       //The action applies if the Project has Maven nature and AppClient facet
@@ -71,13 +73,13 @@ public class AppClientVersionChangeListener implements IFacetedProjectListener {
               try {
                 ((IDataModelOperation) model.getProperty(FacetDataModelProvider.NOTIFICATION_OPERATION)).execute(monitor, null);
               } catch(ExecutionException e) {
-                LOG.error("Unable to notify Application Client version change", e);
+                LOG.error(Messages.AppClientVersionChangeListener_Error_Notifying_Application_Client_Version_Change, e);
               } 
             }
           }
         }
       } catch(CoreException e) {
-        LOG.error("Unable to read project nature", e);
+        LOG.error(Messages.VersionChangeListener_Unreadeable_Project_Nature, e);
       }
     }
   }

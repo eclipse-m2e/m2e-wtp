@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
+import org.eclipse.m2e.wtp.jaxrs.internal.Messages;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class ClasspathJaxRsFacetDetector extends AbstractFacetDetector {
 		if (javaProject != null) {
 			IType type = null;
 			try {
-				type = javaProject.findType("javax.ws.rs.client.Client");
+				type = javaProject.findType("javax.ws.rs.client.Client"); //$NON-NLS-1$
 				if (type != null) {
 					return JAX_RS_FACET_2_0;
 				}
@@ -64,7 +65,7 @@ public class ClasspathJaxRsFacetDetector extends AbstractFacetDetector {
 					return JAX_RS_FACET_1_0;
 				}
 			} catch (JavaModelException e) {
-				LOG.error("Unable to determine JAX-RS version", e);
+				LOG.error(Messages.ClasspathJaxRsFacetDetector_Unable_To_Determine_JAXRS_Version, e);
 			}
 		}
 		return null;

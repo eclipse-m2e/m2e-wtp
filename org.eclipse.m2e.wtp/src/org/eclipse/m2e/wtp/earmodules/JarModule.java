@@ -47,7 +47,7 @@ public class JarModule extends AbstractEarModule {
   }
 
   public String getType() {
-    return "jar";
+    return "jar"; //$NON-NLS-1$
   }
 
   void setLibBundleDir(String defaultLibBundleDir) {
@@ -65,7 +65,7 @@ public class JarModule extends AbstractEarModule {
   }
 
   protected void setCustomValues(Xpp3Dom module) {
-    Xpp3Dom contextRootDom = new Xpp3Dom("includeInApplicationXml");
+    Xpp3Dom contextRootDom = new Xpp3Dom("includeInApplicationXml"); //$NON-NLS-1$
     contextRootDom.setValue(Boolean.toString(includeInApplicationXml));
     module.addChild(contextRootDom); 
   }

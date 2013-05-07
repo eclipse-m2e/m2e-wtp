@@ -40,11 +40,11 @@ public class ParModule extends EjbModule {
   }
 
   public String getType() {
-    return "par";
+    return "par"; //$NON-NLS-1$
   }
   
   protected String getModuleType() {
-    return "parModule";
+    return "parModule"; //$NON-NLS-1$
   }
   
 }

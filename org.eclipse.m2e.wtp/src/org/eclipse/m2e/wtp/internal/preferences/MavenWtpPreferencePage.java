@@ -30,10 +30,12 @@ import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.wtp.JEEPackaging;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.preferences.ConfiguratorEnabler;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences;
 import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
 import org.eclipse.m2e.wtp.preferences.MavenWtpPreferencesConstants;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -78,10 +80,11 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   private List<ConfiguratorEnablerComposite> enablersComposites;
   
   public MavenWtpPreferencePage() {
-    setTitle("Java EE Integration Settings");
+    setTitle(Messages.MavenWtpPreferencePage_JavaEE_Integration_Settings);
   }
 
-  protected Control createContents(Composite parent) {
+  @Override
+protected Control createContents(Composite parent) {
     Composite main = new Composite(parent, SWT.NONE);
     GridLayout gl = new GridLayout(1, false);
     main.setLayout(gl);
@@ -108,7 +111,7 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
       return;
     }
     configuratorEnablerGroup = new Group(main, SWT.NONE);
-    configuratorEnablerGroup.setText("Select active Java EE configurators");
+    configuratorEnablerGroup.setText(Messages.MavenWtpPreferencePage_Select_Active_JavaEE_Configurators);
     GridDataFactory.fillDefaults().applyTo(configuratorEnablerGroup);
     GridLayoutFactory.fillDefaults().margins(5, 0).applyTo(configuratorEnablerGroup);
     enablersComposites = new ArrayList<ConfiguratorEnablerComposite>(configuratorEnablers.length);
@@ -126,12 +129,12 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
    */
   private void createEarPrefs(Composite main) {
     earPrefGroup = new Group(main, SWT.NONE);
-    earPrefGroup.setText("EAR Project preferences");
+    earPrefGroup.setText(Messages.MavenWtpPreferencePage_EAR_Project_Preferences);
     earPrefGroup.setLayout(new GridLayout(1, false));
     earPrefGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     genApplicationXmlButton = new Button(earPrefGroup, SWT.CHECK);
-    genApplicationXmlButton.setText("Generate application.xml under the build directory");
+    genApplicationXmlButton.setText(Messages.MavenWtpPreferencePage_Generate_ApplicationXml_Under_Build_Dir);
   }
 
   private void createOverridePrefs(Composite main, IProject project) {
@@ -141,14 +144,16 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
       overrideComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       overrideButton = new Button(overrideComp, SWT.CHECK);
-      overrideButton.setText("Enable Project Specific Settings");
+      overrideButton.setText(Messages.MavenWtpPreferencePage_Enable_Project_Specific_Settings);
 
       overrideButton.addSelectionListener(new SelectionListener() {
-        public void widgetDefaultSelected(SelectionEvent e) {
+        @Override
+		public void widgetDefaultSelected(SelectionEvent e) {
           widgetSelected(e);
         }
 
-        public void widgetSelected(SelectionEvent e) {
+        @Override
+		public void widgetSelected(SelectionEvent e) {
           setWidgetsEnabled(overrideButton.getSelection());
         }
       });
@@ -172,13 +177,13 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
 
   private void createWarPrefs(Composite main) {
     warPrefGroup = new Group(main, SWT.NONE);
-    warPrefGroup.setText("WAR Project preferences");
+    warPrefGroup.setText(Messages.MavenWtpPreferencePage_WAR_Project_Preferences);
     warPrefGroup.setLayout(new GridLayout(1, false));
     warPrefGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     warMavenArchiverButton = new Button(warPrefGroup, SWT.CHECK);
-    warMavenArchiverButton.setText("Maven Archiver generates files under the build directory");
-    warMavenArchiverButton.setToolTipText("The build directory will always be used if Web resource filtering is enabled");
+    warMavenArchiverButton.setText(Messages.MavenWtpPreferencePage_Generate_MavenArchiver_Files_Under_Build_Dir);
+    warMavenArchiverButton.setToolTipText(Messages.MavenWtpPreferencePage_Using_Build_Directory);
   }
 
   private Link createLink(Composite composite, String text) {
@@ -186,11 +191,13 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
     link.setFont(composite.getFont());
     link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
     link.addSelectionListener(new SelectionListener() {
-      public void widgetSelected(SelectionEvent e) {
+      @Override
+	public void widgetSelected(SelectionEvent e) {
         openGlobalPrefs();
       }
 
-      public void widgetDefaultSelected(SelectionEvent e) {
+      @Override
+	public void widgetDefaultSelected(SelectionEvent e) {
         openGlobalPrefs();
       }
     });
@@ -236,13 +243,15 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   /**
    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
    */
-  public void init(IWorkbench workbench) {
+  @Override
+public void init(IWorkbench workbench) {
   }
 
   /**
    * @see org.eclipse.jface.preference.PreferencePage#performOk()
    */
-  public boolean performOk() {
+  @Override
+public boolean performOk() {
 
     IProject project = getProject();
     IMavenWtpPreferencesManager preferencesManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
@@ -269,8 +278,8 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
     if(!newPreferences.equals(preferences)) {
       preferencesManager.savePreferences(newPreferences, getProject());
 
-      boolean res = MessageDialog.openQuestion(getShell(), "Maven Java EE Integration Settings", //
-          "Maven Java EE Integration settings have changed. Do you want to update project configuration?");
+      boolean res = MessageDialog.openQuestion(getShell(), Messages.MavenWtpPreferencePage_Maven_JavaEE_Integration_Settings, //
+          Messages.MavenWtpPreferencePage_Update_Projects_After_Preference_Changes);
       if(res) {
         updateImpactedProjects();
       }
@@ -282,7 +291,8 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   /**
    * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
    */
-  protected void performDefaults() {
+  @Override
+protected void performDefaults() {
 
     IProject project = getProject();
     IMavenWtpPreferencesManager preferencesManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
@@ -318,11 +328,12 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
     
     final IProjectConfigurationManager configurationManager = MavenPlugin.getProjectConfigurationManager();
 
-    WorkspaceJob job = new WorkspaceJob("Updating maven projects ") {
+    WorkspaceJob job = new WorkspaceJob(Messages.MavenWtpPreferencePage_Updating_Maven_Projects_Job) {
   
-      public IStatus runInWorkspace(IProgressMonitor monitor) {
+      @Override
+	public IStatus runInWorkspace(IProgressMonitor monitor) {
         try {
-          SubMonitor progress = SubMonitor.convert(monitor, "Updating Maven projects", 100);
+          SubMonitor progress = SubMonitor.convert(monitor, Messages.MavenWtpPreferencePage_Updating_Maven_Projects_Monitor, 100);
           SubMonitor subProgress = SubMonitor.convert(progress.newChild(5), facades.size() * 100);
           //projectManager.sortProjects(facades, progress.newChild(5));
           for(IMavenProjectFacade facade : facades) {
@@ -330,7 +341,7 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
               throw new OperationCanceledException();
             }
             IProject project = facade.getProject();
-            subProgress.subTask("Updating configuration for " + project.getName());
+            subProgress.subTask(NLS.bind(Messages.MavenWtpPreferencePage_Updating_Configuration_For_Project, project.getName()));
 
             configurationManager.updateProjectConfiguration(project, subProgress);
           }
@@ -379,7 +390,8 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
       case EAR:
       case WAR:
         return true;
+      default:
+       	return false;
     }
-    return false;
   }
 }

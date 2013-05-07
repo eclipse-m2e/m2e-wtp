@@ -17,23 +17,23 @@ public enum JEEPackaging {
   /**
    * Web project.
    */
-  WAR("war"),
+  WAR("war"), //$NON-NLS-1$
   /**
    * Enterprise Java Bean.
    */
-  EJB("ejb"),
+  EJB("ejb"), //$NON-NLS-1$
   /**
    * Enterprise Application Resource.
    */
-  EAR("ear"),
+  EAR("ear"), //$NON-NLS-1$
   /**
    * Resource Adapter Archive.
    */
-  RAR("rar"),
+  RAR("rar"), //$NON-NLS-1$
   /**
    * Application client
    */
-  APP_CLIENT("app-client"),
+  APP_CLIENT("app-client"), //$NON-NLS-1$
   /**
    * Unknown packaging.
    */
@@ -61,7 +61,7 @@ public enum JEEPackaging {
    */
   public static JEEPackaging getValue(String packaging) {
     if(packaging == null) {
-      throw new IllegalArgumentException("packaging must not be null");
+      throw new IllegalArgumentException("packaging must not be null"); //$NON-NLS-1$
     }
     for(JEEPackaging pkg : values()) {
       if(packaging.equals(pkg.getName())) {

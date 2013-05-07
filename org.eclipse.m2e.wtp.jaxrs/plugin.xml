@@ -11,7 +11,7 @@
       <lifecycleMapping
             class="org.eclipse.m2e.wtp.jaxrs.internal.configurators.JaxRsLifecycleMapping"
             id="org.eclipse.m2e.wtp.jaxrs.JaxrsLifecycleMapping"
-            name="JAX-RS Lifecycle mapping">
+            name="%JAXRS_Lifecycle_Mapping">
       </lifecycleMapping>
     </extension>
     

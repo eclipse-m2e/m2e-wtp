@@ -96,7 +96,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
     Set<IVirtualReference> newOverlayRefs = new LinkedHashSet<IVirtualReference>();
     MavenSessionHelper helper = new MavenSessionHelper(mavenProject);
     try {
-      helper.ensureDependenciesAreResolved("maven-war-plugin", "war:war");
+      helper.ensureDependenciesAreResolved("maven-war-plugin", "war:war"); //$NON-NLS-1$ //$NON-NLS-2$
       
       MavenPlugin.getMaven();
       
@@ -144,7 +144,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
           overlayComponent.setExclusions(new LinkedHashSet<String>(Arrays.asList(overlay.getExcludes())));
           
           IVirtualReference depRef = ComponentCore.createReference(warComponent, overlayComponent);
-          String targetPath = StringUtils.nullOrEmpty(overlay.getTargetPath())?"/":overlay.getTargetPath();
+          String targetPath = StringUtils.nullOrEmpty(overlay.getTargetPath())?"/":overlay.getTargetPath(); //$NON-NLS-1$
           depRef.setRuntimePath(new Path(targetPath));
           newOverlayRefs.add(depRef);
         }
@@ -173,9 +173,9 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
 
   private IOverlayVirtualComponent createOverlayArchiveComponent(IProject project, MavenProject mavenProject, Overlay overlay) throws CoreException {
     IPath m2eWtpFolder = ProjectUtils.getM2eclipseWtpFolder(mavenProject, project);
-    IPath unpackDirPath = new Path(m2eWtpFolder.toOSString()+"/overlays");
+    IPath unpackDirPath = new Path(m2eWtpFolder.toOSString()+"/overlays"); //$NON-NLS-1$
     String archiveLocation = ArtifactHelper.getM2REPOVarPath(overlay.getArtifact());
-    String targetPath = StringUtils.nullOrEmpty(overlay.getTargetPath())?"/":overlay.getTargetPath();
+    String targetPath = StringUtils.nullOrEmpty(overlay.getTargetPath())?"/":overlay.getTargetPath(); //$NON-NLS-1$
     IOverlayVirtualComponent component = OverlayComponentCore.createOverlayArchiveComponent(
                                                                 project, 
                                                                 archiveLocation, 
@@ -185,11 +185,13 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
   }
   
   
-  public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
+  @Override
+public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
       throws CoreException {
   }
   
-  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
+  @Override
+public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
       IPluginExecutionMetadata executionMetadata) {
     return null;
   }

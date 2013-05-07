@@ -55,7 +55,7 @@ package org.eclipse.m2e.wtp.internal;
 public class AntPathMatcher  {
 
 	/** Default path separator: "/" */
-	public static final String DEFAULT_PATH_SEPARATOR = "/";
+	public static final String DEFAULT_PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
 	private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
@@ -107,7 +107,7 @@ public class AntPathMatcher  {
 		// Match all elements up to the first **
 		while (pattIdxStart <= pattIdxEnd && pathIdxStart <= pathIdxEnd) {
 			String patDir = pattDirs[pattIdxStart];
-			if ("**".equals(patDir)) {
+			if ("**".equals(patDir)) { //$NON-NLS-1$
 				break;
 			}
 			if (!matchStrings(patDir, pathDirs[pathIdxStart])) {
@@ -126,12 +126,12 @@ public class AntPathMatcher  {
 			if (!fullMatch) {
 				return true;
 			}
-			if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals("*") &&
+			if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals("*") && //$NON-NLS-1$
 					path.endsWith(this.pathSeparator)) {
 				return true;
 			}
 			for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
-				if (!pattDirs[i].equals("**")) {
+				if (!pattDirs[i].equals("**")) { //$NON-NLS-1$
 					return false;
 				}
 			}
@@ -141,7 +141,7 @@ public class AntPathMatcher  {
 			// String not exhausted, but pattern is. Failure.
 			return false;
 		}
-		else if (!fullMatch && "**".equals(pattDirs[pattIdxStart])) {
+		else if (!fullMatch && "**".equals(pattDirs[pattIdxStart])) { //$NON-NLS-1$
 			// Path start definitely matches due to "**" part in pattern.
 			return true;
 		}
@@ -149,7 +149,7 @@ public class AntPathMatcher  {
 		// up to last '**'
 		while (pattIdxStart <= pattIdxEnd && pathIdxStart <= pathIdxEnd) {
 			String patDir = pattDirs[pattIdxEnd];
-			if (patDir.equals("**")) {
+			if (patDir.equals("**")) { //$NON-NLS-1$
 				break;
 			}
 			if (!matchStrings(patDir, pathDirs[pathIdxEnd])) {
@@ -161,7 +161,7 @@ public class AntPathMatcher  {
 		if (pathIdxStart > pathIdxEnd) {
 			// String is exhausted
 			for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
-				if (!pattDirs[i].equals("**")) {
+				if (!pattDirs[i].equals("**")) { //$NON-NLS-1$
 					return false;
 				}
 			}
@@ -171,7 +171,7 @@ public class AntPathMatcher  {
 		while (pattIdxStart != pattIdxEnd && pathIdxStart <= pathIdxEnd) {
 			int patIdxTmp = -1;
 			for (int i = pattIdxStart + 1; i <= pattIdxEnd; i++) {
-				if (pattDirs[i].equals("**")) {
+				if (pattDirs[i].equals("**")) { //$NON-NLS-1$
 					patIdxTmp = i;
 					break;
 				}
@@ -209,7 +209,7 @@ public class AntPathMatcher  {
 		}
 
 		for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
-			if (!pattDirs[i].equals("**")) {
+			if (!pattDirs[i].equals("**")) { //$NON-NLS-1$
 				return false;
 			}
 		}

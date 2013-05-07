@@ -12,6 +12,8 @@ package org.eclipse.m2e.wtp.internal.conversion;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.m2e.core.project.conversion.AbstractProjectConversionEnabler;
+import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
@@ -38,6 +40,7 @@ public abstract class AbstractProjectFacetConversionEnabler extends AbstractProj
   /**
    * Checks the project has the required {@link IProjectFacet}
    */
+  @Override
   public boolean accept(IProject project) {
     if (project != null) {
       IFacetedProject facetedProject;
@@ -45,7 +48,7 @@ public abstract class AbstractProjectFacetConversionEnabler extends AbstractProj
         facetedProject = ProjectFacetsManager.create(project);
         return facetedProject != null && facetedProject.hasProjectFacet(requiredFacet);
       } catch(CoreException ex) {
-        LOG.error("Can not accept "+ project.getName(), ex);
+        LOG.error(NLS.bind(Messages.AbstractProjectFacetConversionEnabler_Error_Accessing_Project,project.getName()), ex);
       }
     }
     return false;

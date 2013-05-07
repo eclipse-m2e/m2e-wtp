@@ -32,7 +32,8 @@ public abstract class AbstractResourceFilteringConfiguration implements Resource
   }
   
 
-  public List<String> getFilters() {
+  @Override
+public List<String> getFilters() {
     List<String> filters = new ArrayList<String>(mavenProjectFacade.getMavenProject().getFilters());
     if (pluginConfiguration != null) {
       filters.addAll(pluginConfiguration.getFilters());
@@ -40,14 +41,16 @@ public abstract class AbstractResourceFilteringConfiguration implements Resource
     return filters;
   }
 
-  public String getEscapeString() {
+  @Override
+public String getEscapeString() {
     if (pluginConfiguration == null) {
       return null;
     }
     return pluginConfiguration.getEscapeString();
   }
 
-  public List<Xpp3Dom> getNonfilteredExtensions() {
+  @Override
+public List<Xpp3Dom> getNonfilteredExtensions() {
     if (pluginConfiguration == null) {
       return Collections.emptyList();
     }

@@ -97,6 +97,6 @@ public class StringUtils {
           stringSet.addAll(Arrays.asList(strings));
         }
     }
-    return org.codehaus.plexus.util.StringUtils.join(stringSet.iterator(), ",");
+    return org.codehaus.plexus.util.StringUtils.join(stringSet.iterator(), ","); //$NON-NLS-1$
   }
 }

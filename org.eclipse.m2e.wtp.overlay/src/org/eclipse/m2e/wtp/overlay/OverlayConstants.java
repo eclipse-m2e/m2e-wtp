@@ -17,11 +17,11 @@ public class OverlayConstants {
 
   private OverlayConstants(){}
 
-  public static final String PLUGIN_ID = "org.eclipse.m2e.wtp.overlay";
+  public static final String PLUGIN_ID = "org.eclipse.m2e.wtp.overlay"; //$NON-NLS-1$
 
   /**
    * Republish on server if an overlay dependency changed.
    */
-  public static final String P_REPUBLISH_ON_PROJECT_CHANGE = "republishOnProjectChange";
+  public static final String P_REPUBLISH_ON_PROJECT_CHANGE = "republishOnProjectChange"; //$NON-NLS-1$
 
 }

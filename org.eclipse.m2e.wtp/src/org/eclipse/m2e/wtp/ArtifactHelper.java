@@ -21,6 +21,7 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.ArtifactKey;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.jdt.internal.BuildPathManager;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualArchiveComponent;
 
 /**
@@ -45,7 +46,7 @@ public class ArtifactHelper {
   //XXX Does maven API provide that kind of feature? 
   public static IPath getLocalRepoRelativePath(Artifact artifact) {
     if (artifact == null) {
-      throw new IllegalArgumentException("artifact must not be null");
+      throw new IllegalArgumentException(Messages.ArtifactHelper_Error_Artifact_Must_Not_Be_Null);
     }
     
     IPath m2repo = JavaCore.getClasspathVariable(BuildPathManager.M2_REPO); //always set
@@ -100,8 +101,8 @@ public class ArtifactHelper {
    */
   @Deprecated
   public static void fixArtifactHandler(ArtifactHandler artifactHandler) {
-	  if ("app-client".equals(artifactHandler.getExtension()) && artifactHandler instanceof DefaultArtifactHandler) {
-		  ((DefaultArtifactHandler)artifactHandler).setExtension("jar");
+	  if ("app-client".equals(artifactHandler.getExtension()) && artifactHandler instanceof DefaultArtifactHandler) { //$NON-NLS-1$
+		  ((DefaultArtifactHandler)artifactHandler).setExtension("jar"); //$NON-NLS-1$
 		  ((DefaultArtifactHandler)artifactHandler).setAddedToClasspath(true);
 	  }
   }

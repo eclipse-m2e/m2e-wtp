@@ -149,6 +149,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 		} else {
 			final String fileName = f.getName(); 
 			vf = new VirtualFile(project, flatFile.getModuleRelativePath(), f) {
+				@Override
 				public String getName() {
 					return fileName;
 				}

@@ -34,7 +34,8 @@ public class StandardFileNameMapping
     extends AbstractFileNameMapping
 {
 
-    public String mapFileName( final Artifact a )
+    @Override
+	public String mapFileName( final Artifact a )
     {
         return generateFileName( a, true );
     }

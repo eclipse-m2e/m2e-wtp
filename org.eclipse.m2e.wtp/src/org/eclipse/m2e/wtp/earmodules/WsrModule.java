@@ -40,11 +40,11 @@ public class WsrModule extends RarModule {
   }
 
   public String getType() {
-    return "wsr";
+    return "wsr"; //$NON-NLS-1$
   }
 
   protected String getModuleType() {
-    return "wsrModule";
+    return "wsrModule"; //$NON-NLS-1$
   }
   
 }

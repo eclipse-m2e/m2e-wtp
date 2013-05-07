@@ -18,8 +18,9 @@ import org.eclipse.m2e.wtp.mavenarchiver.AbstractWTPArchiverConfigurator;
  */
 public class AcrMavenArchiverConfigurator extends AbstractWTPArchiverConfigurator {
 
-  protected MojoExecutionKey getExecutionKey() {
-    MojoExecutionKey key = new MojoExecutionKey("org.apache.maven.plugins", "maven-acr-plugin", "", "acr", null, null);
+  @Override
+protected MojoExecutionKey getExecutionKey() {
+    MojoExecutionKey key = new MojoExecutionKey("org.apache.maven.plugins", "maven-acr-plugin", "", "acr", null, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     return key;
   }
 }

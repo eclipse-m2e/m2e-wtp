@@ -24,6 +24,8 @@ import java.util.zip.ZipFile;
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.m2e.wtp.overlay.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Compression utility class.
@@ -99,7 +101,7 @@ public class CompressionUtil {
 				monitor.worked(1);
 				
 				if (monitor.isCanceled()) {
-					throw new InterruptedException(" unzipping " +archive.getAbsolutePath() + " to "+ projectFolderFile.getAbsolutePath() +" was interrupted");
+					throw new InterruptedException(NLS.bind(Messages.CompressionUtil_Unzipping_Interrupted, archive.getAbsolutePath(), projectFolderFile.getAbsolutePath()));
 				}
 			}
 		} finally {
@@ -117,12 +119,11 @@ public class CompressionUtil {
       // Create output directory if needed
       if (!outputDirectory.mkdirs() && !outputDirectory.exists())
       {
-         throw new IOException("Unable to create archive output directory - " + outputDirectory);
+         throw new IOException(Messages.CompressionUtil_Unable_To_Create_Output_Dir + outputDirectory);
       }
       if (outputDirectory.isFile())
       {
-         throw new IllegalArgumentException("Unable to unpack to "
-               + outputDirectory.getAbsolutePath() + ", it points to an existing file");
+         throw new IllegalArgumentException(NLS.bind(Messages.CompressionUtil_Unpacking_Unable,outputDirectory.getAbsolutePath()));
       }
 	}
 	

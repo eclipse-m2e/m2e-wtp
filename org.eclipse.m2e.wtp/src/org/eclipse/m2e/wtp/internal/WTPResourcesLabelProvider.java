@@ -20,16 +20,20 @@ import org.eclipse.ui.navigator.ICommonLabelProvider;
  */
 public class WTPResourcesLabelProvider extends WorkbenchLabelProvider implements ICommonLabelProvider {
 
-  public void init(ICommonContentExtensionSite config) {
+  @Override
+public void init(ICommonContentExtensionSite config) {
   }
 
-  public void restoreState(IMemento memento) {
+  @Override
+public void restoreState(IMemento memento) {
   }
 
-  public void saveState(IMemento memento) {
+  @Override
+public void saveState(IMemento memento) {
   }
 
-  public String getDescription(Object element) {
+  @Override
+public String getDescription(Object element) {
     if(element instanceof WTPResourcesNode) {
       return ((WTPResourcesNode)element).getLabel();
     }

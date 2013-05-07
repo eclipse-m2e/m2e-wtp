@@ -18,8 +18,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.m2e.wtp.overlay.internal.Messages;
 import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
 import org.eclipse.m2e.wtp.overlay.internal.utilities.CompressionUtil;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Job unpacking a {@link File} to a destination {@link IFolder}.
@@ -60,20 +62,20 @@ public class UnpackArchiveJob extends WorkspaceJob {
 				for (final IResource member : members)
 				{
 					if (monitor.isCanceled()) {
-						return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, "Deleting "+member.getName() + " was cancelled");
+						return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, NLS.bind(Messages.UnpackArchiveJob_Deleteing_was_cancelled, member.getName()));
 					}
 					member.delete(true, monitor);
 				}
 			}
 			unpack(archive, unpackFolder.getLocation().toOSString(), monitor);
 		} catch (IOException e) {
-			return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, "Error unpacking "+archive.getName(), e);
+			return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, NLS.bind(Messages.UnpackArchiveJob_Error_Unpacking, archive.getName()), e);
 		} catch (InterruptedException e) {
-			return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, "Unpacking "+archive.getName() + " was interrupted", e);
+			return new Status(IStatus.ERROR, OverlayPluginActivator.PLUGIN_ID, NLS.bind(Messages.UnpackArchiveJob_Unpacking_Interrupted, archive.getName()) , e);
 		}
 		
 		//will run in scheduling rule of parent of unpackfolder, so should be run in a different job
-		new WorkspaceJob(unpackFolder.getLocation().toString() + " refresher") {
+		new WorkspaceJob(NLS.bind(Messages.UnpackArchiveJob_Refreshing, unpackFolder.getLocation().toString())) {
 
 			@Override
 			public IStatus runInWorkspace(final IProgressMonitor monitor) throws CoreException

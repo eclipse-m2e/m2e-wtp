@@ -10,7 +10,7 @@
       <lifecycleMapping
             class="org.eclipse.m2e.wtp.jsf.internal.configurators.JSFLifecycleMapping"
             id="org.eclipse.m2e.wtp.jsf.JSFLifecycleMapping"
-            name="JSF Lifecycle mapping">
+            name="%JSF_Lifecycle_mapping">
       </lifecycleMapping>
     </extension>
  

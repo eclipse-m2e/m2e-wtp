@@ -22,6 +22,7 @@ import org.eclipse.jst.j2ee.internal.J2EEVersionConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -37,9 +38,9 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
  */
 public class RarPluginConfiguration {
 
-  private static final String RAR_DEFAULT_CONTENT_DIR = "src/main/rar"; 
+  private static final String RAR_DEFAULT_CONTENT_DIR = "src/main/rar";  //$NON-NLS-1$
 
-  private static final String RA_XML = "META-INF/ra.xml";
+  private static final String RA_XML = "META-INF/ra.xml"; //$NON-NLS-1$
 
   private static final int JCA_1_6_ID = 16;//Exists in WTP >= 3.2 only
 
@@ -51,10 +52,10 @@ public class RarPluginConfiguration {
   public RarPluginConfiguration(IMavenProjectFacade facade) {
     Assert.isNotNull(facade);
     if (JEEPackaging.RAR != JEEPackaging.getValue(facade.getPackaging()))
-      throw new IllegalArgumentException("Maven project must have rar packaging");
+      throw new IllegalArgumentException(Messages.RarPluginConfiguration_Project_Must_Have_rar_Packaging);
     
     this.rarFacade = facade;
-    this.plugin = facade.getMavenProject().getPlugin("org.apache.maven.plugins:maven-rar-plugin");
+    this.plugin = facade.getMavenProject().getPlugin("org.apache.maven.plugins:maven-rar-plugin"); //$NON-NLS-1$
   }
 
   /**
@@ -74,7 +75,7 @@ public class RarPluginConfiguration {
   public boolean isJarIncluded() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom includeJarDom = config.getChild("includeJar");
+      Xpp3Dom includeJarDom = config.getChild("includeJar"); //$NON-NLS-1$
       if (includeJarDom != null) {
         return Boolean.parseBoolean(includeJarDom.getValue().trim());
       }
@@ -92,7 +93,7 @@ public class RarPluginConfiguration {
     IProject project = rarFacade.getProject();
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom contentDirDom = config.getChild("rarSourceDirectory");
+      Xpp3Dom contentDirDom = config.getChild("rarSourceDirectory"); //$NON-NLS-1$
       if(contentDirDom != null && contentDirDom.getValue() != null) {
         String contentDir = contentDirDom.getValue().trim();
         contentDir = ProjectUtils.getRelativePath(project, contentDir);
@@ -122,7 +123,7 @@ public class RarPluginConfiguration {
                 return IJ2EEFacetConstants.JCA_15;
               case JCA_1_6_ID:
                 //Don't create a static 1.6 facet version, it'd blow up WTP < 3.2
-                return IJ2EEFacetConstants.JCA_FACET.getVersion("1.6");//only exists in WTP version >= 3.2
+                return IJ2EEFacetConstants.JCA_FACET.getVersion("1.6");//only exists in WTP version >= 3.2 //$NON-NLS-1$
             }
           } finally {
             is.close();
@@ -136,7 +137,7 @@ public class RarPluginConfiguration {
 
       //If no ra.xml found and the project depends and WTP >= 3.2, then set connector facet to 1.6
       //TODO see if other conditions might apply to differentiate JCA 1.6 from 1.5
-      return IJ2EEFacetConstants.JCA_FACET.getVersion("1.6");
+      return IJ2EEFacetConstants.JCA_FACET.getVersion("1.6"); //$NON-NLS-1$
     }
 
   /**
@@ -146,7 +147,7 @@ public class RarPluginConfiguration {
   public String getCustomRaXml() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom raXmlFileDom = config.getChild("raXmlFile");
+      Xpp3Dom raXmlFileDom = config.getChild("raXmlFile"); //$NON-NLS-1$
       if(raXmlFileDom != null && raXmlFileDom.getValue() != null) {
         String raXmlFile = raXmlFileDom.getValue().trim();
         raXmlFile = ProjectUtils.getRelativePath(rarFacade.getProject(), raXmlFile);

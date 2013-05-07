@@ -23,6 +23,7 @@ import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
@@ -46,10 +47,10 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
     MavenProject mavenProject = facade.getMavenProject();
     if (JEEPackaging.APP_CLIENT != JEEPackaging.getValue(mavenProject.getPackaging()))
-      throw new IllegalArgumentException("Maven project must have app-client packaging");
+      throw new IllegalArgumentException(Messages.AcrPluginConfiguration_Error_Project_Not_appclient);
     
     this.mavenProjectFacade = facade;
-    Plugin plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-acr-plugin");
+    Plugin plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-acr-plugin"); //$NON-NLS-1$
     if (plugin != null) {
       setConfiguration((Xpp3Dom) plugin.getConfiguration()); 
     }
@@ -86,7 +87,7 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     }
    
     //If no application-client.xml found and the project depends on some java EE 6 jar then set application client facet to 6.0
-    if (WTPProjectsUtil.hasInClassPath(mavenProjectFacade.getProject(), "javax.servlet.annotation.WebServlet")) {
+    if (WTPProjectsUtil.hasInClassPath(mavenProjectFacade.getProject(), "javax.servlet.annotation.WebServlet")) { //$NON-NLS-1$
       return IJ2EEFacetConstants.APPLICATION_CLIENT_60;
     }
     
@@ -100,8 +101,8 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     IProject project = mavenProjectFacade.getProject();
     String contentDir = null;
     for (IPath path : mavenProjectFacade.getResourceLocations()) {
-      contentDir = path.toPortableString()+"/META-INF";
-      IFile applicationClientXml = project.getFolder(contentDir).getFile("application-client.xml");
+      contentDir = path.toPortableString()+"/META-INF"; //$NON-NLS-1$
+      IFile applicationClientXml = project.getFolder(contentDir).getFile("application-client.xml"); //$NON-NLS-1$
       if (applicationClientXml.exists()) {
         return applicationClientXml;
       }
@@ -117,8 +118,9 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     return resources[0].toPortableString();
   }
   
-  protected String getFilteringAttribute() {
-    return "filterDeploymentDescriptor";
+  @Override
+protected String getFilteringAttribute() {
+    return "filterDeploymentDescriptor"; //$NON-NLS-1$
   }
 
 }

@@ -40,11 +40,11 @@ public class EjbClientModule extends JarModule {
   }
 
   public String getType() {
-    return "ejb-client";
+    return "ejb-client"; //$NON-NLS-1$
   }
   
   protected String getModuleType() {
-    return "ejbClientModule";
+    return "ejbClientModule"; //$NON-NLS-1$
   }
   
 }

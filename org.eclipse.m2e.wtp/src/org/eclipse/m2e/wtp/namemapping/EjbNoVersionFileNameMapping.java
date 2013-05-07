@@ -32,9 +32,10 @@ public class EjbNoVersionFileNameMapping
     extends AbstractFileNameMapping
 {
 
-    public String mapFileName( Artifact a )
+    @Override
+	public String mapFileName( Artifact a )
     {
-        return generateFileName( a, !"ejb".equals(a.getType()));
+        return generateFileName( a, !"ejb".equals(a.getType())); //$NON-NLS-1$
     }
 
 }

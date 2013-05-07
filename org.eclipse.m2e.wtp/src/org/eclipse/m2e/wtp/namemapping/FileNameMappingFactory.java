@@ -35,13 +35,13 @@ package org.eclipse.m2e.wtp.namemapping;
  */
 public final class FileNameMappingFactory
 {
-    static final String STANDARD_FILE_NAME_MAPPING = "standard";
+    static final String STANDARD_FILE_NAME_MAPPING = "standard"; //$NON-NLS-1$
 
-    static final String FULL_FILE_NAME_MAPPING = "full";
+    static final String FULL_FILE_NAME_MAPPING = "full"; //$NON-NLS-1$
 
-    static final String NO_VERSION_FILE_NAME_MAPPING = "no-version";
+    static final String NO_VERSION_FILE_NAME_MAPPING = "no-version"; //$NON-NLS-1$
 
-    static final String NO_VERSION_FOR_EJB_NAME_MAPPING = "no-version-for-ejb";
+    static final String NO_VERSION_FOR_EJB_NAME_MAPPING = "no-version-for-ejb"; //$NON-NLS-1$
 
 
     private FileNameMappingFactory()
@@ -88,22 +88,22 @@ public final class FileNameMappingFactory
         catch ( ClassNotFoundException e )
         {
             throw new IllegalStateException(
-                "File name mapping implementation[" + nameOrClass + "] was not found " + e.getMessage() );
+                "File name mapping implementation[" + nameOrClass + "] was not found " + e.getMessage() ); //$NON-NLS-1$ //$NON-NLS-2$
         }
         catch ( InstantiationException e )
         {
-            throw new IllegalStateException( "Could not instantiate file name mapping implementation[" + nameOrClass +
-                                                 "] make sure it has a default public constructor" );
+            throw new IllegalStateException( "Could not instantiate file name mapping implementation[" + nameOrClass + //$NON-NLS-1$
+                                                 "] make sure it has a default public constructor" ); //$NON-NLS-1$
         }
         catch ( IllegalAccessException e )
         {
-            throw new IllegalStateException( "Could not access file name mapping implementation[" + nameOrClass +
-                                                 "] make sure it has a default public constructor" );
+            throw new IllegalStateException( "Could not access file name mapping implementation[" + nameOrClass + //$NON-NLS-1$
+                                                 "] make sure it has a default public constructor" ); //$NON-NLS-1$
         }
         catch ( ClassCastException e )
         {
             throw new IllegalStateException(
-                "Specified class[" + nameOrClass + "] does not implement[" + FileNameMapping.class.getName() + "]" );
+                "Specified class[" + nameOrClass + "] does not implement[" + FileNameMapping.class.getName() + "]" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 }

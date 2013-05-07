@@ -28,6 +28,7 @@ import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -102,13 +103,13 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
       facetedProject.modify(actions, monitor);
       
       //remove test folder links
-      WTPProjectsUtil.removeTestFolderLinks(project, facade.getMavenProject(), monitor, "/");
+      WTPProjectsUtil.removeTestFolderLinks(project, facade.getMavenProject(), monitor, "/"); //$NON-NLS-1$
     } finally {
       try {
         //Remove any WTP created files (extras fragment descriptor and manifest) 
         fileCleaner.cleanUp();
       } catch (CoreException cex) {
-        LOG.error("Error while cleaning up WTP's created files", cex);
+        LOG.error(Messages.Error_Cleaning_WTP_Files, cex);
       }
     }
     
@@ -117,15 +118,15 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
   protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
     for (IPath p : facade.getCompileSourceLocations()) {
       if (p != null) {
-        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
-        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml"));
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml")); //$NON-NLS-1$
         fileCleaner.addFolder(p);
       }
     }
     for (IPath p : facade.getResourceLocations()) {
       if (p != null) {
-        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
-        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml"));
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+        fileCleaner.addFiles(p.append("META-INF/web-fragment.xml")); //$NON-NLS-1$
         fileCleaner.addFolder(p);
       }
     }

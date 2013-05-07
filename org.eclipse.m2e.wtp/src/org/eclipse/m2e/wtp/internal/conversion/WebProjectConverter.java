@@ -34,14 +34,15 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 public class WebProjectConverter extends AbstractWtpProjectConversionParticipant {
 
-  private static final String DEFAULT_WAR_SOURCE_FOLDER = "src/main/webapp";
+  private static final String DEFAULT_WAR_SOURCE_FOLDER = "src/main/webapp"; //$NON-NLS-1$
   
-  private static final String WAR_SOURCE_DIRECTORY_KEY = "warSourceDirectory";
+  private static final String WAR_SOURCE_DIRECTORY_KEY = "warSourceDirectory"; //$NON-NLS-1$
 
-  private static final String FAIL_IF_MISSING_WEBXML_KEY = "failOnMissingWebXml";
+  private static final String FAIL_IF_MISSING_WEBXML_KEY = "failOnMissingWebXml"; //$NON-NLS-1$
 
-  public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
-    if (!accept(project) || !"war".equals(model.getPackaging())) {
+  @Override
+public void convert(IProject project, Model model, IProgressMonitor monitor) throws CoreException {
+    if (!accept(project) || !"war".equals(model.getPackaging())) { //$NON-NLS-1$
       return;
     }
     IVirtualComponent component = ComponentCore.createComponent(project);
@@ -54,8 +55,8 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
 
   private void setWarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String warPluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "2.3");
-    Plugin warPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-war-plugin", warPluginVersion);
+    String warPluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "2.3"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Plugin warPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-war-plugin", warPluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     // Set  <warSourceDirectory>WebContent</warSourceDirectory>
     IFolder webContentFolder = findWebRootFolder(component);
@@ -73,7 +74,7 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
     if (fProject != null) {
       IProjectFacetVersion webVersion = fProject.getProjectFacetVersion(IJ2EEFacetConstants.DYNAMIC_WEB_FACET);
       if (webVersion != null && webVersion.compareTo(IJ2EEFacetConstants.DYNAMIC_WEB_24) > 0) {
-        configure(warPlugin, FAIL_IF_MISSING_WEBXML_KEY, "false");
+        configure(warPlugin, FAIL_IF_MISSING_WEBXML_KEY, "false"); //$NON-NLS-1$
         customized = true;
       }
     }
@@ -87,7 +88,8 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
     return WTPProjectsUtil.getDefaultDeploymentDescriptorFolder(component.getRootFolder());
   }
 
-  protected IProjectFacet getRequiredFaced() {
+  @Override
+protected IProjectFacet getRequiredFaced() {
     return WebFacetUtils.WEB_FACET;
   }
 

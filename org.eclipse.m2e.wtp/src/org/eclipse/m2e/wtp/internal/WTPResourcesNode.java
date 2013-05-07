@@ -45,7 +45,7 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
       try {
         return folders[0].members();
       } catch(CoreException ex) {
-        LOG.error("Error getting WTP resources",ex);
+        LOG.error(Messages.WTPResourcesNode_Error_Getting_WTP_Resources,ex);
       }
     }
 
@@ -54,7 +54,8 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
 
   // IWorkbenchAdapter
   
-  public String getLabel(Object o) {
+  @Override
+public String getLabel(Object o) {
 //    IContainer[] folders = getRootFolders();
 //    StringBuilder label = new StringBuilder(getLabel());
 //    if(folders.length == 1) {
@@ -65,23 +66,26 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
     return getLabel();
   }
 
-  public ImageDescriptor getImageDescriptor(Object object) {
+  @Override
+public ImageDescriptor getImageDescriptor(Object object) {
     try {
       IFacetedProject facetedProject = ProjectFacetsManager.create(project);
       if (facetedProject != null && facetedProject.hasProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)) {
         return WTPResourcesImages.APP_RESOURCES;
       }
     } catch(CoreException ex) {
-      LOG.error("Cannot retrieve the project facet",ex);
+      LOG.error(Messages.WTPResourcesNode_Cant_Retrieve_Project_Facet,ex);
     }    
     return WTPResourcesImages.WEB_RESOURCES;
   }
 
-  public Object getParent(Object o) {
+  @Override
+public Object getParent(Object o) {
     return project;
   }
 
-  public Object[] getChildren(Object o) {
+  @Override
+public Object[] getChildren(Object o) {
     return getResources();
   }
 
@@ -99,28 +103,19 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
     return folders;
   }
   
-  public String getLabel() {
-//    try {
-//      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
-//      if (facetedProject.hasProjectFacet(IJ2EEFacetConstants.DYNAMIC_WEB_FACET)) {
-//        return "Web Resources";
-//      }
-//      if (facetedProject.hasProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)) {
-//        return "Application Resources";
-//      }
-//    } catch(CoreException ex) {
-//      LOG.error("Cannot retrieve the project facet",ex);
-//    }    
-    return "Deployed Resources";
+  public String getLabel() {  
+    return Messages.WTPResourcesNode_Deployed_Resources_Label;
   }
 
-  public boolean equals(Object o) {
+  @Override
+public boolean equals(Object o) {
     if( !(o instanceof WTPResourcesNode))
       return false;
     IProject p = ((WTPResourcesNode)o).project;
     return this.project == null ? p == null : this.project.equals(p);
   }
-  public int hashCode() {
+  @Override
+public int hashCode() {
     return HASHCODE_ADDITION + (project == null ? 0 : project.hashCode());
   }
   

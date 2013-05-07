@@ -35,26 +35,26 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  */
 public class ArtifactTypeMappingService {
-  static final String ARTIFACT_TYPE_MAPPING_ELEMENT = "artifactTypeMapping";
+  static final String ARTIFACT_TYPE_MAPPING_ELEMENT = "artifactTypeMapping"; //$NON-NLS-1$
 
-  static final String TYPE_ATTRIBUTE = "type";
+  static final String TYPE_ATTRIBUTE = "type"; //$NON-NLS-1$
 
-  static final String MAPPING_ATTRIBUTE = "mapping";
+  static final String MAPPING_ATTRIBUTE = "mapping"; //$NON-NLS-1$
 
   public final static List<String> standardArtifactTypes = new ArrayList<String>(10);
 
   static {
-    standardArtifactTypes.add("jar");
-    standardArtifactTypes.add("ejb");
-    standardArtifactTypes.add("ejb3");
-    standardArtifactTypes.add("par");
-    standardArtifactTypes.add("ejb-client");
-    standardArtifactTypes.add("rar");
-    standardArtifactTypes.add("war");
-    standardArtifactTypes.add("sar");
-    standardArtifactTypes.add("wsr");
-    standardArtifactTypes.add("har");
-    standardArtifactTypes.add("app-client");    
+    standardArtifactTypes.add("jar"); //$NON-NLS-1$
+    standardArtifactTypes.add("ejb"); //$NON-NLS-1$
+    standardArtifactTypes.add("ejb3"); //$NON-NLS-1$
+    standardArtifactTypes.add("par"); //$NON-NLS-1$
+    standardArtifactTypes.add("ejb-client"); //$NON-NLS-1$
+    standardArtifactTypes.add("rar"); //$NON-NLS-1$
+    standardArtifactTypes.add("war"); //$NON-NLS-1$
+    standardArtifactTypes.add("sar"); //$NON-NLS-1$
+    standardArtifactTypes.add("wsr"); //$NON-NLS-1$
+    standardArtifactTypes.add("har"); //$NON-NLS-1$
+    standardArtifactTypes.add("app-client");     //$NON-NLS-1$
   }
 
   // A standard type to a list of customType
@@ -80,14 +80,14 @@ public class ArtifactTypeMappingService {
       final String mapping = artifactTypeMapping.getAttribute(MAPPING_ATTRIBUTE);
 
       if(customType == null) {
-        throw new EarPluginException("Invalid artifact type mapping, type attribute should be set.");
+        throw new EarPluginException("Invalid artifact type mapping, type attribute should be set."); //$NON-NLS-1$
       } else if(mapping == null) {
-        throw new EarPluginException("Invalid artifact type mapping, mapping attribute should be set.");
+        throw new EarPluginException("Invalid artifact type mapping, mapping attribute should be set."); //$NON-NLS-1$
       } else if(!isStandardArtifactType(mapping)) {
-        throw new EarPluginException("Invalid artifact type mapping, mapping[" + mapping
-            + "] must be a standard Ear artifact type[" + getStandardArtifactTypes() + "]");
+        throw new EarPluginException("Invalid artifact type mapping, mapping[" + mapping //$NON-NLS-1$
+            + "] must be a standard Ear artifact type[" + getStandardArtifactTypes() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
       } else if(customMappings.containsKey(customType)) {
-        throw new EarPluginException("Invalid artifact type mapping, type[" + customType + "] is already registered.");
+        throw new EarPluginException("Invalid artifact type mapping, type[" + customType + "] is already registered."); //$NON-NLS-1$ //$NON-NLS-2$
       } else {
         // Add the custom mapping
         customMappings.put(customType, mapping);
@@ -108,8 +108,8 @@ public class ArtifactTypeMappingService {
    */
   public boolean isMappedToType(final String standardType, final String customType) {
     if(!isStandardArtifactType(standardType)) {
-      throw new IllegalStateException("Artifact type[" + standardType + "] is not a standard Ear artifact type["
-          + getStandardArtifactTypes() + "]");
+      throw new IllegalStateException("Artifact type[" + standardType + "] is not a standard Ear artifact type[" //$NON-NLS-1$ //$NON-NLS-2$
+          + getStandardArtifactTypes() + "]"); //$NON-NLS-1$
     }
     final List<String> typeMappings = this.typeMappings.get(standardType);
     return typeMappings.contains(customType);
@@ -125,11 +125,11 @@ public class ArtifactTypeMappingService {
    */
   public String getStandardType(final String type) throws UnknownArtifactTypeException {
     if(type == null) {
-      throw new IllegalStateException("custom type could not be null.");
+      throw new IllegalStateException("custom type could not be null."); //$NON-NLS-1$
     } else if(getStandardArtifactTypes().contains(type)) {
       return type;
     } else if(!customMappings.containsKey(type)) {
-      throw new UnknownArtifactTypeException("Unknown artifact type[" + type + "]");
+      throw new UnknownArtifactTypeException("Unknown artifact type[" + type + "]"); //$NON-NLS-1$ //$NON-NLS-2$
     } else {
       return customMappings.get(type);
     }

@@ -18,9 +18,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.m2e.wtp.overlay.internal.Messages;
 import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlaySelfComponent;
 import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualArchiveComponent;
 import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualComponent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.ComponentcorePackage;
 import org.eclipse.wst.common.componentcore.internal.DependencyType;
@@ -41,23 +43,23 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 @SuppressWarnings("restriction")
 public class OverlayReferenceResolver implements IReferenceResolver {
 
-  public static final String PROTOCOL = "module:/overlay/";
+  public static final String PROTOCOL = "module:/overlay/"; //$NON-NLS-1$
   
-  public static final String PROJECT_PROTOCOL = PROTOCOL+"prj/";
+  public static final String PROJECT_PROTOCOL = PROTOCOL+"prj/"; //$NON-NLS-1$
 
-  public static final String VAR_ARCHIVE_PROTOCOL = PROTOCOL+"var/";
+  public static final String VAR_ARCHIVE_PROTOCOL = PROTOCOL+"var/"; //$NON-NLS-1$
 
-  public static final String SELF_PROTOCOL = PROTOCOL+"slf/";
+  public static final String SELF_PROTOCOL = PROTOCOL+"slf/"; //$NON-NLS-1$
 
-  private static final String UNPACK_FOLDER = "unpackFolder";
+  private static final String UNPACK_FOLDER = "unpackFolder"; //$NON-NLS-1$
   
-  private static final String INCLUDES = "includes";
+  private static final String INCLUDES = "includes"; //$NON-NLS-1$
 
-  private static final String EXCLUDES = "excludes";
+  private static final String EXCLUDES = "excludes"; //$NON-NLS-1$
 
   public boolean canResolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
     URI uri = referencedComponent.getHandle();
-    return uri != null && (uri.segmentCount() > 2) && (uri.segment(0).equals("overlay"));
+    return uri != null && (uri.segmentCount() > 2) && (uri.segment(0).equals("overlay")); //$NON-NLS-1$
   }
 
   public IVirtualReference resolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
@@ -68,26 +70,26 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 	
 	String moduleName = ModuleURIUtil.extractModuleName(url);
 	if (moduleName == null || moduleName.trim().length() == 0) {
-		throw new IllegalArgumentException("module name can not be inferred from "+url);
+		throw new IllegalArgumentException(NLS.bind(Messages.OverlayReferenceResolver_Module_Name_Cant_Be_Inferred,url));
 	}
 	
-	if ("prj".equals(type)) {
+	if ("prj".equals(type)) { //$NON-NLS-1$
 		comp = createProjectComponent(component, moduleName.substring(PROJECT_PROTOCOL.length()));
-	} else if ("var".equals(type)) {
+	} else if ("var".equals(type)) { //$NON-NLS-1$
 		String unpackFolder = parameters.get(UNPACK_FOLDER);
 		if (unpackFolder == null || unpackFolder.trim().length() == 0) {
-			throw new IllegalArgumentException(url + " is missing the "+UNPACK_FOLDER+" parameter");
+			throw new IllegalArgumentException(NLS.bind(Messages.OverlayReferenceResolver_Missing_Parameter, url, UNPACK_FOLDER));
 		}
 		comp = createArchivecomponent(component, 
 									  moduleName.substring(PROTOCOL.length()), 
 									  unpackFolder, 
 									  referencedComponent.getRuntimePath());
 		
-	} else if ("slf".equals(type)){
+	} else if ("slf".equals(type)){ //$NON-NLS-1$
 		comp = createSelfComponent(component);
 	}
 	if (comp == null) {
-		throw new IllegalArgumentException(referencedComponent.getHandle() + " could not be resolved");
+		throw new IllegalArgumentException(NLS.bind(Messages.OverlayReferenceResolver_Unresolveable,referencedComponent.getHandle()));
 	}
 	
 	comp.setInclusions(getPatternSet(parameters.get(INCLUDES)));
@@ -105,7 +107,7 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 		return Collections.emptySet();
 	}
 	Set<String> patternSet = new LinkedHashSet<String>();
-	for (String pattern : patterns.split(";")) {
+	for (String pattern : patterns.split(";")) { //$NON-NLS-1$
 		patternSet.add(pattern);
 	}
 	return patternSet;
@@ -124,13 +126,13 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 
   private IOverlayVirtualComponent createProjectComponent(IVirtualComponent component, String name) {
     IProject p = null;   
-	if("".equals(name)) {
+	if("".equals(name)) { //$NON-NLS-1$
       p = component.getProject();
     } else {
       p = ResourcesPlugin.getWorkspace().getRoot().getProject(name);    	
     }
 	if (p == null) {
-		throw new IllegalArgumentException(name + " is not a workspace project");
+		throw new IllegalArgumentException(NLS.bind(Messages.OverlayReferenceResolver_Not_Workspace_Project, name));
 	}
 	return new OverlayVirtualComponent(p);
   }
@@ -175,7 +177,7 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 			boolean initialized = false;
 			for(String pattern : patterns) {
 				if (initialized) {
-					sb.append(";");
+					sb.append(";"); //$NON-NLS-1$
 				} else {
 					initialized = true;
 				}

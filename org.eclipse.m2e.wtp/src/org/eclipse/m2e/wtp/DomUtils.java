@@ -79,7 +79,7 @@ public class DomUtils {
     if(config != null) {
       Xpp3Dom excl = config.getChild(patternParameterName);
       if(excl != null) {
-        return org.eclipse.m2e.wtp.internal.StringUtils.tokenizeToStringArray(excl.getValue(), ",");
+        return org.eclipse.m2e.wtp.internal.StringUtils.tokenizeToStringArray(excl.getValue(), ","); //$NON-NLS-1$
       }
     }
     return new String[0];

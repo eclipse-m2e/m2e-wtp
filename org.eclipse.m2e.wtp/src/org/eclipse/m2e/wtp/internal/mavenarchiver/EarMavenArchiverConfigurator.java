@@ -31,7 +31,7 @@ public class EarMavenArchiverConfigurator extends AbstractWTPArchiverConfigurato
 
   @Override
   protected MojoExecutionKey getExecutionKey() {
-    MojoExecutionKey key = new MojoExecutionKey("org.apache.maven.plugins", "maven-ear-plugin", "", "ear", null, null);
+    MojoExecutionKey key = new MojoExecutionKey("org.apache.maven.plugins", "maven-ear-plugin", "", "ear", null, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     return key;
   }
 

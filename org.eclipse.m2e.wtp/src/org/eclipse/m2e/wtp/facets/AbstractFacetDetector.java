@@ -27,13 +27,13 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
  */
 public abstract class AbstractFacetDetector implements IExecutableExtension, Comparable<AbstractFacetDetector> {
   
-  public static final String ATTR_ID = "id";
+  public static final String ATTR_ID = "id"; //$NON-NLS-1$
   
-  public static final String ATTR_FACET_ID = "facetId";
+  public static final String ATTR_FACET_ID = "facetId"; //$NON-NLS-1$
   
-  public static final String ATTR_PRIORITY = "priority";
+  public static final String ATTR_PRIORITY = "priority"; //$NON-NLS-1$
   
-  public static final String ATTR_CLASS = "class";
+  public static final String ATTR_CLASS = "class"; //$NON-NLS-1$
   
   private String id;
   
@@ -82,7 +82,8 @@ public abstract class AbstractFacetDetector implements IExecutableExtension, Com
    * 
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(AbstractFacetDetector other) {
+  @Override
+public int compareTo(AbstractFacetDetector other) {
     if (other == null) {
       return priority;
     }
@@ -96,7 +97,8 @@ public abstract class AbstractFacetDetector implements IExecutableExtension, Com
   /**
    * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
    */
-  public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+  @Override
+public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
       throws CoreException {
       this.id = config.getAttribute(ATTR_ID);
       this.facetId = config.getAttribute(ATTR_FACET_ID);
@@ -110,7 +112,8 @@ public abstract class AbstractFacetDetector implements IExecutableExtension, Com
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
-  public String toString() {
+  @Override
+public String toString() {
     return getId();
   }
 }

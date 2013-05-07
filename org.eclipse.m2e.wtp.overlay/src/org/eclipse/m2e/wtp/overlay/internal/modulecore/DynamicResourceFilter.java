@@ -140,7 +140,7 @@ public class DynamicResourceFilter implements IResourceFilter {
 		if (inclusions != null && !inclusions.isEmpty()) {
 			setIncludes(inclusions.toArray(new String[inclusions.size()]));
 		} else {
-			setIncludes(new String[]{"**/**"});
+			setIncludes(new String[]{"**/**"}); //$NON-NLS-1$
 		}
 		if (exclusions != null && !exclusions.isEmpty()) {
 			addExcludes(exclusions.toArray(new String[exclusions.size()]));

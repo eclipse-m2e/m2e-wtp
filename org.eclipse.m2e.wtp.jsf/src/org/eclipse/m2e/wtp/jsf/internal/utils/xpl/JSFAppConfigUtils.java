@@ -25,6 +25,7 @@ import org.eclipse.jst.j2ee.model.ModelProviderManager;
 import org.eclipse.jst.j2ee.web.componentcore.util.WebArtifactEdit;
 import org.eclipse.jst.j2ee.webapplication.ContextParam;
 import org.eclipse.jst.j2ee.webapplication.WebApp;
+import org.eclipse.m2e.wtp.jsf.internal.Messages;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +122,7 @@ public class JSFAppConfigUtils {
 					webApp = webArtifactEdit.getWebApp();
 				} catch(ClassCastException cce) {
 					//occasionally thrown from WTP code in RC3 and possibly later
-					LOG.error("Error reading web.xml", cce);
+					LOG.error(Messages.JSFAppConfigUtils_Error_Reading_WebXml, cce);
 					return filesList;
 				}
 				if (webApp != null) {

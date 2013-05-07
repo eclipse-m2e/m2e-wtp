@@ -40,11 +40,11 @@ public class RarModule extends AbstractEarModule {
   }
 
   public String getType() {
-    return "rar";
+    return "rar"; //$NON-NLS-1$
   }
   
   protected String getModuleType() {
-    return "rarModule";
+    return "rarModule"; //$NON-NLS-1$
   }
   
 }

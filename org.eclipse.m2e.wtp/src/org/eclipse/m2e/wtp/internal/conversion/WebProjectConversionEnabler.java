@@ -30,7 +30,8 @@ public class WebProjectConversionEnabler extends AbstractProjectFacetConversionE
   /**
    * Returns the <code>war</code> packaging
    */
-  public String[] getPackagingTypes(IProject project) {
+  @Override
+public String[] getPackagingTypes(IProject project) {
     return new String[]{JEEPackaging.WAR.getName()};
   }
 }

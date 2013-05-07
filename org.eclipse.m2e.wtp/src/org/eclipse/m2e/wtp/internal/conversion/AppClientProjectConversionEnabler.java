@@ -30,7 +30,8 @@ public class AppClientProjectConversionEnabler extends AbstractProjectFacetConve
   /**
    * Returns the <code>app-client</code> packaging
    */
-  public String[] getPackagingTypes(IProject project) {
+  @Override
+public String[] getPackagingTypes(IProject project) {
     return new String[]{JEEPackaging.APP_CLIENT.getName()};
   }
 }

@@ -90,7 +90,7 @@ public class ConfiguratorEnabler {
   }
 
   private String getPreferenceKey() {
-    return getId() + ".enabled";
+    return getId() + ".enabled"; //$NON-NLS-1$
   }
 
   /**
@@ -100,7 +100,8 @@ public class ConfiguratorEnabler {
     return projectConfiguratorIds.contains(configuratorId);
   }
 
-  public String toString() {
-    return getId() + " : " + getConfiguratorLabel();
+  @Override
+public String toString() {
+    return getId() + " : " + getConfiguratorLabel(); //$NON-NLS-1$
   }
 }

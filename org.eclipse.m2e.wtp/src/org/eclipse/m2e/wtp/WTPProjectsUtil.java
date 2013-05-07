@@ -46,7 +46,9 @@ import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.jdt.internal.MavenClasspathHelpers;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.internal.ComponentResource;
@@ -78,7 +80,7 @@ public class WTPProjectsUtil {
 
   public static final IProjectFacet UTILITY_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.UTILITY);
 
-  public static final IProjectFacetVersion UTILITY_10 = UTILITY_FACET.getVersion("1.0");
+  public static final IProjectFacetVersion UTILITY_10 = UTILITY_FACET.getVersion("1.0"); //$NON-NLS-1$
 
   public static final IProjectFacet EJB_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.EJB);
 
@@ -86,7 +88,7 @@ public class WTPProjectsUtil {
   
   public static final IProjectFacet WEB_FRAGMENT_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.WEBFRAGMENT);
 
-  public static final IProjectFacetVersion WEB_FRAGMENT_3_0 = WEB_FRAGMENT_FACET.getVersion("3.0");
+  public static final IProjectFacetVersion WEB_FRAGMENT_3_0 = WEB_FRAGMENT_FACET.getVersion("3.0"); //$NON-NLS-1$
 
   public static final IProjectFacet DYNAMIC_WEB_FACET = ProjectFacetsManager
       .getProjectFacet(IJ2EEFacetConstants.DYNAMIC_WEB);
@@ -94,12 +96,12 @@ public class WTPProjectsUtil {
   public static final IProjectFacet APP_CLIENT_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.APPLICATION_CLIENT);
 
   public static final IClasspathAttribute NONDEPENDENCY_ATTRIBUTE = JavaCore.newClasspathAttribute(
-      IClasspathDependencyConstants.CLASSPATH_COMPONENT_NON_DEPENDENCY, "");
+      IClasspathDependencyConstants.CLASSPATH_COMPONENT_NON_DEPENDENCY, "");//$NON-NLS-1$
 
   /**
    * Defaults Web facet version to 2.5
    */
-  public static final IProjectFacetVersion DEFAULT_WEB_FACET = DYNAMIC_WEB_FACET.getVersion("2.5");
+  public static final IProjectFacetVersion DEFAULT_WEB_FACET = DYNAMIC_WEB_FACET.getVersion("2.5"); //$NON-NLS-1$
 
   public static final IProjectFacet EAR_FACET = ProjectFacetsManager
       .getProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION);
@@ -110,7 +112,7 @@ public class WTPProjectsUtil {
     //Bug #385605 : IVirtualComponent.DISPLAYABLE_REFERENCES_ALL is not available in helios
     String reqRefType = null;
     try {
-      Field displayableRefsAllField = IVirtualComponent.class.getField("DISPLAYABLE_REFERENCES_ALL");
+      Field displayableRefsAllField = IVirtualComponent.class.getField("DISPLAYABLE_REFERENCES_ALL"); //$NON-NLS-1$
       reqRefType = (String)displayableRefsAllField.get(null);
     } catch(Throwable e) {
       //Falling back on IVirtualComponent.HARD_REFERENCES works in helios wrt bug #385229 : 
@@ -404,8 +406,8 @@ public class WTPProjectsUtil {
       ArrayList<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>();
       for(IClasspathEntry entry : javaProject.getRawClasspath()) {
       String path = entry.getPath().toString();
-        if(!"org.eclipse.jst.j2ee.internal.module.container".equals(path)
-          && !"org.eclipse.jst.j2ee.internal.web.container".equals(path)) {
+        if(!"org.eclipse.jst.j2ee.internal.module.container".equals(path) //$NON-NLS-1$
+          && !"org.eclipse.jst.j2ee.internal.web.container".equals(path)) { //$NON-NLS-1$
             newEntries.add(entry);
         }
       }
@@ -418,13 +420,13 @@ public class WTPProjectsUtil {
   */
   public static void removeConflictingFacets(IFacetedProject project, IProjectFacetVersion facetVersion, Set<Action> actions) {
     if (project == null) {
-      throw new IllegalArgumentException("project can not be null");
+      throw new IllegalArgumentException(Messages.WTPProjectsUtil_Project_Cant_Be_Null);
     }
     if (facetVersion == null) {
-      throw new IllegalArgumentException("Facet version can not be null");
+      throw new IllegalArgumentException(Messages.WTPProjectsUtil_Facet_Version_Cant_Be_Null);
     }
     if (actions == null) {
-      throw new IllegalArgumentException("actions can not be null");
+      throw new IllegalArgumentException(Messages.WTPProjectsUtil_Actions_Cant_Be_Null);
     }
     for (IProjectFacetVersion existingFacetVersion : project.getProjectFacets()) {
       if (facetVersion.conflictsWith(existingFacetVersion)) {
@@ -461,18 +463,18 @@ public class WTPProjectsUtil {
    * @return
    */
   public static boolean isQualifiedAsWebFragment(IMavenProjectFacade facade) {
-    if ("jar".equals(facade.getPackaging())) {
+    if ("jar".equals(facade.getPackaging())) { //$NON-NLS-1$
       IFolder classes = getClassesFolder(facade);
-      if (classes != null && classes.getFile("META-INF/web-fragment.xml").exists()) {
+      if (classes != null && classes.getFile("META-INF/web-fragment.xml").exists()) { //$NON-NLS-1$
         return true;
-      } else {
-        //No processed/filtered web-fragment.xml found 
-        //fall back : iterate over the resource folders
-        IProject project = facade.getProject();
-        for (IPath resourceFolderPath : facade.getResourceLocations()) {
-          if (resourceFolderPath != null && project.exists(resourceFolderPath.append("META-INF/web-fragment.xml"))) {
-            return true;
-          }
+      } 
+      
+      //No processed/filtered web-fragment.xml found 
+      //fall back : iterate over the resource folders
+      IProject project = facade.getProject();
+      for (IPath resourceFolderPath : facade.getResourceLocations()) {
+        if (resourceFolderPath != null && project.exists(resourceFolderPath.append("META-INF/web-fragment.xml"))) { //$NON-NLS-1$
+          return true;
         }
       }
     }
@@ -574,7 +576,7 @@ public class WTPProjectsUtil {
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     if (null == ModuleCoreNature.addModuleCoreNatureIfNecessary(project, monitor)) {
       //If we can't add the missing nature, then the project is useless, so let's tell the user
-      throw new CoreException(new Status(IStatus.ERROR, IMavenConstants.PLUGIN_ID, "Unable to add the ModuleCoreNature to "+project.getName(),null));
+      throw new CoreException(new Status(IStatus.ERROR, IMavenConstants.PLUGIN_ID, NLS.bind(Messages.WTPProjectsUtil_Unable_To_Add_ModuleCoreNature,project.getName()),null));
     }
   }
 
@@ -591,7 +593,7 @@ public class WTPProjectsUtil {
       return false;
     }
     String language = facade.getMavenProject().getArtifact().getArtifactHandler().getLanguage();
-    return "java".equals(language);
+    return "java".equals(language); //$NON-NLS-1$
   }
   
   /**
@@ -599,13 +601,13 @@ public class WTPProjectsUtil {
    */
   public static void setDefaultDeploymentDescriptorFolder(IVirtualFolder folder, IPath aProjectRelativeLocation, IProgressMonitor monitor) {
     try {
-      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder", 
+      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
                                                                                                IVirtualFolder.class);
       IPath currentDefaultLocation =(IPath) getDefaultDeploymentDescriptorFolder.invoke(null, folder);
       if (aProjectRelativeLocation.equals(currentDefaultLocation)) {
         return;
       }
-      Method setDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("setDefaultDeploymentDescriptorFolder", 
+      Method setDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("setDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
                                                                                                IVirtualFolder.class, 
                                                                                                IPath.class, 
                                                                                                IProgressMonitor.class);
@@ -627,7 +629,7 @@ public class WTPProjectsUtil {
   public static IFolder getDefaultDeploymentDescriptorFolder(IVirtualFolder vFolder) {
     IPath defaultPath = null;
     try {
-      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder", 
+      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
                                                                                                IVirtualFolder.class);
       defaultPath =(IPath) getDefaultDeploymentDescriptorFolder.invoke(null, vFolder);
       

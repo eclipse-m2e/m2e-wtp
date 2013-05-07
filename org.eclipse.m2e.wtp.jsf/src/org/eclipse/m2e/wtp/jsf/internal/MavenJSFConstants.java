@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.m2e.wtp.jsf.internal;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
@@ -22,17 +23,17 @@ import org.slf4j.LoggerFactory;
  */
 public class MavenJSFConstants {
 	
-	public static final String JSF_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jsf.configuration";
+	public static final String JSF_CONFIGURATION_ERROR_MARKER_ID = "org.eclipse.m2e.core.maven2Problem.wtp.jsf.configuration"; //$NON-NLS-1$
 
-	public static final String JSF_VERSION_2_2 = "2.2";
+	public static final String JSF_VERSION_2_2 = "2.2"; //$NON-NLS-1$
 	
-	public static final String JSF_VERSION_2_1 = "2.1";
+	public static final String JSF_VERSION_2_1 = "2.1"; //$NON-NLS-1$
 
-	public static final String JSF_VERSION_2_0 = "2.0";
+	public static final String JSF_VERSION_2_0 = "2.0"; //$NON-NLS-1$
 	
-	public static final String JSF_VERSION_1_2 = "1.2";
+	public static final String JSF_VERSION_1_2 = "1.2"; //$NON-NLS-1$
 	
-	public static final String JSF_VERSION_1_1 = "1.1";
+	public static final String JSF_VERSION_1_1 = "1.1"; //$NON-NLS-1$
 	
 	public static final IProjectFacet JSF_FACET;
 	
@@ -51,14 +52,14 @@ public class MavenJSFConstants {
 	static {
 		JSF_FACET = ProjectFacetsManager.getProjectFacet("jst.jsf"); //$NON-NLS-1$
 		JSF_FACET_VERSION_2_0 = JSF_FACET.getVersion(JSF_VERSION_2_0); 
-		JSF_FACET_VERSION_1_2 = JSF_FACET.getVersion(JSF_VERSION_1_2); //$NON-NLS-1$
-		JSF_FACET_VERSION_1_1 = JSF_FACET.getVersion(JSF_VERSION_1_1); //$NON-NLS-1$
+		JSF_FACET_VERSION_1_2 = JSF_FACET.getVersion(JSF_VERSION_1_2); 
+		JSF_FACET_VERSION_1_1 = JSF_FACET.getVersion(JSF_VERSION_1_1);
 		
 		IProjectFacetVersion jsf21Version = null;
 		try {
 			jsf21Version = JSF_FACET.getVersion(JSF_VERSION_2_1); 
 		} catch (Exception e) {
-			LOG.warn("JSF 2.1 Facet is unavailable, fall back to 2.0");
+			LOG.warn(Messages.MavenJSFConstants_Warning_JSF21_Unavailable);
 			jsf21Version = JSF_FACET_VERSION_2_0; 
 		}
 		JSF_FACET_VERSION_2_1 = jsf21Version;
@@ -67,7 +68,7 @@ public class MavenJSFConstants {
 		try {
 			jsf22Version = JSF_FACET.getVersion(JSF_VERSION_2_2); 
 		} catch (Exception e) {
-			LOG.warn("JSF 2.2 Facet is unavailable, fall back to "+JSF_FACET_VERSION_2_1.getVersionString());
+			LOG.warn(NLS.bind(Messages.MavenJSFConstants_Warning_JSF22_Unavailable, JSF_FACET_VERSION_2_1.getVersionString()));
 			jsf22Version = JSF_FACET_VERSION_2_1; 
 		}
 		JSF_FACET_VERSION_2_2 = jsf22Version;

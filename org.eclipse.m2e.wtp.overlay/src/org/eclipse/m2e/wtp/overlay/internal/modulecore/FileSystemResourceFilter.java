@@ -36,7 +36,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 		if (inclusions != null && !inclusions.isEmpty()) {
 			scanner.setIncludes(inclusions.toArray(new String[inclusions.size()]));
 		} else {
-			scanner.setIncludes(new String[]{"**/**"});
+			scanner.setIncludes(new String[]{"**/**"}); //$NON-NLS-1$
 		}
 		if (exclusions != null && !exclusions.isEmpty()) {
 			scanner.addExcludes(exclusions.toArray(new String[exclusions.size()]));

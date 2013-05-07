@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class ResourceCleaner {
   
-  private static final Path EMPTY_PATH = new Path("");
+  private static final Path EMPTY_PATH = new Path(""); //$NON-NLS-1$
 
   private final IProject project;
 

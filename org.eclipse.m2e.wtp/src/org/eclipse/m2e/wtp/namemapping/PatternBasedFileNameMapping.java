@@ -26,12 +26,13 @@ public class PatternBasedFileNameMapping implements FileNameMapping {
       //pattern = "@{artifactId}@-@{version}@@{dashClassifier?}@.@{extension}@";
       //MECLIPSEWTP-215 temporary fix until https://bugs.eclipse.org/bugs/show_bug.cgi?id=359385 is fixed
       //Then we'll switch back to using @{version}
-      pattern = "@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@";
+      pattern = "@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@"; //$NON-NLS-1$
     }
     this.pattern = pattern;
   }
 
-  public String mapFileName(Artifact artifact) {
+  @Override
+public String mapFileName(Artifact artifact) {
     try {
       return MappingUtils.evaluateFileNameMapping(pattern, artifact);
     } catch(InterpolationException ex) {

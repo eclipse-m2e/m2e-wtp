@@ -28,7 +28,7 @@ import org.eclipse.m2e.wtp.WarPluginConfiguration;
  */
 public class WebResourceFilteringConfiguration extends AbstractResourceFilteringConfiguration {
 
-  private static final String WEB_INF = "WEB-INF/";
+  private static final String WEB_INF = "WEB-INF/"; //$NON-NLS-1$
 
   private WarPluginConfiguration warPluginConfiguration;
   
@@ -38,7 +38,8 @@ public class WebResourceFilteringConfiguration extends AbstractResourceFiltering
     pluginConfiguration = warPluginConfiguration;
   }
 
-  public IPath getTargetFolder() {
+  @Override
+public IPath getTargetFolder() {
     return getTargetFolder(mavenProjectFacade.getMavenProject(), mavenProjectFacade.getProject());
   }
 
@@ -46,7 +47,8 @@ public class WebResourceFilteringConfiguration extends AbstractResourceFiltering
     return ProjectUtils.getM2eclipseWtpFolder(mavenProject, project).append(MavenWtpConstants.WEB_RESOURCES_FOLDER);
   }
 
-  public List<Xpp3Dom> getResources() {
+  @Override
+public List<Xpp3Dom> getResources() {
     Xpp3Dom[] domResources = warPluginConfiguration.getWebResources();
     List<Xpp3Dom> resources = new ArrayList<Xpp3Dom>();
     
@@ -68,25 +70,25 @@ public class WebResourceFilteringConfiguration extends AbstractResourceFiltering
       return null;
     }
     String warSourceDirectory = warPluginConfiguration.getWarSourceDirectory();
-    if (warSourceDirectory.startsWith("/")) {
+    if (warSourceDirectory.startsWith("/")) { //$NON-NLS-1$
       warSourceDirectory = warSourceDirectory.substring(1);
     }
-    if (!warSourceDirectory.endsWith("/")) {
-      warSourceDirectory = warSourceDirectory + "/";
+    if (!warSourceDirectory.endsWith("/")) { //$NON-NLS-1$
+      warSourceDirectory = warSourceDirectory + "/"; //$NON-NLS-1$
     }
-    Xpp3Dom resource = new Xpp3Dom("resource");
-    Xpp3Dom directory = new Xpp3Dom("directory");
+    Xpp3Dom resource = new Xpp3Dom("resource"); //$NON-NLS-1$
+    Xpp3Dom directory = new Xpp3Dom("directory"); //$NON-NLS-1$
     directory.setValue(warSourceDirectory+WEB_INF);
     resource.addChild(directory);
-    Xpp3Dom includes = new Xpp3Dom("includes");
-    Xpp3Dom include = new Xpp3Dom("include");
+    Xpp3Dom includes = new Xpp3Dom("includes"); //$NON-NLS-1$
+    Xpp3Dom include = new Xpp3Dom("include"); //$NON-NLS-1$
     //TODO handle custom web.xml
-    include.setValue("web.xml");
+    include.setValue("web.xml"); //$NON-NLS-1$
     includes.addChild(include);
     resource.addChild(includes);
-    Xpp3Dom filter = new Xpp3Dom("filtering");
+    Xpp3Dom filter = new Xpp3Dom("filtering"); //$NON-NLS-1$
     filter.setValue(Boolean.TRUE.toString());
-    Xpp3Dom targetPath = new Xpp3Dom("targetPath");
+    Xpp3Dom targetPath = new Xpp3Dom("targetPath"); //$NON-NLS-1$
     targetPath.setValue(WEB_INF);
     resource.addChild(targetPath);
     resource.addChild(filter);

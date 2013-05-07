@@ -30,7 +30,8 @@ public class EarProjectConversionEnabler extends AbstractProjectFacetConversionE
   /**
    * Returns the <code>ear</code> packaging
    */
-  public String[] getPackagingTypes(IProject project) {
+  @Override
+public String[] getPackagingTypes(IProject project) {
     return new String[]{JEEPackaging.EAR.getName()};
   }
 

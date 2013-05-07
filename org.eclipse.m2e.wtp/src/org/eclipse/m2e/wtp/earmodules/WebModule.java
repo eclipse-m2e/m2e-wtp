@@ -58,7 +58,7 @@ public class WebModule extends AbstractEarModule {
   }
 
   public String getType() {
-    return "war";
+    return "war"; //$NON-NLS-1$
   }
 
   /**
@@ -69,9 +69,9 @@ public class WebModule extends AbstractEarModule {
    */
   private static String getDefaultContextRoot(Artifact a) {
     if(a == null) {
-      throw new NullPointerException("Artifact could not be null.");
+      throw new NullPointerException("Artifact could not be null."); //$NON-NLS-1$
     }
-    return "/" + a.getArtifactId();
+    return "/" + a.getArtifactId(); //$NON-NLS-1$
   }
 
   public void setContextRoot(String contextRoot) {
@@ -79,12 +79,12 @@ public class WebModule extends AbstractEarModule {
   }
   
   protected void setCustomValues(Xpp3Dom module) {
-    Xpp3Dom contextRootDom = new Xpp3Dom("contextRoot");
+    Xpp3Dom contextRootDom = new Xpp3Dom("contextRoot"); //$NON-NLS-1$
     contextRootDom.setValue(getContextRoot());
     module.addChild(contextRootDom);
   }
 
   protected String getModuleType() {
-    return "webModule";
+    return "webModule"; //$NON-NLS-1$
   }
 }

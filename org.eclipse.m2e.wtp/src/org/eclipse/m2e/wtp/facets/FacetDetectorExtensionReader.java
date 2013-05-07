@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +37,9 @@ import org.slf4j.LoggerFactory;
 
   private static final Logger LOG = LoggerFactory.getLogger(FacetDetectorExtensionReader.class);
 
-  private static final String EXTENSION_FACET_DETECTORS = "org.eclipse.m2e.wtp.facetDetectors";
+  private static final String EXTENSION_FACET_DETECTORS = "org.eclipse.m2e.wtp.facetDetectors"; //$NON-NLS-1$
 
-  private static final Object ELEMENT_FACET_DETECTOR = "facetDetector";
+  private static final Object ELEMENT_FACET_DETECTOR = "facetDetector"; //$NON-NLS-1$
 
   public static synchronized Map<String, List<AbstractFacetDetector>> readFacetDetectorExtensions() {
     
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
               }
               detectors.add(facetDetector);
             } catch(CoreException ex) {
-              LOG.error("Error configuring facet detector", ex);
+              LOG.error(Messages.FacetDetectorExtensionReader_Error_Configuring_Facet_Detector, ex);
             }
           }
         }

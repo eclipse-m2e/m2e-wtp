@@ -49,6 +49,8 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.wtp.DomUtils;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
+import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -65,11 +67,12 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
   private static final Logger LOG = LoggerFactory.getLogger(ResourceFilteringBuildParticipant.class );
 
   //Need to duplicate org.eclipse.m2e.core.internal.builder.MavenBuilder.BUILD_CONTEXT_KEY since it's not accessible 
-  private static final QualifiedName BUILD_CONTEXT_KEY = new QualifiedName(IMavenConstants.PLUGIN_ID, "BuildContext");
+  private static final QualifiedName BUILD_CONTEXT_KEY = new QualifiedName(IMavenConstants.PLUGIN_ID, "BuildContext"); //$NON-NLS-1$
   
   private EclipseBuildContext forceCopyBuildContext; 
   
-  public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
+  @Override
+public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
     IMavenProjectFacade facade = getMavenProjectFacade();
     ResourceFilteringConfiguration configuration = ResourceFilteringConfigurationFactory.getConfiguration(facade);
     List<Xpp3Dom> resources = null;
@@ -89,7 +92,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
       forceCopyBuildContext = null;
       List<String> filters = configuration.getFilters();
       if (changeRequiresForcedCopy(facade, filters, delta)) {
-        LOG.info("Changed resources require a complete clean of filtered resources of {}",project.getName());
+        LOG.info(NLS.bind(Messages.ResourceFilteringBuildParticipant_Changed_Resources_Require_Clean_Build,project.getName()));
         Map<String, Object> contextState = new HashMap<String, Object>();
         project.setSessionProperty(BUILD_CONTEXT_KEY, contextState);
         //String id = "" + "-" + getClass().getName();
@@ -98,7 +101,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
         ThreadBuildContext.setThreadBuildContext(forceCopyBuildContext);
       }
       if (forceCopyBuildContext != null || hasResourcesChanged(facade, delta, resources)) {
-        LOG.info("Executing resource filtering for {}",project.getName());
+        LOG.info(NLS.bind(Messages.ResourceFilteringBuildParticipant_Executing_Resource_Filtering,project.getName()));
         executeCopyResources(facade, configuration, targetFolder, resources, monitor);
         //FIXME deal with absolute paths
         IFolder destFolder = project.getFolder(targetFolder);
@@ -118,13 +121,13 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
    */
   private String getBuildParticipantId() {
     BuildContext originalContext = super.getBuildContext();
-    String id = "org.apache.maven.plugins:maven-resources:copy-resources:::-"+getClass().getName(); 
+    String id = "org.apache.maven.plugins:maven-resources:copy-resources:::-"+getClass().getName();  //$NON-NLS-1$
     if (originalContext != null && (originalContext instanceof AbstractEclipseBuildContext)) {
       //That allows us to avoid doing some introspection
       AbstractEclipseBuildContext eclipseContext = ((AbstractEclipseBuildContext)originalContext); 
       Map<String, List<Message>> map = eclipseContext.getMessages();
       if (map == null || map.isEmpty()) {
-        eclipseContext.addMessage(null, 0, 0, "dummy", 0, null);
+        eclipseContext.addMessage(null, 0, 0, "dummy", 0, null); //$NON-NLS-1$
         //adding a message initializes the map 
         map = eclipseContext.getMessages();
         id = map.keySet().iterator().next();
@@ -136,7 +139,8 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     return id;
   }
 
-  protected BuildContext getBuildContext() {
+  @Override
+protected BuildContext getBuildContext() {
      return (forceCopyBuildContext == null)?super.getBuildContext() : forceCopyBuildContext;
   }
 
@@ -168,7 +172,8 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
      
    }
  
-  public void clean(IProgressMonitor monitor) throws CoreException {
+  @Override
+public void clean(IProgressMonitor monitor) throws CoreException {
     IMavenProjectFacade facade = getMavenProjectFacade();
     ResourceFilteringConfiguration configuration = ResourceFilteringConfigurationFactory.getConfiguration(facade);
     if (configuration == null) {
@@ -186,7 +191,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     IFolder targetFolder = project.getFolder(targetFolderPath);
     if (targetFolder.exists()) {
       IContainer parent = targetFolder.getParent(); 
-      LOG.info("Cleaning filtered folder for "+project.getName());
+      LOG.info(NLS.bind(Messages.ResourceFilteringBuildParticipant_Cleaning_Filtered_Folder,project.getName()));
       IProgressMonitor monitor =new NullProgressMonitor();
       targetFolder.delete(true, monitor);
       if (parent != null) {
@@ -230,7 +235,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     Set<IPath> resourcePaths = new LinkedHashSet<IPath>();
     for(Xpp3Dom resource : resources) {
       IPath folder= null;
-      Xpp3Dom xpp3Directory = resource.getChild("directory");
+      Xpp3Dom xpp3Directory = resource.getChild("directory"); //$NON-NLS-1$
       if (xpp3Directory != null)
       {
         String dir = xpp3Directory.getValue();
@@ -262,14 +267,14 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     MavenProject mavenProject = facade.getMavenProject();
     
     MavenSession session = maven.createSession(request, mavenProject);
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("resources:copy-resources"), true, monitor);
+    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("resources:copy-resources"), true, monitor); //$NON-NLS-1$
     
-    MojoExecution copyFilteredResourcesMojo = getExecution(executionPlan, "maven-resources-plugin");
+    MojoExecution copyFilteredResourcesMojo = getExecution(executionPlan, "maven-resources-plugin"); //$NON-NLS-1$
 
     if (copyFilteredResourcesMojo == null) return;
 
     Xpp3Dom originalConfig = copyFilteredResourcesMojo.getConfiguration();
-    Xpp3Dom  configuration = Xpp3DomUtils.mergeXpp3Dom(new Xpp3Dom("configuration"), originalConfig);
+    Xpp3Dom  configuration = Xpp3DomUtils.mergeXpp3Dom(new Xpp3Dom("configuration"), originalConfig); //$NON-NLS-1$
     boolean parentHierarchyLoaded = false;
     try {
       parentHierarchyLoaded = loadParentHierarchy(facade, monitor);
@@ -278,15 +283,15 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
       setupResources(configuration, resources);
       
       //Force overwrite
-      setValue(configuration, "overwrite", Boolean.TRUE);
+      setValue(configuration, "overwrite", Boolean.TRUE); //$NON-NLS-1$
       
       //Limit placeholder delimiters, otherwise, pages containing @ wouldn't be filtered correctly
       setupDelimiters(configuration);
       
       //Set output directory to the m2eclipse-wtp webresources directory
-      setValue(configuration, "outputDirectory", targetFolder.toPortableString());
+      setValue(configuration, "outputDirectory", targetFolder.toPortableString()); //$NON-NLS-1$
       
-      setValue(configuration, "escapeString", filteringConfiguration.getEscapeString());
+      setValue(configuration, "escapeString", filteringConfiguration.getEscapeString()); //$NON-NLS-1$
 
       setNonfilteredExtensions(configuration, filteringConfiguration.getNonfilteredExtensions());
 
@@ -299,13 +304,13 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
 
       //Execute our modified mojo 
       copyFilteredResourcesMojo.setConfiguration(configuration);
-      copyFilteredResourcesMojo.getMojoDescriptor().setGoal("copy-resources");
+      copyFilteredResourcesMojo.getMojoDescriptor().setGoal("copy-resources"); //$NON-NLS-1$
 
       maven.execute(session, copyFilteredResourcesMojo, monitor);
       
       if (session.getResult().hasExceptions()){
         
-          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), IMavenConstants.MARKER_CONFIGURATION_ID,"An error occurred while filtering resources", -1,  IMarker.SEVERITY_ERROR);
+          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), IMavenConstants.MARKER_CONFIGURATION_ID,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
           //move exceptions up to the original session, so they can be handled by the maven builder
           //XXX current exceptions refer to maven-resource-plugin (since that's what we used), we should probably 
           // throw a new exception instead to indicate the problem(s) come(s) from web resource filtering
@@ -332,9 +337,9 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     if (extensions == null || extensions.isEmpty()) {
       return;
     }
-    Xpp3Dom nonFilteredFileExtensionsNode = configuration.getChild("nonFilteredFileExtensions");
+    Xpp3Dom nonFilteredFileExtensionsNode = configuration.getChild("nonFilteredFileExtensions"); //$NON-NLS-1$
     if (nonFilteredFileExtensionsNode == null) {
-      nonFilteredFileExtensionsNode = new Xpp3Dom("nonFilteredFileExtensions");
+      nonFilteredFileExtensionsNode = new Xpp3Dom("nonFilteredFileExtensions"); //$NON-NLS-1$
       configuration.addChild(nonFilteredFileExtensionsNode);
     } else {
       DomUtils.removeChildren(nonFilteredFileExtensionsNode);
@@ -356,29 +361,29 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
 
   private void setupFilters(Xpp3Dom configuration, List<String> filters) {
     if (!filters.isEmpty()) {
-      Xpp3Dom  filtersNode = configuration.getChild("filters");
+      Xpp3Dom  filtersNode = configuration.getChild("filters"); //$NON-NLS-1$
       
       if (filtersNode==null){
-        filtersNode = new Xpp3Dom("filters");
+        filtersNode = new Xpp3Dom("filters"); //$NON-NLS-1$
         configuration.addChild(filtersNode);
       } else {
         DomUtils.removeChildren(filtersNode);
       }
       
       for (String filter : filters) {
-        Xpp3Dom filterNode = new Xpp3Dom("filter");
+        Xpp3Dom filterNode = new Xpp3Dom("filter"); //$NON-NLS-1$
         //Workaround : when run via the BuildParticipant, the maven-resource-plugin won't 
         //find a filter defined with a relative path, so we turn it into an absolute one
         IPath filterPath = new Path(filter);
         boolean isAbsolute = false;
-        if (filter.startsWith("${basedir}") ||filter.startsWith("/") || filterPath.getDevice() != null) {
+        if (filter.startsWith("${basedir}") ||filter.startsWith("/") || filterPath.getDevice() != null) { //$NON-NLS-1$ //$NON-NLS-2$
           isAbsolute = true;
         }
         String filterAbsolutePath;
         if (isAbsolute) {
           filterAbsolutePath = filter;
         } else {
-          filterAbsolutePath = "${basedir}/"+filter;
+          filterAbsolutePath = "${basedir}/"+filter; //$NON-NLS-1$
         }
 
         filterNode.setValue(filterAbsolutePath);
@@ -388,33 +393,33 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
   }
   
   private void setupDelimiters(Xpp3Dom configuration) {
-    Xpp3Dom  useDefaultDelimitersNode = configuration.getChild("useDefaultDelimiters");
+    Xpp3Dom  useDefaultDelimitersNode = configuration.getChild("useDefaultDelimiters"); //$NON-NLS-1$
     if (useDefaultDelimitersNode==null){
-      useDefaultDelimitersNode = new Xpp3Dom("useDefaultDelimiters");
+      useDefaultDelimitersNode = new Xpp3Dom("useDefaultDelimiters"); //$NON-NLS-1$
       configuration.addChild(useDefaultDelimitersNode);
     }
     useDefaultDelimitersNode.setValue(Boolean.FALSE.toString());
 
-    Xpp3Dom  delimitersNode = configuration.getChild("delimiters");
+    Xpp3Dom  delimitersNode = configuration.getChild("delimiters"); //$NON-NLS-1$
     if (delimitersNode==null){
-      delimitersNode = new Xpp3Dom("delimiters");
+      delimitersNode = new Xpp3Dom("delimiters"); //$NON-NLS-1$
       configuration.addChild(delimitersNode);
     } else {
       DomUtils.removeChildren(delimitersNode);
     }
-    Xpp3Dom delimiter = new Xpp3Dom("delimiter");
-    delimiter.setValue("${*}");
+    Xpp3Dom delimiter = new Xpp3Dom("delimiter"); //$NON-NLS-1$
+    delimiter.setValue("${*}"); //$NON-NLS-1$
     delimitersNode.addChild(delimiter);
   }
   
 
   private void setupResources(Xpp3Dom configuration, List<Xpp3Dom> resources) {
-    Xpp3Dom  resourcesNode = configuration.getChild("resources");
+    Xpp3Dom  resourcesNode = configuration.getChild("resources"); //$NON-NLS-1$
     if (resourcesNode==null){
-      resourcesNode = new Xpp3Dom("resources");
+      resourcesNode = new Xpp3Dom("resources"); //$NON-NLS-1$
       configuration.addChild(resourcesNode);
     } else {
-      resourcesNode.setAttribute("default-value", "");
+      resourcesNode.setAttribute("default-value", ""); //$NON-NLS-1$ //$NON-NLS-2$
       DomUtils.removeChildren(resourcesNode);
     }
     for (Xpp3Dom resource : resources)

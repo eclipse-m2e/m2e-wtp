@@ -40,11 +40,11 @@ public class HarModule extends AbstractEarModule implements JbossEarModule {
   }
 
   public String getType() {
-    return "har";
+    return "har"; //$NON-NLS-1$
   }
 
   protected String getModuleType() {
-    return "harModule";
+    return "harModule"; //$NON-NLS-1$
   }
   
 }

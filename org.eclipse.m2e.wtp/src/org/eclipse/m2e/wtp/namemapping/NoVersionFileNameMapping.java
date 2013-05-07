@@ -33,7 +33,8 @@ public class NoVersionFileNameMapping
     extends AbstractFileNameMapping
 {
 
-    public String mapFileName( Artifact a )
+    @Override
+	public String mapFileName( Artifact a )
     {
         return generateFileName( a, false );
     }

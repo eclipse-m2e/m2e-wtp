@@ -40,7 +40,7 @@ public abstract class AbstractFilteringSupportMavenPlugin {
   public String getEscapeString() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      return DomUtils.getChildValue(config, "escapeString");
+      return DomUtils.getChildValue(config, "escapeString"); //$NON-NLS-1$
     }
     return null;
   }
@@ -48,7 +48,7 @@ public abstract class AbstractFilteringSupportMavenPlugin {
   public Xpp3Dom[] getNonfilteredExtensions() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom extensionsNode = config.getChild("nonFilteredFileExtensions");
+      Xpp3Dom extensionsNode = config.getChild("nonFilteredFileExtensions"); //$NON-NLS-1$
       if (extensionsNode != null && extensionsNode.getChildCount() > 0) {
         return extensionsNode.getChildren();
       }
@@ -59,10 +59,10 @@ public abstract class AbstractFilteringSupportMavenPlugin {
   public Collection<String> getFilters() {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom filtersNode = config.getChild("filters");
+      Xpp3Dom filtersNode = config.getChild("filters"); //$NON-NLS-1$
       if (filtersNode != null && filtersNode.getChildCount() > 0) {
         List<String> filters = new ArrayList<String>(filtersNode.getChildCount());
-        for (Xpp3Dom filterNode : filtersNode.getChildren("filter")) {
+        for (Xpp3Dom filterNode : filtersNode.getChildren("filter")) { //$NON-NLS-1$
           String  filter = filterNode.getValue();
           if (!StringUtils.nullOrEmpty(filter)) {
             filters.add(filter);

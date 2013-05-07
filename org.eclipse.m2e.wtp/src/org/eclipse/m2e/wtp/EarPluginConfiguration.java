@@ -30,8 +30,10 @@ import org.eclipse.m2e.wtp.earmodules.EarModule;
 import org.eclipse.m2e.wtp.earmodules.EarModuleFactory;
 import org.eclipse.m2e.wtp.earmodules.EarPluginException;
 import org.eclipse.m2e.wtp.earmodules.SecurityRoleKey;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.FileNameMappingFactory;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +55,9 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final Logger LOG = LoggerFactory.getLogger(EarPluginConfiguration.class);
 
   //Careful : This has a different meaning from the default library directory (/lib)
-  private static final String EAR_DEFAULT_BUNDLE_DIR = "/"; 
+  private static final String EAR_DEFAULT_BUNDLE_DIR = "/";  //$NON-NLS-1$
 
-  private static final String EAR_DEFAULT_CONTENT_DIR = "src/main/application"; // J2EEConstants.EAR_DEFAULT_LIB_DIR
+  private static final String EAR_DEFAULT_CONTENT_DIR = "src/main/application"; // J2EEConstants.EAR_DEFAULT_LIB_DIR //$NON-NLS-1$
 
   // Default EAR version produced by the maven-ear-plugin
   private static final IProjectFacetVersion DEFAULT_EAR_FACET = IJ2EEFacetConstants.ENTERPRISE_APPLICATION_13;
@@ -76,7 +78,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   
   public EarPluginConfiguration(MavenProject mavenProject) {
     if(JEEPackaging.EAR != JEEPackaging.getValue(mavenProject.getPackaging())) {
-      throw new IllegalArgumentException("Maven project must have ear packaging");
+      throw new IllegalArgumentException(Messages.EarPluginConfiguration_Project_Must_Have_ear_Packaging);
     }
 
     this.mavenProject = mavenProject;
@@ -85,7 +87,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   }
 
   public Plugin getPlugin() {
-    return mavenProject.getPlugin("org.apache.maven.plugins:maven-ear-plugin");
+    return mavenProject.getPlugin("org.apache.maven.plugins:maven-ear-plugin"); //$NON-NLS-1$
   }
 
 
@@ -100,7 +102,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       return DEFAULT_EAR_FACET;
     }
 
-    Xpp3Dom domVersion = config.getChild("version");
+    Xpp3Dom domVersion = config.getChild("version"); //$NON-NLS-1$
     if(domVersion != null) {
       String sVersion = domVersion.getValue();
       try {
@@ -112,11 +114,11 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
           //If Ear Version > 5.0 and WTP < 3.2, downgrade to Ear facet 5.0
           LOG.warn(e.getMessage());
           if (version > 5.0){
-            return IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET.getVersion("5.0");
+            return IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET.getVersion("5.0"); //$NON-NLS-1$
           }
         }
         } catch(NumberFormatException nfe) {
-        LOG.error("unable to read ear version : " + sVersion, nfe);
+        LOG.error(NLS.bind(Messages.EarPluginConfiguration_Error_Reading_EAR_Version,sVersion), nfe);
         return DEFAULT_EAR_FACET;
       }
     }
@@ -132,7 +134,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   public String getEarContentDirectory(IProject project) {
     Xpp3Dom config = getConfiguration();
     if(config != null) {
-      Xpp3Dom contentDirDom = config.getChild("earSourceDirectory");
+      Xpp3Dom contentDirDom = config.getChild("earSourceDirectory"); //$NON-NLS-1$
       if(contentDirDom != null && contentDirDom.getValue() != null) {
         String contentDir = contentDirDom.getValue().trim();
         
@@ -161,7 +163,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     if(libDirectory == null) {
       Xpp3Dom config = getConfiguration();
       if(config != null) {
-        Xpp3Dom libDom = config.getChild("defaultLibBundleDir");
+        Xpp3Dom libDom = config.getChild("defaultLibBundleDir"); //$NON-NLS-1$
         if(libDom != null && libDom.getValue() != null) {
           String libDir = libDom.getValue().trim();
           libDirectory = (libDir.length() == 0) ? EAR_DEFAULT_BUNDLE_DIR : libDir;
@@ -226,7 +228,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
       // If the artifact's type is POM, ignore and continue
       // since it's used for transitive deps only.
-      if("pom".equals(artifact.getType())) {
+      if("pom".equals(artifact.getType())) { //$NON-NLS-1$
         continue;
       }
 
@@ -245,7 +247,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   private String getMainArtifactId() {
     // TODO read xml config
-    return "none";
+    return "none"; //$NON-NLS-1$
   }
 
   private ArtifactTypeMappingService getArtifactTypeMappingService() throws EarPluginException {
@@ -253,7 +255,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       Xpp3Dom config = getConfiguration();
       Xpp3Dom artifactTypeMappingConfig = null;
       if (config != null) {
-        artifactTypeMappingConfig = config.getChild("artifactTypeMappings");
+        artifactTypeMappingConfig = config.getChild("artifactTypeMappings"); //$NON-NLS-1$
       }
       typeMappingService = new ArtifactTypeMappingService(artifactTypeMappingConfig);
     }
@@ -267,7 +269,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       return FileNameMappingFactory.getDefaultFileNameMapping();
     }
 
-    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping");
+    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
     if(fileNameMappingDom != null) {
       String fileNameMappingName = fileNameMappingDom.getValue().trim();
       return FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
@@ -286,7 +288,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     if(configuration == null) {
       return earModules;
     }
-    Xpp3Dom modulesNode = configuration.getChild("modules");
+    Xpp3Dom modulesNode = configuration.getChild("modules"); //$NON-NLS-1$
 
     if(modulesNode == null) {
       return earModules;
@@ -322,7 +324,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     if(configuration == null) {
       return true;
     }
-    Xpp3Dom generateApplicationXmlNode = configuration.getChild("generateApplicationXml");
+    Xpp3Dom generateApplicationXmlNode = configuration.getChild("generateApplicationXml"); //$NON-NLS-1$
     return (generateApplicationXmlNode == null) || Boolean.parseBoolean(generateApplicationXmlNode.getValue());
   }
   
@@ -332,21 +334,21 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     if(configuration == null) {
       return securityRoles;
     }
-    Xpp3Dom securityNode = configuration.getChild("security");
+    Xpp3Dom securityNode = configuration.getChild("security"); //$NON-NLS-1$
 
     if(securityNode == null) {
       return securityRoles;
     }
 
-    Xpp3Dom[] secRoles = securityNode.getChildren("security-role");
+    Xpp3Dom[] secRoles = securityNode.getChildren("security-role"); //$NON-NLS-1$
     if(secRoles == null || secRoles.length == 0) {
       return securityRoles;
     }
     
     for(Xpp3Dom domSecRole : secRoles) {
-      String id = domSecRole.getAttribute("id");
-      String description = DomUtils.getChildValue(domSecRole, "description");
-      String roleName = DomUtils.getChildValue(domSecRole, "role-name");
+      String id = domSecRole.getAttribute("id"); //$NON-NLS-1$
+      String description = DomUtils.getChildValue(domSecRole, "description"); //$NON-NLS-1$
+      String roleName = DomUtils.getChildValue(domSecRole, "role-name"); //$NON-NLS-1$
       if (roleName != null)
       {
         SecurityRoleKey srk = new SecurityRoleKey();
@@ -360,8 +362,9 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     return securityRoles;
   }
 
+  @Override
   protected String getFilteringAttribute() {
-    return "filtering";
+    return "filtering"; //$NON-NLS-1$
   }
 
   public boolean isIncludeLibInApplicationXml() {
@@ -370,40 +373,46 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       return false;
     }
     
-    boolean isIncluded = DomUtils.getBooleanChildValue(configuration, "includeLibInApplicationXml");
+    boolean isIncluded = DomUtils.getBooleanChildValue(configuration, "includeLibInApplicationXml"); //$NON-NLS-1$
     return isIncluded;
   }
 
+  @Override
   public String[] getPackagingExcludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingExcludes");
+    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingExcludes"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getPackagingIncludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingIncludes");
+    return DomUtils.getPatternsAsArray(getConfiguration(),"packagingIncludes"); //$NON-NLS-1$
   }
   
+  @Override
   public String[] getSourceExcludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"earSourceExcludes");
+    return DomUtils.getPatternsAsArray(getConfiguration(),"earSourceExcludes"); //$NON-NLS-1$
   }
 
+  @Override
   public String[] getSourceIncludes() {
-    return DomUtils.getPatternsAsArray(getConfiguration(),"earSourceIncludes");
+    return DomUtils.getPatternsAsArray(getConfiguration(),"earSourceIncludes"); //$NON-NLS-1$
   }  
   
+  @Override
   public SourceLocation getSourceLocation() {
     Plugin plugin = getPlugin();
     if (plugin == null) {
       return null;
     }
-    return SourceLocationHelper.findLocation(plugin, "configuration");
+    return SourceLocationHelper.findLocation(plugin, "configuration"); //$NON-NLS-1$
   }
 
+  @Override
   public String getSourceIncludeParameterName() {
-    return "earSourceIncludes";
+    return "earSourceIncludes"; //$NON-NLS-1$
   }
   
   public String getFinalName() {
-    String finalName = DomUtils.getChildValue(getConfiguration(), "finalName");
+    String finalName = DomUtils.getChildValue(getConfiguration(), "finalName"); //$NON-NLS-1$
     if (StringUtils.isEmpty(finalName)) {
       finalName = mavenProject.getBuild().getFinalName(); 
     }

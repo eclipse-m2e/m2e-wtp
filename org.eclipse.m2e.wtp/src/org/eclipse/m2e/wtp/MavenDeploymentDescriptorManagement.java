@@ -42,6 +42,8 @@ import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.wtp.earmodules.EarModule;
+import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.internal.ide.filesystem.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
@@ -63,14 +65,16 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
   private static final VersionRange VALID_EAR_PLUGIN_RANGE;
   static {
     try {
-      VALID_EAR_PLUGIN_RANGE = VersionRange.createFromVersionSpec("[2.4.3,)");
+      VALID_EAR_PLUGIN_RANGE = VersionRange.createFromVersionSpec("[2.4.3,)"); //$NON-NLS-1$
     } catch(InvalidVersionSpecificationException ex) {
-      throw new RuntimeException("Unable to create ear plugin version range from [2.4.3,)", ex);
+      //Can't happen
+      throw new RuntimeException("Unable to create ear plugin version range from [2.4.3,)", ex); //$NON-NLS-1$
     }
   }
 
   private static final IOverwriteQuery OVERWRITE_ALL_QUERY = new IOverwriteQuery() {
-    public String queryOverwrite(String pathString) {
+    @Override
+	public String queryOverwrite(String pathString) {
       return IOverwriteQuery.ALL;
     }
   };
@@ -82,7 +86,8 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
    * @throws CoreException
    */
 
-  public void updateConfiguration(IProject project, MavenProject mavenProject, EarPluginConfiguration plugin,
+  @Override
+public void updateConfiguration(IProject project, MavenProject mavenProject, EarPluginConfiguration plugin,
      boolean useBuildDirectory, IProgressMonitor monitor) throws CoreException {
 
     IMavenProjectRegistry projectManager = MavenPlugin.getMavenProjectRegistry();
@@ -93,8 +98,8 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
     MavenExecutionRequest request = projectManager.createExecutionRequest(pomResource, mavenFacade.getResolverConfiguration(), monitor);
     MavenSession session = maven.createSession(request, mavenProject);
 
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("ear:generate-application-xml"), true, monitor);
-    MojoExecution genConfigMojo = getExecution(executionPlan, "maven-ear-plugin", "generate-application-xml");
+    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("ear:generate-application-xml"), true, monitor); //$NON-NLS-1$
+    MojoExecution genConfigMojo = getExecution(executionPlan, "maven-ear-plugin", "generate-application-xml"); //$NON-NLS-1$ //$NON-NLS-2$
     if(genConfigMojo == null) {
       //TODO Better error management
       return;
@@ -103,7 +108,7 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
     //Let's force the generated config files location
     Xpp3Dom configuration = genConfigMojo.getConfiguration();
     if(configuration == null) {
-      configuration = new Xpp3Dom("configuration");
+      configuration = new Xpp3Dom("configuration"); //$NON-NLS-1$
       genConfigMojo.setConfiguration(configuration);
     }
     
@@ -117,19 +122,19 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
 
     // Some old maven-ear-plugin have a dependency on an old plexus-util version that prevents
     // using workdirectory == generatedDescriptorLocation, so we keep them separated 
-    File generatedDescriptorLocation = new File(tempDirectory, "generatedDescriptorLocation");
-    File workDirectory = new File(tempDirectory, "workDirectory");
+    File generatedDescriptorLocation = new File(tempDirectory, "generatedDescriptorLocation"); //$NON-NLS-1$
+    File workDirectory = new File(tempDirectory, "workDirectory"); //$NON-NLS-1$
     
-    Xpp3Dom workDirectoryDom = configuration.getChild("workDirectory");
+    Xpp3Dom workDirectoryDom = configuration.getChild("workDirectory"); //$NON-NLS-1$
     if(workDirectoryDom == null) {
-      workDirectoryDom = new Xpp3Dom("workDirectory");
+      workDirectoryDom = new Xpp3Dom("workDirectory"); //$NON-NLS-1$
       configuration.addChild(workDirectoryDom);
     }
     workDirectoryDom.setValue(workDirectory.getAbsolutePath());
 
-    Xpp3Dom genDescriptorLocationDom = configuration.getChild("generatedDescriptorLocation");
+    Xpp3Dom genDescriptorLocationDom = configuration.getChild("generatedDescriptorLocation"); //$NON-NLS-1$
     if(genDescriptorLocationDom == null) {
-      genDescriptorLocationDom = new Xpp3Dom("generatedDescriptorLocation");
+      genDescriptorLocationDom = new Xpp3Dom("generatedDescriptorLocation"); //$NON-NLS-1$
       configuration.addChild(genDescriptorLocationDom);
     }
     genDescriptorLocationDom.setValue(generatedDescriptorLocation.getAbsolutePath());
@@ -167,7 +172,7 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
       }
     }
     
-    IFolder metaInfFolder = targetFolder.getFolder("/META-INF/");
+    IFolder metaInfFolder = targetFolder.getFolder("/META-INF/"); //$NON-NLS-1$
 
     if(files != null && files.length > 0) {
       //We generated something
@@ -208,9 +213,9 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
 
 
   private void overrideModules(Xpp3Dom configuration, Set<EarModule> earModules) {
-    Xpp3Dom modules = configuration.getChild("modules");
+    Xpp3Dom modules = configuration.getChild("modules"); //$NON-NLS-1$
     if(modules == null) {
-      modules = new Xpp3Dom("modules");
+      modules = new Xpp3Dom("modules"); //$NON-NLS-1$
       configuration.addChild(modules);
     }
     //TODO find a more elegant way to clear the modules  
@@ -224,15 +229,15 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
   }
 
   private File getTempDirectory() throws IOException {
-    File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    File dir = new File(tempDir, ".mavenDeploymentDescriptorManagement");
+    File tempDir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
+    File dir = new File(tempDir, ".mavenDeploymentDescriptorManagement"); //$NON-NLS-1$
     if(dir.exists()) {
       if(dir.isFile()) {
         if(!dir.delete()) {
-          throw new IOException("Could not delete temp file: " + dir.getAbsolutePath());
+          throw new IOException(NLS.bind(Messages.MavenDeploymentDescriptorManagement_Error_Deleting_Temp_Folder, dir.getAbsolutePath()));
         } else {
           if(!deleteDirectory(dir)) {
-            throw new IOException("Could not delete temp file: " + dir.getAbsolutePath());
+            throw new IOException(NLS.bind(Messages.MavenDeploymentDescriptorManagement_Error_Deleting_Temp_Folder, dir.getAbsolutePath())); 
           }
         }
       }

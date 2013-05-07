@@ -63,6 +63,7 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 		this.project = project;
 	}
 
+	@Override
 	public IVirtualFolder getRootFolder() {
 		return getRoot();
 	}

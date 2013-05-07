@@ -42,6 +42,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
+import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -72,9 +73,9 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
   private static final Logger LOG = LoggerFactory.getLogger(AbstractProjectConfiguratorDelegate.class); 
   
   static final IClasspathAttribute NONDEPENDENCY_ATTRIBUTE = JavaCore.newClasspathAttribute(
-      IClasspathDependencyConstants.CLASSPATH_COMPONENT_NON_DEPENDENCY, "");
+      IClasspathDependencyConstants.CLASSPATH_COMPONENT_NON_DEPENDENCY, ""); //$NON-NLS-1$
 
-  protected static final IPath ROOT_PATH = new Path("/"); 
+  protected static final IPath ROOT_PATH = new Path("/");  //$NON-NLS-1$
 
   protected final IMavenProjectRegistry projectManager;
 
@@ -85,14 +86,15 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     this.mavenMarkerManager = MavenPluginActivator.getDefault().getMavenMarkerManager();
   }
   
-  public void configureProject(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws MarkedException {
+  @Override
+public void configureProject(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws MarkedException {
     try {
       mavenMarkerManager.deleteMarkers(project,MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID);
       configure(project, mavenProject, monitor);
     } catch (CoreException cex) {
       //TODO Filter out constraint violations
       mavenMarkerManager.addErrorMarkers(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID, cex);
-      throw new MarkedException("Unable to configure "+project.getName(), cex);
+      throw new MarkedException(NLS.bind(Messages.AbstractProjectConfiguratorDelegate_Unable_To_Configure_Project,project.getName()), cex);
     }
   }
  
@@ -132,13 +134,13 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     
     //MECLIPSEWTP-182 check if the Java Project configurator has been successfully run before doing anything : 
     if (!checkJavaConfiguration(project, sourceRoots, resourceRoots)) {
-      LOG.warn("{} Utility Facet configuration is aborted as the Java Configuration is inconsistent", project.getName());
+      LOG.warn(NLS.bind(Messages.AbstractProjectConfiguratorDelegate_Error_Inconsistent_Java_Configuration, project.getName()));
       return;
     }
 
     boolean isDebugEnabled = DebugUtilities.isDebugEnabled();
     if (isDebugEnabled) {
-      DebugUtilities.debug(DebugUtilities.dumpProjectState("Before configuration ",project));
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("Before configuration ",project)); //$NON-NLS-1$
     }
 
     // 2 - check if the manifest already exists, and its parent folder
@@ -168,14 +170,14 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     fixMissingModuleCoreNature(project, monitor);
     
     if (isDebugEnabled) {
-      DebugUtilities.debug(DebugUtilities.dumpProjectState("after configuration ",project));
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("after configuration ",project)); //$NON-NLS-1$
     }
     //MNGECLIPSE-904 remove tests folder links for utility jars
-    removeTestFolderLinks(project, mavenProject, monitor, "/");
+    removeTestFolderLinks(project, mavenProject, monitor, "/"); //$NON-NLS-1$
     
     //Remove "library unavailable at runtime" warning.
     if (isDebugEnabled) {
-      DebugUtilities.debug(DebugUtilities.dumpProjectState("after removing test folders ",project));
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("after removing test folders ",project)); //$NON-NLS-1$
     }
 
     setNonDependencyAttributeToContainer(project, monitor);
@@ -333,12 +335,14 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
       return WTPProjectsUtil.hasChanged(existingRefs, refArray);
   }
 
-  public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
+  @Override
+public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
     // do nothing
   }
 
-  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  @Override
+public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     // do nothing
   }
@@ -346,13 +350,13 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
   protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
     for (IPath p : facade.getCompileSourceLocations()) {
       if (p != null) {
-        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
         fileCleaner.addFolder(p);
       }
     }
     for (IPath p : facade.getResourceLocations()) {
       if (p != null) {
-        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF"));
+        fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
         fileCleaner.addFolder(p);
       }
     }
@@ -395,10 +399,10 @@ abstract class AbstractProjectConfiguratorDelegate implements IProjectConfigurat
     String componentInclusions = joinAsString(warSourceIncludes, packagingIncludes);
     String componentExclusions = joinAsString(warSourceExcludes, packagingExcludes);
     Properties props = component.getMetaProperties();
-    if (!componentInclusions.equals(props.getProperty(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS, ""))) {
+    if (!componentInclusions.equals(props.getProperty(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS, ""))) { //$NON-NLS-1$
       component.setMetaProperty(MavenWtpConstants.COMPONENT_INCLUSION_PATTERNS, componentInclusions);
     }
-    if (!componentExclusions.equals(props.getProperty(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS, ""))) {
+    if (!componentExclusions.equals(props.getProperty(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS, ""))) { //$NON-NLS-1$
       component.setMetaProperty(MavenWtpConstants.COMPONENT_EXCLUSION_PATTERNS, componentExclusions);
     }
   }

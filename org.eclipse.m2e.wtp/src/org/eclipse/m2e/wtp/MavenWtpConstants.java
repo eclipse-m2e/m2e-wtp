@@ -31,25 +31,25 @@ public final class MavenWtpConstants {
 
   public static final String WTP_MARKER_UNSUPPORTED_DEPENDENCY_PROBLEM = WTP_MARKER_ID + ".unsupportedDependencyProblem"; //$NON-NLS-1$
 
-  public static final String M2E_WTP_FOLDER = "m2e-wtp";
+  public static final String M2E_WTP_FOLDER = "m2e-wtp"; //$NON-NLS-1$
   
-  public static final String WEB_RESOURCES_FOLDER = "web-resources";
+  public static final String WEB_RESOURCES_FOLDER = "web-resources"; //$NON-NLS-1$
 
-  public static final String EAR_RESOURCES_FOLDER = "ear-resources";
+  public static final String EAR_RESOURCES_FOLDER = "ear-resources"; //$NON-NLS-1$
   
-  public static final String ROOT_FOLDER = "/";
+  public static final String ROOT_FOLDER = "/"; //$NON-NLS-1$
   
 
   /**
    * Provisional name of component property used by WTP server adapters to exclude resources from deployment.
    * Only known consumer is JBoss AS adapter.
    */
-  public static final String COMPONENT_EXCLUSION_PATTERNS = "component.exclusion.patterns";
+  public static final String COMPONENT_EXCLUSION_PATTERNS = "component.exclusion.patterns"; //$NON-NLS-1$
   
   /**
    * Provisional name of component property used by WTP server adapters to include resources in deployment.
    * Only known consumer is JBoss AS adapter.
    */
-  public static final String COMPONENT_INCLUSION_PATTERNS = "component.inclusion.patterns";
+  public static final String COMPONENT_INCLUSION_PATTERNS = "component.inclusion.patterns"; //$NON-NLS-1$
 
 }
