@@ -24,7 +24,12 @@ import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * maven-acr-plugin (application client maven plugin) configuration model.
@@ -40,6 +45,10 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin {
   
   private static final IProjectFacetVersion DEFAULT_APPCLIENT_FACET_VERSION = IJ2EEFacetConstants.APPLICATION_CLIENT_50;
+  
+  private static final int JEE_7_0_ID = 70;
+
+  private static final Logger LOG = LoggerFactory.getLogger(AcrPluginConfiguration.class);
   
   final IMavenProjectFacade mavenProjectFacade;
 
@@ -75,6 +84,10 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
               return IJ2EEFacetConstants.APPLICATION_CLIENT_50;
             case J2EEVersionConstants.JEE_6_0_ID:
               return IJ2EEFacetConstants.APPLICATION_CLIENT_60;
+            case JEE_7_0_ID:
+            	//This can only happen when run in WTP >= 3.5
+            	//Don't use/create a static 1.7 facet version, it'd blow up WTP < 3.5
+                return IJ2EEFacetConstants.APPLICATION_CLIENT_FACET.getVersion("7.0"); //$NON-NLS-1$
           }
         } finally {
           is.close();
@@ -86,7 +99,20 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       }
     }
    
+    IProject project = mavenProjectFacade.getProject();
+    //If no application-client.xml found, don't change existing facet version
+    try {
+        IFacetedProject fProject = ProjectFacetsManager.create(project);
+        if (fProject != null && fProject.hasProjectFacet(IJ2EEFacetConstants.APPLICATION_CLIENT_FACET)) {
+          return fProject.getProjectFacetVersion(IJ2EEFacetConstants.APPLICATION_CLIENT_FACET);
+        }
+    } catch (Exception e) {
+        LOG.warn(NLS.bind(Messages.Error_Reading_Project_Facet, project.getName()), e); 
+    }      
+
+    
     //If no application-client.xml found and the project depends on some java EE 6 jar then set application client facet to 6.0
+    //FIXME this is totally arbitrary. Need to find a better solution.
     if (WTPProjectsUtil.hasInClassPath(mavenProjectFacade.getProject(), "javax.servlet.annotation.WebServlet")) { //$NON-NLS-1$
       return IJ2EEFacetConstants.APPLICATION_CLIENT_60;
     }
