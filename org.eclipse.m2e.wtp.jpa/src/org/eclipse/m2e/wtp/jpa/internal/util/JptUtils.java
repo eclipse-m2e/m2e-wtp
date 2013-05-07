@@ -45,7 +45,7 @@ public class JptUtils {
 		if (resourceLocator == null) {
 			return null;
 		}
-		IPath path = resourceLocator.getResourcePath(project, new Path("META-INF/persistence.xml"));
+		IPath path = resourceLocator.getResourcePath(project, new Path("META-INF/persistence.xml"));//$NON-NLS-1$
 		IFile persistenceXml = null;
 		if (path != null) {
 			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		
@@ -92,23 +92,23 @@ public class JptUtils {
 	public static ResourceLocator getResourceLocator(IProject project) {
 	  Method getResourceLocator;
 	  try {
-		getResourceLocator = JptCommonCorePlugin.class.getMethod("getResourceLocator", IProject.class);
+		getResourceLocator = JptCommonCorePlugin.class.getMethod("getResourceLocator", IProject.class); //$NON-NLS-1$
 		if(getResourceLocator!=null) {
 			return (ResourceLocator)getResourceLocator.invoke(null, project);
 		}
       } catch (NoSuchMethodException e) {
 		try {
-			Class<?> resourceLocatorManagerClass = Class.forName("org.eclipse.jpt.common.core.internal.resource.ResourceLocatorManager");
-			Object resourceLocatorManager = resourceLocatorManagerClass.getMethod("getInstance", null).invoke(null, null);
-			getResourceLocator = resourceLocatorManagerClass.getMethod("getResourceLocator", IProject.class);
+			Class<?> resourceLocatorManagerClass = Class.forName("org.eclipse.jpt.common.core.internal.resource.ResourceLocatorManager"); //$NON-NLS-1$
+			Object resourceLocatorManager = resourceLocatorManagerClass.getMethod("getInstance", null).invoke(null, null); //$NON-NLS-1$
+			getResourceLocator = resourceLocatorManagerClass.getMethod("getResourceLocator", IProject.class); //$NON-NLS-1$
 			if(getResourceLocator!=null) {
 				return (ResourceLocator)getResourceLocator.invoke(resourceLocatorManager, project);
 			} ;
 		} catch (Exception e1) {
-			LOG.error("Unable to get a ResourceLocator for "+project, e1);
+			LOG.error("Unable to get a ResourceLocator for "+project, e1); //$NON-NLS-1$
 		}
 	  } catch (Exception e) {
-		LOG.error("Unable to get a ResourceLocator for "+project, e);
+		LOG.error("Unable to get a ResourceLocator for "+project, e); //$NON-NLS-1$
 	  }
 	  return null;  
 	}

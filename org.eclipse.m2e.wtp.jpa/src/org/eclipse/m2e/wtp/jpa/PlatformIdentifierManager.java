@@ -27,8 +27,8 @@ public class PlatformIdentifierManager {
 	
 	public PlatformIdentifierManager() {
 		//TODO use extension points
-		platformIdentifiers.add(new ReallySimplePlatformIdentifer("hibernate"));
-		platformIdentifiers.add(new ReallySimplePlatformIdentifer("eclipselink"));
+		platformIdentifiers.add(new ReallySimplePlatformIdentifer("hibernate")); //$NON-NLS-1$
+		platformIdentifiers.add(new ReallySimplePlatformIdentifer("eclipselink")); //$NON-NLS-1$
 	} 
 	
 	/**
