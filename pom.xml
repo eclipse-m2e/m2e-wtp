@@ -24,7 +24,7 @@
   <name>M2E-WTP :: Parent</name>
 
   <properties>
-    <tycho-version>0.16.0</tycho-version>
+    <tycho-version>0.18.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     
     <test.timeout>1800</test.timeout><!--  30 mins -->       
