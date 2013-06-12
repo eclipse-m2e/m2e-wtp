@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="Maven Integration for WTP (Incubation)">
-      m2e-wtp - Maven Integration for WTP (Incubation)
+   <description name="Maven Integration for WTP">
+      m2e-wtp - Maven Integration for WTP
    </description>
    <category name="m2e-wtp"/>
    
@@ -19,7 +19,7 @@
       <category name="m2e-wtp"/>
    </feature>
    -->
-   <category-def name="m2e-wtp" label="Maven Integration for WTP (Incubation)"/>
+   <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
 
    <category name="maven-archiver"/>
 
@@ -35,7 +35,7 @@
       <category name="m2e-wtp-sdk"/>
    </feature>
 
-   <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK (Incubation)"/>
+   <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>
 
    
 </site>

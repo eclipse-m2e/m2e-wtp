@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Overlay support for Eclipse WTP (Incubation)
+Bundle-Name: Overlay support for Eclipse WTP
 Bundle-SymbolicName: org.eclipse.m2e.wtp.overlay;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5,
