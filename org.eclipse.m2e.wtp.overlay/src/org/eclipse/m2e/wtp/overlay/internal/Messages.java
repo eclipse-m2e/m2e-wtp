@@ -4,6 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.m2e.wtp.overlay.internal.messages"; //$NON-NLS-1$
+	public static String CompressionUtil_Extracting_Task;
 	public static String CompressionUtil_Unable_To_Create_Output_Dir;
 	public static String CompressionUtil_Unpacking_Unable;
 	public static String CompressionUtil_Unzipping_Interrupted;

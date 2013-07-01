@@ -66,13 +66,16 @@ public class CompressionUtil {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
+		
+		monitor.beginTask(Messages.CompressionUtil_Extracting_Task, zipFile.size());
 		try {
 			while (e.hasMoreElements()) {
 				ZipEntry zipEntry = (ZipEntry) e.nextElement();
 				File file = new File(projectFolderFile, zipEntry.getName());
 				
 				if (!zipEntry.isDirectory()) {
-					
+					monitor.subTask(zipEntry.getName());
+								
 					File parentFile = file.getParentFile();
 					if (null != parentFile && !parentFile.exists()) {
 						parentFile.mkdirs();
