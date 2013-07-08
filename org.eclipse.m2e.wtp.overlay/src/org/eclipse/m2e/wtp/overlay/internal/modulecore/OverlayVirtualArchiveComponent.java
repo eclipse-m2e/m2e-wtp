@@ -42,6 +42,12 @@ public class OverlayVirtualArchiveComponent extends VirtualArchiveComponent impl
 	private Set<String> inclusions;
 	
 	private Set<String> exclusions;
+
+	private ResourceListVirtualFolder cachedRoot;
+
+	private long lastCacheUpdate;
+	
+	private static int MAX_CACHE = 2000;
 	
 	public OverlayVirtualArchiveComponent(IProject aComponentProject,
 			String archiveLocation, IPath unpackDirPath, IPath aRuntimePath) {
@@ -72,9 +78,17 @@ public class OverlayVirtualArchiveComponent extends VirtualArchiveComponent impl
 			  }
 			  root = new ResourceListVirtualFolder(getProject(), getRuntimePath(), new IContainer[] {}); 	
 			} else {
+			  	
+			  if (cachedRoot != null && (System.currentTimeMillis() - lastCacheUpdate) < MAX_CACHE){
+					return cachedRoot;
+			  } 
+				
 			  IContainer[] containers = new IContainer[] {unpackedFolder};
 			  root = new ResourceListVirtualFolder(getProject(), getRuntimePath(), containers);
 			  root.setFilter(new FileSystemResourceFilter(inclusions, exclusions, unpackedFolder.getLocation()));
+			  
+			  lastCacheUpdate = System.currentTimeMillis();
+			  cachedRoot = root;
 			}
 		}
 		return root;

@@ -56,7 +56,7 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 	
 	private long lastCacheUpdate;
 	
-	private static int MAX_CACHE = 1000;
+	private static int MAX_CACHE = 2000;
 	
 	public OverlayVirtualComponent(IProject project) {
 		super(project, ROOT);
