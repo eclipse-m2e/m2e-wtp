@@ -43,7 +43,7 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
   private static final String ATTR_DESCRIPTION = "description"; //$NON-NLS-1$
 
 
-  private static Logger LOG = LoggerFactory.getLogger(MavenWtpPreferencesManagerImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MavenWtpPreferencesManagerImpl.class);
   
   private static final String CONFIGURATOR_ENABLER_EXTENSION_POINT = MavenWtpPlugin.ID+".javaeeConfiguratorEnabler"; //$NON-NLS-1$
 

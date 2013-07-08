@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MavenPluginUtils {
 
-  private static Logger log = LoggerFactory.getLogger(MavenPlugin.class);
+  private static final Logger log = LoggerFactory.getLogger(MavenPlugin.class);
   
   private static final String CONFIGURATION_KEY = "configuration"; //$NON-NLS-1$
 
