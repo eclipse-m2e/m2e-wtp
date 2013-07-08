@@ -23,12 +23,13 @@
 
   <name>M2E-WTP :: Parent</name>
   <url>http://www.eclipse.org/m2e-wtp</url>
+  <inceptionYear>2008</inceptionYear>
 
   <properties>
     <tycho-version>0.18.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    
-    <test.timeout>1800</test.timeout><!--  30 mins -->       
+
+    <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
     <eclipse.target>kepler</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
@@ -36,29 +37,34 @@
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.15.0.201207090125, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
-    
+
   </properties>
 
   <prerequisites>
    <maven>3.0</maven>
   </prerequisites>
- 
+
   <organization>
     <name>Eclipse foundation</name>
     <url>http://www.eclipse.org</url>
   </organization>
-  
+
   <licenses>
     <license>
       <name>Eclipse Public License - v 1.0</name>
       <url>http://www.eclipse.org/legal/epl-v10.html</url>
     </license>
   </licenses>
-  
+
   <issueManagement>
     <url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=M2E-WTP</url>
     <system>Bugzilla</system>
   </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>http://hudson.eclipse.org/</url>
+  </ciManagement>
 
   <modules>
     <module>org.eclipse.m2e.wtp.overlay</module>
@@ -68,18 +74,18 @@
     <module>org.eclipse.m2e.wtp.jaxrs</module>
     <module>org.eclipse.m2e.wtp.jaxrs.feature</module>
     <module>org.eclipse.m2e.wtp.jsf</module>
-    <module>org.eclipse.m2e.wtp.jsf.feature</module>    
+    <module>org.eclipse.m2e.wtp.jsf.feature</module>
     <module>org.eclipse.m2e.wtp.sdk.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
-    
+
   <repositories>
     <repository>
       <id>m2e-core</id>
       <layout>p2</layout>
       <url>http://nexus.tesla.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</url>
       <!--<url>http://download.eclipse.org/technology/m2e/milestones/1.5/</url>-->
-    </repository>    
+    </repository>
     <repository>
       <id>eclipse</id>
       <layout>p2</layout>
@@ -96,7 +102,7 @@
       <id>mavenarchiver</id>
       <layout>p2</layout>
       <url>${mavenarchiver-repo.url}</url>
-    </repository>    
+    </repository>
     <repository>
       <id>RSO-public-group</id>
       <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
@@ -108,7 +114,7 @@
       </snapshots>
     </repository>
   </repositories>
-    
+
   <pluginRepositories>
     <pluginRepository>
       <id>RSO-public-group</id>
@@ -155,7 +161,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
     </plugins>
 
     <pluginManagement>
@@ -183,7 +189,7 @@
         <osgi.ws>cocoa</osgi.ws>
       </properties>
     </profile>
-    
+
     <profile>
       <id>eclipse-sign</id>
 
@@ -267,6 +273,6 @@
         </plugins>
       </build>
     </profile>
-    
+
     </profiles>
 </project>
