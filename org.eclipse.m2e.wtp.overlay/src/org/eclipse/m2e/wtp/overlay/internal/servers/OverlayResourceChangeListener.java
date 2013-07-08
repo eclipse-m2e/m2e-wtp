@@ -71,7 +71,6 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 				IProject moduleProject = module.getProject();
 				for (IProject changedProject : changedProjects) {
 					if (hasOverlayChanged(changedProject, moduleProject, delta)) {
-						//System.err.println(moduleProject.getName() + " overlays " +changedProject.getName());
 						republishableServers.add(server);
 						break modules;
 					}

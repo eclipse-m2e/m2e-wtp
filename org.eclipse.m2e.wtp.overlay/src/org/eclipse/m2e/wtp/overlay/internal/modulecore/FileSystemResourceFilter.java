@@ -254,7 +254,6 @@ public class FileSystemResourceFilter implements IResourceFilter {
 				res = includedFolders.contains(name)
 						&& !excludedFolders.contains(name);
 			}
-			// System.err.println(name + (res?" included": " excluded"));
 			return res;
 		}
 

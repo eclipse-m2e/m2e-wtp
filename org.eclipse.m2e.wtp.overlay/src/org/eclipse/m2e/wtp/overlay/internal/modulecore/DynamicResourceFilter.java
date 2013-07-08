@@ -293,7 +293,6 @@ public class DynamicResourceFilter implements IResourceFilter {
 		if (path == null) return false;
 		path = PathUtil.useSystemSeparator(path);
 		boolean isIncluded = isIncluded(path) && ! isExcluded(path);
-		//System.err.println(path + (isIncluded?" included":" excluded"));
 		return isIncluded;
 	}
 
