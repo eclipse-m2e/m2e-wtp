@@ -10,6 +10,7 @@ package org.eclipse.m2e.wtp.overlay.internal;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.m2e.wtp.overlay.OverlayConstants;
 import org.eclipse.m2e.wtp.overlay.internal.servers.OverlayResourceChangeListener;
@@ -18,12 +19,15 @@ import org.osgi.framework.BundleContext;
 public class OverlayPluginActivator extends Plugin {
 	
 	public static final String PLUGIN_ID = OverlayConstants.PLUGIN_ID;
-	
+
 	IResourceChangeListener overlayresourceChangeListener;
+	
+	private static OverlayPluginActivator instance;
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		instance = this;
 		overlayresourceChangeListener = new OverlayResourceChangeListener();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	    workspace.addResourceChangeListener(overlayresourceChangeListener);
@@ -35,6 +39,12 @@ public class OverlayPluginActivator extends Plugin {
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		    workspace.removeResourceChangeListener(overlayresourceChangeListener);
 		}
+		instance = null;
 		super.stop(context);
 	}
+	
+	public static IPath getWorkspacePluginPath() {
+		return instance == null? null : instance.getStateLocation();
+	}
+	
 }
