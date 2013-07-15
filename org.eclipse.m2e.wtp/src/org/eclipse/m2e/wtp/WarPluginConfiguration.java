@@ -109,7 +109,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
           
           //MECLIPSEWTP-152 : Web resource processing fails when targetPath has a leading /
           Xpp3Dom targetPath = webResource.getChild("targetPath"); //$NON-NLS-1$
-          if(targetPath != null && targetPath.getValue().startsWith("/")) { //$NON-NLS-1$
+          if(targetPath != null && targetPath.getValue() != null && targetPath.getValue().startsWith("/")) { //$NON-NLS-1$
             targetPath.setValue(targetPath.getValue().substring(1));
           }
 
