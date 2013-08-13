@@ -72,7 +72,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
   private EclipseBuildContext forceCopyBuildContext; 
   
   @Override
-public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
+  public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
     IMavenProjectFacade facade = getMavenProjectFacade();
     ResourceFilteringConfiguration configuration = ResourceFilteringConfigurationFactory.getConfiguration(facade);
     List<Xpp3Dom> resources = null;

@@ -105,7 +105,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     }
     finally {
       try {
-        //Remove any WTP created files (extras application.xml and manifest) 
+        //Remove any WTP created files (extra application.xml and manifest) 
         fileCleaner.cleanUp();
       } catch (CoreException cex) {
         LOG.error(Messages.Error_Cleaning_WTP_Files, cex);
