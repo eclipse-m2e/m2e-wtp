@@ -7,7 +7,11 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.overlay.internal.servers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -15,6 +19,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -28,6 +34,7 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerCore;
+import org.eclipse.wst.server.core.internal.Server;
 
 /**
  * Listens to overlaid project changes to force server redeployment.
@@ -37,12 +44,8 @@ import org.eclipse.wst.server.core.ServerCore;
  */
 public class OverlayResourceChangeListener implements IResourceChangeListener {
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		
-	  if (!isEnabled()) {
-	    return;
-	  }  
-	  
 		IResourceDelta delta =  event.getDelta();
 		if (delta == null) {
 			return;
@@ -58,33 +61,58 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 		if (projectDeltas == null || projectDeltas.length == 0) {
 			return;
 		}
-		
+	   
+		boolean buildOccurred = hasBuildOccurred(event);
+	   	
 		Set<IProject> changedProjects  = getChangedProjects(projectDeltas);
 		if (changedProjects.isEmpty()) {
 			return;
 		}
 		
-		Set<IServer> republishableServers = new HashSet<IServer>(servers.length);
+		Map<IServer, List<IModule>> republishableServers = new HashMap<IServer, List<IModule>>(servers.length);
 		
 		for (IServer server : servers) {
 			modules : for (IModule module : server.getModules()) {
 				IProject moduleProject = module.getProject();
 				for (IProject changedProject : changedProjects) {
 					if (hasOverlayChanged(changedProject, moduleProject, delta)) {
-						republishableServers.add(server);
+						List<IModule> republishableModules = republishableServers.get(server);
+						if (republishableModules == null) {
+							republishableModules = new ArrayList<IModule>(server.getModules().length);
+							republishableServers.put(server, republishableModules);
+						}
+						republishableModules.add(module);
 						break modules;
 					}
 				}
 			}
 		}
 		
-		for(IServer server : republishableServers) {
-			//TODO Publish more elegantly (check server status ...)
-			server.publish(IServer.PUBLISH_INCREMENTAL, new NullProgressMonitor());
+		if (republishableServers.isEmpty()) {
+			return;
+		}
+		
+		boolean isPublishOverlaysEnabled = isPublishOverlaysEnabled();
+		for(Map.Entry<IServer, List<IModule>> entries : republishableServers.entrySet()) {
+			IServer iserver = entries.getKey();
+			boolean shouldPublish = isPublishOverlaysEnabled;
+			if (iserver instanceof Server) {
+				Server server = ((Server)iserver);
+				List<IModule> modules = entries.getValue();
+				IModule[] mod = new IModule[modules.size()];
+				modules.toArray(mod);
+				server.setModulePublishState(mod, IServer.PUBLISH_STATE_INCREMENTAL);
+				int autoPublishSetting = server.getAutoPublishSetting(); 
+				shouldPublish = shouldPublish && (autoPublishSetting == Server.AUTO_PUBLISH_RESOURCE || 
+						                (autoPublishSetting == Server.AUTO_PUBLISH_BUILD && buildOccurred));
+			}
+			if (shouldPublish && iserver.getServerState() == IServer.STATE_STARTED) {
+				iserver.publish(IServer.PUBLISH_INCREMENTAL, new NullProgressMonitor());
+			} 
 		}
 	}
 
-	private boolean isEnabled() {
+	private boolean isPublishOverlaysEnabled() {
 	  boolean isEnabled = new InstanceScope().getNode(OverlayConstants.PLUGIN_ID)
 	                      .getBoolean(OverlayConstants.P_REPUBLISH_ON_PROJECT_CHANGE, true);
 	  return isEnabled;
@@ -139,5 +167,14 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 		return false;
 	}
 
+     private boolean hasBuildOccurred(IResourceChangeEvent event) {
+    	 if (event == null) {
+    		 return false;
+    	 }
+         int kind = event.getBuildKind();
+         return (kind == IncrementalProjectBuilder.INCREMENTAL_BUILD) ||
+                (kind == IncrementalProjectBuilder.FULL_BUILD) ||
+                ((kind == IncrementalProjectBuilder.AUTO_BUILD && ResourcesPlugin.getWorkspace().isAutoBuilding()));
+     }
 
 }
