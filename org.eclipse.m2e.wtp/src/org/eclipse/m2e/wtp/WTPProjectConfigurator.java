@@ -22,6 +22,7 @@ import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.jdt.IJavaProjectConfigurator;
+import org.eclipse.m2e.wtp.internal.filtering.EarResourceBuildParticipant;
 import org.eclipse.m2e.wtp.internal.filtering.ResourceFilteringBuildParticipant;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.validation.ValidationFramework;
@@ -122,10 +123,10 @@ public void configureRawClasspath(ProjectConfigurationRequest request, IClasspat
     
     //FIXME should refactor that by removing the project configurator delegates
       if ("maven-war-plugin".equals(execution.getArtifactId()) && "war".equals(execution.getGoal())  //$NON-NLS-1$ //$NON-NLS-2$
-        || "maven-ear-plugin".equals(execution.getArtifactId()) && "generate-application-xml".equals(execution.getGoal()) //$NON-NLS-1$ //$NON-NLS-2$
-        || "maven-acr-plugin".equals(execution.getArtifactId()) && "acr".equals(execution.getGoal())) //$NON-NLS-1$ //$NON-NLS-2$
-      {
+        || "maven-acr-plugin".equals(execution.getArtifactId()) && "acr".equals(execution.getGoal())) { //$NON-NLS-1$ //$NON-NLS-2$
         return new ResourceFilteringBuildParticipant(); 
+      } else if ("maven-ear-plugin".equals(execution.getArtifactId()) && "generate-application-xml".equals(execution.getGoal())) { //$NON-NLS-1$ //$NON-NLS-2$
+    	return new EarResourceBuildParticipant(); 
       }
       return null;
   }

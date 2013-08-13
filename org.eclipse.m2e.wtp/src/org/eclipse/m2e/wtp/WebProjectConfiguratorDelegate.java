@@ -210,7 +210,6 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     }
     
     WTPProjectsUtil.removeWTPClasspathContainer(project);
-
   }
 
   private IDataModel getWebModelConfig(String warSourceDirectory, String contextRoot) {
