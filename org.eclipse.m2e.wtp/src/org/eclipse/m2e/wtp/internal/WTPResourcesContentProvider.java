@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
@@ -37,19 +38,19 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
   private static final Logger LOG = LoggerFactory.getLogger(WTPResourcesContentProvider.class); 
   
   @Override
-public void init(ICommonContentExtensionSite config) {
+  public void init(ICommonContentExtensionSite config) {
   }
 
   @Override
-public void restoreState(IMemento memento) {
+  public void restoreState(IMemento memento) {
   }
 
   @Override
-public void saveState(IMemento memento) {
+  public void saveState(IMemento memento) {
   }
 
   @Override
-public Object[] getChildren(Object element) {
+  public Object[] getChildren(Object element) {
     if(element instanceof WTPResourcesNode) {
       return ((WTPResourcesNode) element).getResources();
     }
@@ -59,22 +60,25 @@ public Object[] getChildren(Object element) {
   // IPipelinedTreeContentProvider
 
   @Override
-@SuppressWarnings("rawtypes")
+  @SuppressWarnings("rawtypes")
   public void getPipelinedElements(Object element, Set currentElements) {
   }
   
   @Override
-@SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public void getPipelinedChildren(Object parent, Set currentChildren) {
     if (parent instanceof IProject) {
       IProject project = (IProject) parent;
       if(project.isAccessible()) {
         try {
+          if (!project.hasNature(IMavenConstants.NATURE_ID)) {
+        	  return;
+          }
           IFacetedProject facetedProject = ProjectFacetsManager.create(project);//MNGECLIPSE-1992 there's no reason to actually create a ProjectFacet at this point
           if(facetedProject != null && 
               (facetedProject.hasProjectFacet(WTPProjectsUtil.DYNAMIC_WEB_FACET) || 
                facetedProject.hasProjectFacet(WTPProjectsUtil.EAR_FACET))) {
-            List newChildren = new ArrayList<Object>();
+            List newChildren = new ArrayList<Object>(currentChildren.size()+1);
             newChildren.add(new WTPResourcesNode(project));
             newChildren.addAll(currentChildren);
             currentChildren.clear();
@@ -88,27 +92,27 @@ public Object[] getChildren(Object element) {
   }
 
   @Override
-public Object getPipelinedParent(Object element, Object suggestedParent) {
+  public Object getPipelinedParent(Object element, Object suggestedParent) {
     return suggestedParent;
   }
 
   @Override
-public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {
+  public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {
     return false;
   }
   
   @Override
-public boolean interceptUpdate(PipelinedViewerUpdate updateSynchronization) {
+  public boolean interceptUpdate(PipelinedViewerUpdate updateSynchronization) {
     return false;
   }
   
   @Override
-public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
+  public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
     return addModification;
   }
 
   @Override
-public PipelinedShapeModification interceptRemove(PipelinedShapeModification removeModification) {
+  public PipelinedShapeModification interceptRemove(PipelinedShapeModification removeModification) {
     return removeModification;
   }
   
