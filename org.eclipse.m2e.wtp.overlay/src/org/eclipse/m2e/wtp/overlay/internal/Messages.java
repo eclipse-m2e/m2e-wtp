@@ -4,6 +4,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.m2e.wtp.overlay.internal.messages"; //$NON-NLS-1$
+	public static String CompositeVirtualFolder_Error_Finding_Member;
+	public static String CompositeVirtualFolder_Error_Scanning;
 	public static String CompressionUtil_Extracting_Task;
 	public static String CompressionUtil_Unable_To_Create_Output_Dir;
 	public static String CompressionUtil_Unpacking_Unable;
@@ -13,6 +15,7 @@ public class Messages extends NLS {
 	public static String OverlayReferenceResolver_Module_Name_Cant_Be_Inferred;
 	public static String OverlayReferenceResolver_Not_Workspace_Project;
 	public static String OverlayReferenceResolver_Unresolveable;
+	public static String ResourceListVirtualFolder_Error_Finding_Member;
 	public static String UnpackArchiveJob_Deleteing_was_cancelled;
 	public static String UnpackArchiveJob_Error_Unpacking;
 	public static String UnpackArchiveJob_Refreshing;
