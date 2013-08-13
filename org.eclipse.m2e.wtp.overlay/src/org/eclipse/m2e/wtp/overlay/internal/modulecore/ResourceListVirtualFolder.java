@@ -22,13 +22,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.m2e.wtp.overlay.internal.Messages;
-import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFile;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFile;
 import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Virtual Folder traversing the {@link IResource}s members of a {@link IVirtualComponent} 
@@ -43,6 +44,8 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
  */
 @SuppressWarnings("restriction")
 public class ResourceListVirtualFolder extends VirtualFolder implements IFilteredVirtualFolder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceListVirtualFolder.class);
 
 	private ArrayList<IResource> children;
 	private ArrayList<IContainer> underlying;
@@ -84,8 +87,7 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 					children.add(newChildren[i]);
 				}
 			} catch( CoreException ce) {
-				// TODO proper log
-			  ce.printStackTrace();
+				LOG.error(ce.getLocalizedMessage(), ce);
 			}
 		}
 	}
@@ -203,7 +205,7 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 						}
 					} catch (CoreException e) {
 						String message = NLS.bind(Messages.ResourceListVirtualFolder_Error_Finding_Member, path, candidate);
-						OverlayPluginActivator.logError(message, e);
+						LOG.error(message, e);
 					}
 				}
 			}

@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.m2e.wtp.overlay.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.flat.FlatVirtualComponent;
 import org.eclipse.wst.common.componentcore.internal.flat.IFlatFile;
@@ -38,6 +39,8 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualFile;
 import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Virtual folder mapping a FlatVirtualComponent
@@ -51,6 +54,8 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
  */
 @SuppressWarnings("restriction")
 public class CompositeVirtualFolder implements IFilteredVirtualFolder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CompositeVirtualFolder.class);
 
 	private FlatVirtualComponent flatVirtualComponent;
 	private IPath runtimePath;
@@ -69,19 +74,21 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 		try {
 			treeWalk();
 		} catch (CoreException e) {
-			//TODO handle exception
-			e.printStackTrace();
+			LOG.error(Messages.CompositeVirtualFolder_Error_Scanning, e);
 		}
 	}
 
+	@Override
 	public IProject getProject() {
 		return project;
 	}
 
+	@Override
 	public IPath getRuntimePath() {
 		return runtimePath;
 	}
 
+	@Override
 	public IVirtualResource[] members() throws CoreException {
 		if (members == null) {
 			members = new IVirtualResource[0]; 
@@ -183,27 +190,36 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 		return ref;
 	}
 
+	@Override
 	public void create(int arg0, IProgressMonitor arg1) throws CoreException {
 		// ignore
 	}
 
+	@Override
 	public boolean exists(IPath arg0) {
 		return false;
 	}
 	
-    public IVirtualResource findMember(String sPath) {
+    @Override
+	public IVirtualResource findMember(String sPath) {
         return findMember(new Path(sPath), 0);
     }
 
-    public IVirtualResource findMember(String sPath, int searchFlags) {
+    @Override
+	public IVirtualResource findMember(String sPath, int searchFlags) {
         return findMember(new Path(sPath), searchFlags);
     }
 
-    public IVirtualResource findMember(IPath path) {
+    @Override
+	public IVirtualResource findMember(IPath path) {
         return findMember(path, 0);
     }
 
-    public IVirtualResource findMember(IPath path, int theSearchFlags) {
+    @Override
+	public IVirtualResource findMember(IPath path, int theSearchFlags) {
+    	if (path == null) {
+    		return null;
+    	}
     	Queue<String> segments = new ArrayDeque<String>(path.segmentCount());
     	for (String s : path.segments()) {
     		segments.add(s);
@@ -211,7 +227,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
     	try {
     		return findMember(segments, members);
     	} catch (CoreException ce) {
-    		ce.printStackTrace();
+    		LOG.error(Messages.CompositeVirtualFolder_Error_Finding_Member, ce);
     	}
     	return null;
     }
@@ -237,136 +253,163 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
     
     
     
+	@Override
 	public IVirtualFile getFile(IPath arg0) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualFile getFile(String arg0) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualFolder getFolder(IPath arg0) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualFolder getFolder(String arg0) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualResource[] getResources(String arg0) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualResource[] members(int arg0) throws CoreException {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public void createLink(IPath arg0, int arg1, IProgressMonitor arg2)
 			throws CoreException {
 		// ignore
 	}
 
+	@Override
 	public void delete(int arg0, IProgressMonitor arg1) throws CoreException {
 		// ignore		
 	}
 
+	@Override
 	public boolean exists() {
 		// ignore
 		return false;
 	}
 
+	@Override
 	public IVirtualComponent getComponent() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public String getFileExtension() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IVirtualContainer getParent() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IPath getProjectRelativePath() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public String getResourceType() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public int getType() {
 		// ignore
 		return 0;
 	}
 
+	@Override
 	public IResource getUnderlyingResource() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IResource[] getUnderlyingResources() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IPath getWorkspaceRelativePath() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public boolean isAccessible() {
 		// ignore
 		return false;
 	}
 
+	@Override
 	public void removeLink(IPath arg0, int arg1, IProgressMonitor arg2)
 			throws CoreException {
 		// ignore
 		
 	}
 
+	@Override
 	public void setResourceType(String arg0) {
 		// ignore
 		
 	}
 
+	@Override
 	public boolean contains(ISchedulingRule rule) {
 		// ignore
 		return false;
 	}
 
+	@Override
 	public boolean isConflicting(ISchedulingRule rule) {
 		// ignore
 		return false;
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IContainer getUnderlyingFolder() {
 		// ignore
 		return null;
 	}
 
+	@Override
 	public IContainer[] getUnderlyingFolders() {
 		// ignore
 		return null;
@@ -376,10 +419,12 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 		return references.toArray(new IVirtualReference[references.size()]);
 	}
 	
+	@Override
 	public IResourceFilter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public void setFilter(IResourceFilter filter) {
 		this.filter = filter;
 	}
