@@ -21,6 +21,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.m2e.wtp.overlay.internal.Messages;
+import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFile;
 import org.eclipse.wst.common.componentcore.internal.resources.VirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -132,7 +135,7 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 		return (IVirtualResource[]) c.toArray(new IVirtualResource[c.size()]);
 	}
 
-	protected void handleResource(IResource resource, HashMap<String, IVirtualResource> map, int memberFlags) throws CoreException {
+	protected void handleResource(final IResource resource, HashMap<String, IVirtualResource> map, int memberFlags) throws CoreException {
 		if (resource == null) {
 			return;
 		}
@@ -145,7 +148,14 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 		if( isFile) {
 			if( !map.containsKey(resource.getName()) ) {
 				IVirtualFile virtFile = new VirtualFile(getProject(), 
-						getRuntimePath().append(((IFile)resource).getName()), (IFile)resource);
+						getRuntimePath().append(((IFile)resource).getName()), (IFile)resource) {
+					
+					@Override
+					public IPath getWorkspaceRelativePath() {
+						IPath wrp = resource.getFullPath(); 
+						return wrp;
+					}
+				};
 				map.put(resource.getName(), virtFile);
 				return;
 			} 
@@ -166,7 +176,39 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 		} // end container
 	}
 
+	@Override
 	public IResourceFilter getFilter() {
 		return filter;
 	}
+	
+	@Override
+	public IVirtualResource findMember(IPath path, int searchFlags) {
+		if (underlying == null || path == null) {
+			return null;
+		}
+		if (path.isAbsolute()) {
+			path = path.makeRelative();
+		}
+		for(IResource resource : underlying) {
+			if (resource instanceof IContainer) {
+				IContainer c = (IContainer) resource;
+				IResource candidate = c.findMember(path, true);
+				if (candidate != null && candidate.exists()) {
+					HashMap<String, IVirtualResource> map = new HashMap<String, IVirtualResource>(1);
+					try {
+						handleResource(candidate, map, 0);
+						if (!map.isEmpty()) {
+							IVirtualResource vr = map.values().iterator().next();
+							return vr;
+						}
+					} catch (CoreException e) {
+						String message = NLS.bind(Messages.ResourceListVirtualFolder_Error_Finding_Member, path, candidate);
+						OverlayPluginActivator.logError(message, e);
+					}
+				}
+			}
+		}
+    	return null;
+	}
+
 }

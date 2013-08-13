@@ -8,9 +8,11 @@
 package org.eclipse.m2e.wtp.overlay.internal.modulecore;
 
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -133,8 +135,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	}
 
 	private IVirtualFile convertFile(IFlatFile flatFile) {
-		IFile f = (IFile)flatFile.getAdapter(IFile.class);
-		VirtualFile vf = null;
+		final IFile f = (IFile)flatFile.getAdapter(IFile.class);
 		String filePath  = null;
 		if (f == null) {
 			//Not a workspace file, we assume it's an external reference
@@ -147,17 +148,27 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 				}
 			}
 		} else {
-			final String fileName = f.getName(); 
-			vf = new VirtualFile(project, flatFile.getModuleRelativePath(), f) {
-				@Override
-				public String getName() {
-					return fileName;
-				}
-			};
-			
-			filePath = vf.getRuntimePath().toPortableString() + Path.SEPARATOR + fileName;
+			final String fileName = f.getName(); 		
+			IPath ffRuntimePath = flatFile.getModuleRelativePath();
+			filePath = ffRuntimePath.toPortableString() + Path.SEPARATOR + fileName;
 			if (filter == null || filter.accepts(filePath, true)) {
-				return vf;
+				return new VirtualFile(project, ffRuntimePath, f) {
+					@Override
+					public String getName() {
+						return fileName;
+					}
+					
+					@Override
+					public IPath getWorkspaceRelativePath() {
+						return f.getFullPath();
+					}
+					
+					@Override
+					public IFile getUnderlyingFile() {
+						IFile f = super.getUnderlyingFile();
+						return f;
+					}
+				};
 			}
 			
 		}
@@ -177,30 +188,55 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	}
 
 	public boolean exists(IPath arg0) {
-		// ignore
 		return false;
 	}
+	
+    public IVirtualResource findMember(String sPath) {
+        return findMember(new Path(sPath), 0);
+    }
 
-	public IVirtualResource findMember(String arg0) {
-		// ignore
-		return null;
-	}
+    public IVirtualResource findMember(String sPath, int searchFlags) {
+        return findMember(new Path(sPath), searchFlags);
+    }
 
-	public IVirtualResource findMember(IPath arg0) {
-		// ignore
-		return null;
-	}
+    public IVirtualResource findMember(IPath path) {
+        return findMember(path, 0);
+    }
 
-	public IVirtualResource findMember(String arg0, int arg1) {
-		// ignore
-		return null;
-	}
-
-	public IVirtualResource findMember(IPath arg0, int arg1) {
-		// ignore
-		return null;
-	}
-
+    public IVirtualResource findMember(IPath path, int theSearchFlags) {
+    	Queue<String> segments = new ArrayDeque<String>(path.segmentCount());
+    	for (String s : path.segments()) {
+    		segments.add(s);
+    	}
+    	try {
+    		return findMember(segments, members);
+    	} catch (CoreException ce) {
+    		ce.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    private static IVirtualResource findMember(Queue<String> segments, IVirtualResource[] members) throws CoreException {
+    	if (segments.isEmpty()) {
+    		return null;
+    	}
+    	String segment = segments.poll();
+    	boolean finalResource = segments.isEmpty();
+    	for (IVirtualResource m : members) {
+    		if (m.getName().equals(segment)) {
+    			if (finalResource) {
+    				return m;
+    			}
+    			if (m instanceof IVirtualFolder) {
+    				return findMember(segments, ((IVirtualFolder)m).members());
+    			}
+    		}
+    	}
+        return null;
+    }
+    
+    
+    
 	public IVirtualFile getFile(IPath arg0) {
 		// ignore
 		return null;
