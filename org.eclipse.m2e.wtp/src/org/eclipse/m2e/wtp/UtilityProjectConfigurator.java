@@ -42,18 +42,19 @@ import org.eclipse.wst.validation.ValidationFramework;
 public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
 
   @Override
-public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 
     IProject project = request.getProject();
     if (!project.isAccessible()) {
       return;
     }
-    MavenProject mavenProject = request.getMavenProject();
     
     IFacetedProject facetedProject = ProjectFacetsManager.create(project);
 
     // Only reconfigure utility projects 
     if(facetedProject != null && facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET)) {
+      
+      MavenProject mavenProject = request.getMavenProject();
       
       Set<Action> actions = new LinkedHashSet<Action>();
       installJavaFacet(actions, project, facetedProject);
