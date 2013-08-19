@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008-2013 Sonatype, Inc. and others
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#getPreferences(org.eclipse.core.resources.IProject)
    */
   @Override
-public IMavenWtpPreferences getPreferences(IProject project) {
+  public IMavenWtpPreferences getPreferences(IProject project) {
     if (project == null) {
       return loadWorkspacePreferences();
     }
@@ -69,7 +69,7 @@ public IMavenWtpPreferences getPreferences(IProject project) {
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#createNewPreferences()
    */
   @Override
-public IMavenWtpPreferences createNewPreferences() {
+  public IMavenWtpPreferences createNewPreferences() {
     return new MavenWtpPreferencesImpl();
   }
   
@@ -77,7 +77,7 @@ public IMavenWtpPreferences createNewPreferences() {
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#getWorkspacePreferences()
    */
   @Override
-public IMavenWtpPreferences getWorkspacePreferences() {
+  public IMavenWtpPreferences getWorkspacePreferences() {
     return loadWorkspacePreferences();
   }
 
@@ -86,7 +86,7 @@ public IMavenWtpPreferences getWorkspacePreferences() {
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#savePreferences(org.eclipse.m2e.wtp.preferences.IMavenWtpPreferences, org.eclipse.core.resources.IProject)
    */
   @Override
-public void savePreferences(IMavenWtpPreferences preferences, IProject project) {
+  public void savePreferences(IMavenWtpPreferences preferences, IProject project) {
     if (preferences == null) return;
     
     IEclipsePreferences eclipsePrefs;
@@ -122,6 +122,7 @@ public void savePreferences(IMavenWtpPreferences preferences, IProject project) 
   private void transformPreferences(IMavenWtpPreferences preferences, IEclipsePreferences eclipsePrefs) {
     eclipsePrefs.putBoolean(MavenWtpPreferencesConstants.P_APPLICATION_XML_IN_BUILD_DIR, preferences.isApplicationXmGeneratedInBuildDirectory());
     eclipsePrefs.putBoolean(MavenWtpPreferencesConstants.P_WEB_MAVENARCHIVER_IN_BUILD_DIR, preferences.isWebMavenArchiverUsesBuildDirectory());
+    eclipsePrefs.putBoolean(MavenWtpPreferencesConstants.P_ENABLE_M2EWTP, preferences.isEnabled());
   }
 
   private IMavenWtpPreferences convertPreferences(IEclipsePreferences eclipsePrefs) {
@@ -129,12 +130,13 @@ public void savePreferences(IMavenWtpPreferences preferences, IProject project) 
     preferences.setEnabledProjectSpecificSettings(eclipsePrefs.getBoolean(MavenWtpPreferencesConstants.P_ENABLED_PROJECT_SPECIFIC__PREFS, false));
     preferences.setApplicationXmGeneratedInBuildDirectory(eclipsePrefs.getBoolean(MavenWtpPreferencesConstants.P_APPLICATION_XML_IN_BUILD_DIR, true));
     preferences.setWebMavenArchiverUsesBuildDirectory(eclipsePrefs.getBoolean(MavenWtpPreferencesConstants.P_WEB_MAVENARCHIVER_IN_BUILD_DIR, true));
+    preferences.setEnabled(eclipsePrefs.getBoolean(MavenWtpPreferencesConstants.P_ENABLE_M2EWTP, true));
     return preferences;
   }
 
   private static IEclipsePreferences getEclipsePreferences()
   {
-    return new InstanceScope().getNode(MavenWtpPreferencesConstants.PREFIX);    
+    return InstanceScope.INSTANCE.getNode(MavenWtpPreferencesConstants.PREFIX);
   }
 
   private static IEclipsePreferences getEclipsePreferences(IProject project)
@@ -143,7 +145,7 @@ public void savePreferences(IMavenWtpPreferences preferences, IProject project) 
   }
 
   @Override
-public ConfiguratorEnabler[] getConfiguratorEnablers() {
+  public ConfiguratorEnabler[] getConfiguratorEnablers() {
     if (enablers == null) {
       enablers = loadConfiguratorEnablers();
     }
@@ -177,7 +179,7 @@ public ConfiguratorEnabler[] getConfiguratorEnablers() {
    * @see org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager#isEnabled(java.lang.String)
    */
   @Override
-public boolean isEnabled(String configuratorId) {
+  public boolean isEnabled(String configuratorId) {
     for (ConfiguratorEnabler enabler : getConfiguratorEnablers()) {
       if (enabler.appliesTo(configuratorId)) {
         return enabler.isEnabled();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,4 +43,18 @@ public interface IMavenWtpPreferences {
  
   void setWebMavenArchiverUsesBuildDirectory(boolean isEnabled);
   
+  /**
+   * Checks if m2e-wtp is enabled.
+   * 
+   * @since 1.1
+   */
+  boolean isEnabled();
+
+  /**
+   * Disable or enable m2e-wtp.
+   * 
+   * @since 1.1
+   */
+  void setEnabled(boolean isEnabled);
+
 }

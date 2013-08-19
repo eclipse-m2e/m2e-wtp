@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,8 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for WTP projects.
@@ -77,6 +79,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 @SuppressWarnings("restriction")
 public class WTPProjectsUtil {
+
+  private static final Logger LOG = LoggerFactory.getLogger(WTPProjectsUtil.class);
 
   public static final IProjectFacet UTILITY_FACET = ProjectFacetsManager.getProjectFacet(IJ2EEFacetConstants.UTILITY);
 
@@ -107,7 +111,10 @@ public class WTPProjectsUtil {
       .getProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION);
 
   public static final String DYN_REQUESTED_REFERENCE_TYPE;
+
+  public static final String M2E_WTP_ACTIVATION_PROPERTY = "m2e.wtp.activation"; //$NON-NLS-1$
   
+  //TODO Clean that up for Eclipse Mars
   static {
     //Bug #385605 : IVirtualComponent.DISPLAYABLE_REFERENCES_ALL is not available in helios
     String reqRefType = null;
@@ -662,4 +669,27 @@ public class WTPProjectsUtil {
   public static boolean isWTPProject(IProject project) {
     return ModuleCoreNature.getModuleCoreNature(project) != null;
   }
+  
+  public static boolean isM2eWtpDisabled(IMavenProjectFacade facade, IProgressMonitor monitor) {
+	if (facade == null) {
+	  return true;
+	}
+	MavenProject mavenProject;
+	Object pomActivationValue = null; 
+	try {
+		mavenProject = facade.getMavenProject(monitor);
+		pomActivationValue = mavenProject == null? null : mavenProject.getProperties().get(M2E_WTP_ACTIVATION_PROPERTY);
+	} catch (CoreException ex) {
+		// TODO Auto-generated catch block
+		LOG.error("Unable to load Maven project",ex); //$NON-NLS-1$
+	}
+	boolean enabled;
+	if (pomActivationValue == null) {
+	  enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(facade.getProject()).isEnabled();
+	} else {
+	  enabled = Boolean.parseBoolean(pomActivationValue.toString());
+	}	
+	return !enabled;
+  }
+
 }

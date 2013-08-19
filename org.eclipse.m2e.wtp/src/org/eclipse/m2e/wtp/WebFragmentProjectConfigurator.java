@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import org.eclipse.m2e.core.internal.MavenPluginActivator;
 import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
+import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
+import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
@@ -61,7 +63,9 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
     IMavenProjectFacade facade = request.getMavenProjectFacade();
     IProject project = facade.getProject();
-    if(!isQualifiedAsWebFragment(facade)){
+
+    if(WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || !project.isAccessible() || 
+    		project.getResourceAttributes().isReadOnly() || !isQualifiedAsWebFragment(facade)){
       return;
     }
     
@@ -136,5 +140,12 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     for (IPath p : facade.getTestResourceLocations()) {
       if (p != null) fileCleaner.addFolder(p);
     }
+  }
+  
+  @Override
+  public boolean hasConfigurationChanged(IMavenProjectFacade newFacade,
+			ILifecycleMappingConfiguration oldProjectConfiguration,
+			MojoExecutionKey key, IProgressMonitor monitor) {
+    return false;
   }
 }

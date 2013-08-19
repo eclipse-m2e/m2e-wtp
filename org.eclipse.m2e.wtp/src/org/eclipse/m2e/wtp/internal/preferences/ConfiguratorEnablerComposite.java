@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Red Hat, Inc.
+ * Copyright (c) 2013-2014 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,28 @@ public class ConfiguratorEnablerComposite extends Composite {
   }
   
   @Override
-public void dispose() {
+  public void dispose() {
     enabler = null;
     enableConfigurator.dispose();
     super.dispose();
+  }
+  
+  /**
+   * Enable configurator 
+   * 
+   * @since 1.1.0
+   */
+  public void enableConfigurator(boolean enable) {
+     if (enableConfigurator != null) {
+    	 enableConfigurator.setSelection(enable);
+      }
+  }
+  
+  @Override
+  public void setEnabled(boolean enabled) {
+	super.setEnabled(enabled);
+	if (enableConfigurator != null) {
+	  enableConfigurator.setEnabled(enabled);
+	}		
   }
 }

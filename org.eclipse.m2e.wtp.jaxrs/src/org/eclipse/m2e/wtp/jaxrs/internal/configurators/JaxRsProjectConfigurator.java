@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (c) 2011-2013 Red Hat, Inc. and others.
+ * Copyright (c) 2011-2014 Red Hat, Inc. and others.
  * All rights reserved. This program and the accompanying materials 
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,15 +67,15 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 	private void configureInternal(IMavenProjectFacade mavenProjectFacade,
 			IProgressMonitor monitor) throws CoreException {
 
-		MavenProject mavenProject = mavenProjectFacade.getMavenProject();
-		IProject project = mavenProjectFacade.getProject();
+		MavenProject mavenProject = mavenProjectFacade.getMavenProject(monitor);
 		if(!WAR_PACKAGING.equals(mavenProject.getPackaging())) {
 			return;
 		}
 
-		if (!isConfigurationEnabled(mavenProject)) {
+		if (!isConfigurationEnabled(mavenProjectFacade, monitor)) {
 			return;
 		}
+		IProject project = mavenProjectFacade.getProject();
 		
     	final IFacetedProject fproj = ProjectFacetsManager.create(project);
     	if (fproj == null) {
@@ -96,8 +96,12 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 
 	}
 
-	private boolean isConfigurationEnabled(MavenProject mavenProject) {
-		Object pomActivationValue = mavenProject.getProperties().get(M2E_JAXRS_ACTIVATION_PROPERTY);
+	private boolean isConfigurationEnabled(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+		if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
+			return false;
+		}
+		
+		Object pomActivationValue = facade.getMavenProject(monitor).getProperties().get(M2E_JAXRS_ACTIVATION_PROPERTY);
 		boolean enabled;
 		if (pomActivationValue == null) {
 			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());

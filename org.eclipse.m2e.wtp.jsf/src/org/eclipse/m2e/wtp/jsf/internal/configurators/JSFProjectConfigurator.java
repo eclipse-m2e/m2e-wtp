@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011-2012 Red Hat, Inc.
+ * Copyright (c) 2011-2014 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.ResourceCleaner;
+import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.WarPluginConfiguration;
 import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants;
@@ -76,7 +77,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			return;
 		}
 		
-		if (!isConfigurationEnabled(mavenProject)) {
+		if (!isConfigurationEnabled(mavenProjectFacade, monitor)) {
 			return;
 		}
 		
@@ -97,8 +98,12 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 		
 	}
 
-	private boolean isConfigurationEnabled(MavenProject mavenProject) {
-		Object pomActivationValue = mavenProject.getProperties().get(M2E_JSF_ACTIVATION_PROPERTY);
+	private boolean isConfigurationEnabled(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+		if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
+			return false;
+		}
+		
+		Object pomActivationValue = facade.getMavenProject(monitor).getProperties().get(M2E_JSF_ACTIVATION_PROPERTY);
 		boolean enabled;
 		if (pomActivationValue == null) {
 			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import org.eclipse.m2e.core.lifecyclemapping.model.IPluginExecutionMetadata;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
+import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
+import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.wtp.internal.StringUtils;
@@ -61,7 +63,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
     IMavenProjectFacade facade = event.getMavenProject();
     if(facade == null) { return; }
     IProject project = facade.getProject();
-    if (project.getResourceAttributes().isReadOnly()){
+    if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || project.getResourceAttributes().isReadOnly()){
       return;
     }
 
@@ -186,15 +188,23 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
   
   
   @Override
-public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
+  public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
       throws CoreException {
   }
   
   @Override
-public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
+  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
       IPluginExecutionMetadata executionMetadata) {
     return null;
   }
   
+  @Override
+  public boolean hasConfigurationChanged(IMavenProjectFacade newFacade,
+			ILifecycleMappingConfiguration oldProjectConfiguration,
+			MojoExecutionKey key, IProgressMonitor monitor) {
+	//Changes to maven-war-plugin in pom.xml don't make it "dirty" 
+	//wrt Overlay configuration (i.e. no need to invoke configure(request, monitor))
+	return false;
+  }
   
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,9 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   private Group configuratorEnablerGroup;
 
   private List<ConfiguratorEnablerComposite> enablersComposites;
-  
+
+  private Button enableM2eWtpButton;
+
   public MavenWtpPreferencePage() {
     setTitle(Messages.MavenWtpPreferencePage_JavaEE_Integration_Settings);
   }
@@ -84,10 +86,16 @@ public class MavenWtpPreferencePage extends PropertyPage implements IWorkbenchPr
   @Override
 protected Control createContents(Composite parent) {
     Composite main = new Composite(parent, SWT.NONE);
-    GridLayout gl = new GridLayout(1, false);
-    main.setLayout(gl);
+    GridLayout mainGroupLayout = new GridLayout();
+    mainGroupLayout.numColumns = 1;
+    main.setLayout(mainGroupLayout);
+    GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
+
     IProject project = getProject();
     createOverridePrefs(main, project);
+
+    createGlobalPrefs(main);
+
     if (project == null || JavaEEProjectUtilities.isEARProject(project)) {
       createEarPrefs(main);
     }
@@ -96,11 +104,11 @@ protected Control createContents(Composite parent) {
     }
     IMavenWtpPreferencesManager prefManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
     fillValues(prefManager.getPreferences(project));
-    
+
     if (project == null) {
       createJavaeeConfiguratorActivation(main, prefManager.getConfiguratorEnablers());
     }
-    
+
     return main;
   }
 
@@ -113,18 +121,34 @@ protected Control createContents(Composite parent) {
     GridDataFactory.fillDefaults().applyTo(configuratorEnablerGroup);
     GridLayoutFactory.fillDefaults().margins(5, 0).applyTo(configuratorEnablerGroup);
     enablersComposites = new ArrayList<ConfiguratorEnablerComposite>(configuratorEnablers.length);
-        
+
     for (ConfiguratorEnabler configuratorEnabler : configuratorEnablers) {
       ConfiguratorEnablerComposite enablerComposite = new ConfiguratorEnablerComposite(configuratorEnablerGroup, 
           configuratorEnabler, SWT.NONE);
       GridLayoutFactory.fillDefaults().margins(20, 0).applyTo(enablerComposite);
       enablersComposites.add(enablerComposite);
     }
+    
+    toggleWidgets(enableM2eWtpButton.getSelection());
   }
 
-  /**
-   * @param main
-   */
+  private void createGlobalPrefs(Composite main) {
+    enableM2eWtpButton = new Button(main, SWT.CHECK);
+    enableM2eWtpButton.setText("Enable Java EE configuration"); //$NON-NLS-1$
+    enableM2eWtpButton.addSelectionListener(new SelectionListener() {
+        @Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+          widgetSelected(e);
+        }
+
+        @Override
+		public void widgetSelected(SelectionEvent e) {
+          toggleWidgets(enableM2eWtpButton.getSelection());
+        }
+      });
+    
+  }
+  
   private void createEarPrefs(Composite main) {
     earPrefGroup = new Group(main, SWT.NONE);
     earPrefGroup.setText(Messages.MavenWtpPreferencePage_EAR_Project_Preferences);
@@ -207,15 +231,13 @@ protected Control createContents(Composite parent) {
   }
 
   protected void setWidgetsEnabled(boolean isEnabled) {
-    if (genApplicationXmlButton != null) {
-      genApplicationXmlButton.setEnabled(isEnabled);
-    }
-    if (warMavenArchiverButton != null) {
-      warMavenArchiverButton.setEnabled(isEnabled);
-    }
     if (fChangeWorkspaceSettings != null) {
         fChangeWorkspaceSettings.setEnabled(!isEnabled);
-    }    
+    }
+	if (enableM2eWtpButton != null) {
+	  enableM2eWtpButton.setEnabled(isEnabled);
+    }
+	toggleWidgets(isEnabled);
   }
 
   private void fillValues(IMavenWtpPreferences preferences) {
@@ -226,11 +248,29 @@ protected Control createContents(Composite parent) {
       setWidgetsEnabled(overrideButton.getSelection());
     }
     //read from stored preferences
+    if (enableM2eWtpButton != null) {
+    	enableM2eWtpButton.setSelection(preferences.isEnabled());
+    }
     if (genApplicationXmlButton != null) {
       genApplicationXmlButton.setSelection(preferences.isApplicationXmGeneratedInBuildDirectory());
     }
     if (warMavenArchiverButton != null) {
       warMavenArchiverButton.setSelection(preferences.isWebMavenArchiverUsesBuildDirectory());
+    }
+  }
+
+  private void toggleWidgets(boolean enabled) {
+    if (genApplicationXmlButton != null) {
+        genApplicationXmlButton.setEnabled(enabled);
+    }
+    if (warMavenArchiverButton != null) {
+        warMavenArchiverButton.setEnabled(enabled);
+    }
+	  
+    if (enablersComposites != null) {
+      for (ConfiguratorEnablerComposite enablerComposite : enablersComposites) {
+        enablerComposite.setEnabled(enabled);
+      }
     }
   }
 
@@ -261,6 +301,9 @@ protected Control createContents(Composite parent) {
 
     if(project != null) {
       newPreferences.setEnabledProjectSpecificSettings(overrideButton.getSelection());
+    }
+    if (enableM2eWtpButton != null) {
+        newPreferences.setEnabled(enableM2eWtpButton.getSelection());
     }
     if (genApplicationXmlButton != null) {
       newPreferences.setApplicationXmGeneratedInBuildDirectory(genApplicationXmlButton.getSelection());
@@ -299,6 +342,7 @@ protected Control createContents(Composite parent) {
     IMavenWtpPreferences workspacePreferences = preferencesManager.getWorkspacePreferences();
 
     if(project == null) {
+      workspacePreferences.setEnabled(true);
       workspacePreferences.setApplicationXmGeneratedInBuildDirectory(true);
       workspacePreferences.setWebMavenArchiverUsesBuildDirectory(true);
     }
@@ -385,13 +429,9 @@ protected Control createContents(Composite parent) {
    * @return
    */
   private boolean isImpacted(IMavenProjectFacade facade) {
-    //We simply check if the project is an EAR for now
-    switch(JEEPackaging.getValue(facade.getPackaging())) {
-      case EAR:
-      case WAR:
-        return true;
-      default:
-       	return false;
+    if (JEEPackaging.getValue(facade.getPackaging()) != null) {
+       return true;
     }
+    return false;
   }
 }

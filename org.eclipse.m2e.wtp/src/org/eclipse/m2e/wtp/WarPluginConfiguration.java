@@ -391,7 +391,7 @@ protected String getFilteringAttribute() {
   }
 
   @Override
-public SourceLocation getSourceLocation() {
+  public SourceLocation getSourceLocation() {
     Plugin plugin = getPlugin();
     if (plugin == null) {
       return null;
@@ -400,7 +400,7 @@ public SourceLocation getSourceLocation() {
   }
 
   @Override
-public String getSourceIncludeParameterName() {
+  public String getSourceIncludeParameterName() {
     return "warSourceIncludes"; //$NON-NLS-1$
   }
 

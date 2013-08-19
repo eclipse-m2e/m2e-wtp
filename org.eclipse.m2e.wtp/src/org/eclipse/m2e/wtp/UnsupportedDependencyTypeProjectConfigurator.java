@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Red Hat, Inc.
+ * Copyright (c) 2012-2014 Red Hat, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import org.eclipse.m2e.core.internal.markers.SourceLocationHelper;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
+import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
+import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.osgi.util.NLS;
@@ -52,12 +54,12 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
   }
 
   @Override
-public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
     //Nothing to configure
   }
 
   @Override
-public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
+  public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
     IMavenProjectFacade facade = event.getMavenProject();
     if(facade == null) {
       return;
@@ -65,7 +67,7 @@ public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor
     
     clearWarnings(facade.getPom());
 
-    if (!ModuleCoreNature.isFlexibleProject(facade.getProject())) {
+    if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || !ModuleCoreNature.isFlexibleProject(facade.getProject())) {
       //Not a WTP project
       return;
     }
@@ -126,4 +128,11 @@ public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor
         IMarker.SEVERITY_WARNING);
   }
 
+  @Override
+  public boolean hasConfigurationChanged(IMavenProjectFacade newFacade,
+			ILifecycleMappingConfiguration oldProjectConfiguration,
+			MojoExecutionKey key, IProgressMonitor monitor) {
+	return false;
+  }
+  
 }
