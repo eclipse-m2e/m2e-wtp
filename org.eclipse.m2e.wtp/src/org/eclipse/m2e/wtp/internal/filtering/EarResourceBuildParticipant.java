@@ -33,7 +33,7 @@ import org.eclipse.m2e.wtp.preferences.IMavenWtpPreferencesManager;
  * 
  * @author Fred Bricon
  * 
- * @since 1.1.0
+ * @since 1.0.1
  */
 public class EarResourceBuildParticipant extends ResourceFilteringBuildParticipant {
   
