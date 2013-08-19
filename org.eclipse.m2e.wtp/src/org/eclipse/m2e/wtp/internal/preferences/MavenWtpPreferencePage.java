@@ -39,15 +39,13 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -140,10 +138,16 @@ protected Control createContents(Composite parent) {
   private void createOverridePrefs(Composite main, IProject project) {
     if(project != null) {
       overrideComp = new Composite(main, SWT.NONE);
-      overrideComp.setLayout(new FormLayout());
-      overrideComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+	  GridLayout overrideCompLayout = new GridLayout();
+	  overrideCompLayout.numColumns = 2;
+	  overrideCompLayout.marginWidth = 0;
+	  overrideCompLayout.marginHeight = 0;
+	  overrideComp.setLayout(overrideCompLayout);
+	  GridDataFactory.fillDefaults().grab(true, false).applyTo(overrideComp);
+      
       overrideButton = new Button(overrideComp, SWT.CHECK);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      overrideButton.setLayoutData(gd);      
       overrideButton.setText(Messages.MavenWtpPreferencePage_Enable_Project_Specific_Settings);
 
       overrideButton.addSelectionListener(new SelectionListener() {
@@ -157,21 +161,13 @@ protected Control createContents(Composite parent) {
           setWidgetsEnabled(overrideButton.getSelection());
         }
       });
-      FormData fd = new FormData();
-      fd.top = new FormAttachment(0, 5);
-      fd.left = new FormAttachment(0, 5);
-      overrideButton.setLayoutData(fd);
 
-      fd = new FormData();
-      fd.top = new FormAttachment(0, 0);
-      fd.left = new FormAttachment(overrideButton, 5);
-      fd.right = new FormAttachment(100, -5);
-      fd.right.alignment = SWT.RIGHT;
-      Composite tmp = new Composite(overrideComp, SWT.NONE);
-      tmp.setLayoutData(fd);
-      tmp.setLayout(new GridLayout(1, true));
-      fChangeWorkspaceSettings = createLink(tmp, "Configure Workspace Settings..."); //$NON-NLS-1$
+      fChangeWorkspaceSettings = createLink(overrideComp, Messages.MavenWtpPreferencePage_Configure_Workspace_Settings);
       fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER, true, false));
+      
+      Label horizontalLine= new Label(main, SWT.SEPARATOR | SWT.HORIZONTAL);
+	  horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
+	  horizontalLine.setFont(main.getFont());
     }
   }
 
@@ -187,17 +183,18 @@ protected Control createContents(Composite parent) {
   }
 
   private Link createLink(Composite composite, String text) {
-    Link link = new Link(composite, SWT.BORDER);
+    Link link = new Link(composite, SWT.NONE);
+    link.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
     link.setFont(composite.getFont());
     link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
     link.addSelectionListener(new SelectionListener() {
       @Override
-	public void widgetSelected(SelectionEvent e) {
+	  public void widgetSelected(SelectionEvent e) {
         openGlobalPrefs();
       }
 
       @Override
-	public void widgetDefaultSelected(SelectionEvent e) {
+	  public void widgetDefaultSelected(SelectionEvent e) {
         openGlobalPrefs();
       }
     });
@@ -216,6 +213,9 @@ protected Control createContents(Composite parent) {
     if (warMavenArchiverButton != null) {
       warMavenArchiverButton.setEnabled(isEnabled);
     }
+    if (fChangeWorkspaceSettings != null) {
+        fChangeWorkspaceSettings.setEnabled(!isEnabled);
+    }    
   }
 
   private void fillValues(IMavenWtpPreferences preferences) {
@@ -244,14 +244,14 @@ protected Control createContents(Composite parent) {
    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
    */
   @Override
-public void init(IWorkbench workbench) {
+  public void init(IWorkbench workbench) {
   }
 
   /**
    * @see org.eclipse.jface.preference.PreferencePage#performOk()
    */
   @Override
-public boolean performOk() {
+  public boolean performOk() {
 
     IProject project = getProject();
     IMavenWtpPreferencesManager preferencesManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();
@@ -292,7 +292,7 @@ public boolean performOk() {
    * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
    */
   @Override
-protected void performDefaults() {
+  protected void performDefaults() {
 
     IProject project = getProject();
     IMavenWtpPreferencesManager preferencesManager = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager();

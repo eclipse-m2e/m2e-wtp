@@ -27,6 +27,7 @@ public class Messages extends NLS {
 	public static String MavenPluginUtils_ArtifactId_Cant_Be_Null;
 	public static String MavenPluginUtils_Error_Cant_Retrieve_Latest_Plugin_Version;
 	public static String MavenPluginUtils_GroupId_Cant_Be_Null;
+	public static String MavenWtpPreferencePage_Configure_Workspace_Settings;
 	public static String MavenWtpPreferencePage_EAR_Project_Preferences;
 	public static String MavenWtpPreferencePage_Enable_Project_Specific_Settings;
 	public static String MavenWtpPreferencePage_Generate_ApplicationXml_Under_Build_Dir;
