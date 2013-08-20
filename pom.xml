@@ -13,7 +13,7 @@
   <parent>
     <groupId>org.eclipse.m2e.wtp</groupId>
     <artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.eclipse.m2e.wtp</groupId>
@@ -24,7 +24,7 @@
 
   <properties>
     <eclipse.target>kepler</eclipse.target>
-    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>    
+    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/kepler/</m2e-wtp.url>    
     <platform.id>e43</platform.id>
   </properties>
 
