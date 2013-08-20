@@ -83,7 +83,7 @@
     <repository>
       <id>m2e-core</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/technology/m2e/milestones/1.4/</url>
+      <url>http://download.eclipse.org/technology/m2e/releases/1.4/</url>
     </repository>    
     <repository>
       <id>eclipse</id>
