@@ -9,9 +9,10 @@
 package org.eclipse.m2e.wtp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Set;
 
@@ -27,11 +28,9 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.MavenPlugin;
@@ -44,9 +43,11 @@ import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.wtp.earmodules.EarModule;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.dialogs.IOverwriteQuery;
-import org.eclipse.ui.internal.ide.filesystem.FileSystemStructureProvider;
-import org.eclipse.ui.wizards.datatransfer.ImportOperation;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.navigator.CommonNavigator;
 
 
 /**
@@ -71,13 +72,6 @@ public class MavenDeploymentDescriptorManagement implements DeploymentDescriptor
       throw new RuntimeException("Unable to create ear plugin version range from [2.4.3,)", ex); //$NON-NLS-1$
     }
   }
-
-  private static final IOverwriteQuery OVERWRITE_ALL_QUERY = new IOverwriteQuery() {
-    @Override
-	public String queryOverwrite(String pathString) {
-      return IOverwriteQuery.ALL;
-    }
-  };
 
   /**
    * Executes ear:generate-application-xml goal to generate application.xml (and jboss-app.xml if needed). Existing
@@ -173,27 +167,45 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     
     IFolder metaInfFolder = targetFolder.getFolder("/META-INF/"); //$NON-NLS-1$
 
-    if(files != null && files.length > 0) {
-      //We generated something
-      try {
-        ImportOperation op = new ImportOperation(metaInfFolder.getFullPath(), generatedDescriptorLocation,
-            new FileSystemStructureProvider(), OVERWRITE_ALL_QUERY, Arrays.asList(files));
-        op.setCreateContainerStructure(false);
-        op.setOverwriteResources(true);
-        
-        op.run(monitor);
-        
-      } catch(InvocationTargetException ex) {
-        IStatus status = new Status(IStatus.ERROR, MavenWtpPlugin.ID, IStatus.ERROR, ex.getMessage(), ex);
-        throw new CoreException(status);
-      } catch(InterruptedException ex) {
-        throw new OperationCanceledException(ex.getMessage());
-      }
-    } 
-    targetFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+    if (files != null && files.length > 0) {
+    	for (File file:files) {
+    		if (!metaInfFolder.exists()) {
+    			metaInfFolder.create(true, true, monitor);
+    		}
+    		InputStream is = null;
+    		try {
+    			is = new FileInputStream(file);
+    			IFile targetResource = metaInfFolder.getFile(file.getName());
+    			targetResource.create(is, true, monitor);
+    		} catch (FileNotFoundException ex) {
+    			IStatus status = new Status(IStatus.ERROR, MavenWtpPlugin.ID, IStatus.ERROR, ex.getMessage(), ex);
+    	        throw new CoreException(status);
+			} finally {
+    			if (is != null) {
+    				try {
+						is.close();
+					} catch (IOException ex) {
+						// ignore
+					}
+    			}
+    		}
+    	}
+    }
     
     deleteDirectory(generatedDescriptorLocation);
     
+    Display.getDefault().asyncExec(new Runnable() {
+		@Override
+		public void run() {
+			if (PlatformUI.isWorkbenchRunning()) {
+				IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IPageLayout.ID_PROJECT_EXPLORER);
+				if (view instanceof CommonNavigator) {
+					CommonNavigator navigator = (CommonNavigator) view;
+					navigator.getCommonViewer().refresh();
+				}
+			}
+		}
+	});
   }
 
   private IFolder getEarResourcesDir(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
