@@ -19,7 +19,7 @@
   <groupId>org.eclipse.m2e.wtp</groupId>
   <artifactId>org.eclipse.m2e.wtp.jpa.parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>M2E-WTP JPA :: Parent</name>
 
   <properties>
