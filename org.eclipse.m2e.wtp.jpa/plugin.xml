@@ -36,4 +36,12 @@
        </facetDetector>
     </extension>
 
+   <extension point="org.eclipse.ui.editors.templates">
+    <template id="org.eclipse.m2e.wtp.jpa.xml.templates.jpaActivationProperty"
+         contextTypeId="org.eclipse.m2e.editor.xml.templates.contextType.properties"
+         name="%template.jpaActivationProperty.name" 
+         description="%template.jpaActivationProperty.description">
+      <pattern>&lt;m2e.jpa.activation&gt;${cursor}${false}&lt;/m2e.jpa.activation&gt;</pattern>
+    </template>
+   </extension> 
 </plugin>
