@@ -56,5 +56,6 @@ Export-Package: org.eclipse.m2e.wtp;x-friends:="org.eclipse.m2e.wtp.tests";
  org.eclipse.m2e.wtp.preferences
 Bundle-Activator: org.eclipse.m2e.wtp.MavenWtpPlugin
 Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin
 Bundle-ClassPath: jars/maven-war-plugin-2.1.1.jar,
  .

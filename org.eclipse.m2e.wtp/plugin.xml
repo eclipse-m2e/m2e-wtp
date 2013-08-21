@@ -390,4 +390,13 @@
             weight="50">
       </enabler>
    </extension>
+
+  <extension point="org.eclipse.ui.editors.templates">
+    <template id="org.eclipse.m2e.wtp.xml.templates.contextRootProperty"
+         contextTypeId="org.eclipse.m2e.editor.xml.templates.contextType.properties"
+         name="%template.contextRootProperty.name" 
+         description="%template.contextRootProperty.description">
+      <pattern>&lt;m2eclipse.wtp.contextRoot&gt;${cursor}&lt;/m2eclipse.wtp.contextRoot&gt;</pattern>
+    </template>
+   </extension> 
 </plugin>

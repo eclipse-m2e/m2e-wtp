@@ -55,5 +55,14 @@
            class="org.eclipse.m2e.wtp.jsf.internal.configurators.WebXmlJSFFacetDetector"
            priority="30"
          />
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.templates">
+    <template id="org.eclipse.m2e.wtp.jsf.xml.templates.jsfActivationProperty"
+         contextTypeId="org.eclipse.m2e.editor.xml.templates.contextType.properties"
+         name="%template.jsfActivationProperty.name" 
+         description="%template.jsfActivationProperty.description">
+      <pattern>&lt;m2e.jsf.activation&gt;${cursor}${false}&lt;/m2e.jsf.activation&gt;</pattern>
+    </template>
    </extension>    
 </plugin>
