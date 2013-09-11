@@ -28,6 +28,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -176,7 +177,11 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     		try {
     			is = new FileInputStream(file);
     			IFile targetResource = metaInfFolder.getFile(file.getName());
-    			targetResource.create(is, true, monitor);
+    			if (targetResource.exists()) {
+    				targetResource.setContents(is, IResource.FORCE, monitor);
+    			} else {
+    				targetResource.create(is, true, monitor);
+    			}
     		} catch (FileNotFoundException ex) {
     			IStatus status = new Status(IStatus.ERROR, MavenWtpPlugin.ID, IStatus.ERROR, ex.getMessage(), ex);
     	        throw new CoreException(status);
