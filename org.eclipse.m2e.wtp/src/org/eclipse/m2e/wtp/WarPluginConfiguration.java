@@ -83,7 +83,9 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     this.project = project;
     this.mavenProject = mavenProject;
     Plugin plugin = getPlugin();
-    setConfiguration((Xpp3Dom)plugin.getConfiguration());
+    if (plugin != null) {
+    	setConfiguration((Xpp3Dom)plugin.getConfiguration());
+    }
   }
 
   public Plugin getPlugin() {
