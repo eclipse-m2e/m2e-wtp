@@ -102,8 +102,24 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
   }
 
   @Override
-public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
     // TODO check if there's anything to do!
   }
+  
+  @Override
+  protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
+	  super.addFoldersToClean(fileCleaner, facade);
+	  cleanEjbJar(fileCleaner, facade.getCompileSourceLocations());
+	  cleanEjbJar(fileCleaner, facade.getResourceLocations());
+  }
+
+  private void cleanEjbJar(ResourceCleaner fileCleaner, IPath[] directories) {
+	  for (IPath p : directories) {
+		  if (p != null) {
+			  fileCleaner.addFiles(p.append("META-INF/ejb-jar.xml")); //$NON-NLS-1$
+		  }
+	  }
+  }
+
 }

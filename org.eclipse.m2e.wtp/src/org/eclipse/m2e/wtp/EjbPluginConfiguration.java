@@ -87,7 +87,10 @@ public class EjbPluginConfiguration {
    */
   public String getEjbContentDirectory(IProject project) {
     IPath[] resources = MavenProjectUtils.getResourceLocations(project, ejbProject.getResources());
-    return resources[0].toPortableString();
+    if (resources != null && resources.length > 0 && resources[0] != null) {
+    	return resources[0].toPortableString();
+    }
+    return "src/main/resources"; //$NON-NLS-1$
   }
   
 }
