@@ -171,7 +171,7 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     if (files != null && files.length > 0) {
     	for (File file:files) {
     		if (!metaInfFolder.exists()) {
-    			metaInfFolder.create(true, true, monitor);
+    			ProjectUtils.createFolder(metaInfFolder, monitor);
     		}
     		InputStream is = null;
     		try {
