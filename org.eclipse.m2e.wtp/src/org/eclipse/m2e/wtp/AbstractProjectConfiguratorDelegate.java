@@ -360,6 +360,11 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
         fileCleaner.addFolder(p);
       }
     }
+    // add default resource folder
+    IPath defaultResource = new Path("src/main/resources"); //$NON-NLS-1$
+    fileCleaner.addFiles(defaultResource.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+    fileCleaner.addFolder(defaultResource);
+    
     for (IPath p : facade.getTestCompileSourceLocations()) {
       if (p != null) fileCleaner.addFolder(p);
     }

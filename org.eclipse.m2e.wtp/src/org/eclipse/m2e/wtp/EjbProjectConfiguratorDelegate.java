@@ -112,6 +112,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
 	  super.addFoldersToClean(fileCleaner, facade);
 	  cleanEjbJar(fileCleaner, facade.getCompileSourceLocations());
 	  cleanEjbJar(fileCleaner, facade.getResourceLocations());
+      IPath defaultResource = new Path("src/main/resources"); //$NON-NLS-1$
+	  fileCleaner.addFiles(defaultResource.append("META-INF/ejb-jar.xml")); //$NON-NLS-1$
   }
 
   private void cleanEjbJar(ResourceCleaner fileCleaner, IPath[] directories) {
