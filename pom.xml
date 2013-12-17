@@ -26,12 +26,12 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>0.18.1</tycho-version>
+    <tycho-version>0.19.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>kepler</eclipse.target>
+    <eclipse.target>luna</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
