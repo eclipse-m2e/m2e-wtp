@@ -63,7 +63,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 
   private void setEarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.8"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.9"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     Plugin earPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ear-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     // Set  <earSourceDirectory>EarContent</earSourceDirectory>
@@ -138,7 +138,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
   }
 
   @Override
-protected IProjectFacet getRequiredFaced() {
+  protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.EAR_FACET;
   }
 
