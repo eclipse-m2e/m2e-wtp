@@ -23,9 +23,8 @@
   <name>M2E-WTP JPA :: Parent</name>
 
   <properties>
-    <eclipse.target>kepler</eclipse.target>
-    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>    
     <platform.id>e43</platform.id>
+    <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>
   </properties>
 
   <modules>

@@ -4,4 +4,11 @@
       <category name="m2e-wtp"/>
    </feature>
    <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
+   
+   <feature url="features/org.eclipse.m2e.wtp.jpa.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jpa.feature.source" version="0.0.0">
+      <category name="m2e-wtp-sdk"/>
+   </feature>
+
+   <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>
+
 </site>
