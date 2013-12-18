@@ -20,17 +20,6 @@
    <includes
          id="org.eclipse.m2e.wtp.feature"
          version="0.0.0"/>
-   <includes
-         id="org.eclipse.m2e.wtp.jaxrs.feature"
-         version="0.0.0"/>
-   <!--
-   <includes
-         id="org.eclipse.m2e.wtp.jpa.feature"
-         version="0.0.0"/>
-   -->
-   <includes
-         id="org.eclipse.m2e.wtp.jsf.feature"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.m2e.wtp.source"
@@ -52,27 +41,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.m2e.wtp.jaxrs.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.m2e.wtp.jsf.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-<!--
-   <plugin
-         id="org.eclipse.m2e.wtp.jpa.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- -->
 
 </feature>

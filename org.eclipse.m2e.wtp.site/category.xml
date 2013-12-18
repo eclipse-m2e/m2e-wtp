@@ -34,6 +34,12 @@
    <feature url="features/org.eclipse.m2e.wtp.sdk.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
+   <feature url="features/org.eclipse.m2e.wtp.jsf.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jsf.feature.source" version="0.0.0">
+      <category name="m2e-wtp-sdk"/>
+   </feature>
+   <feature url="features/org.eclipse.m2e.wtp.jaxrs.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jaxrs.feature.source" version="0.0.0">
+      <category name="m2e-wtp-sdk"/>
+   </feature>
 
    <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>
 
