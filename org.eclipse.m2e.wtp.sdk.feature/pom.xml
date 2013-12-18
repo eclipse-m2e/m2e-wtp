@@ -19,6 +19,6 @@
   <artifactId>org.eclipse.m2e.wtp.sdk.feature</artifactId>
   <packaging>eclipse-feature</packaging>
 
-  <name>M2E-WTP :: SDK Feature (Optional)</name>
+  <name>M2E-WTP :: Core SDK Feature (Optional)</name>
 
 </project>
