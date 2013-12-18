@@ -10,6 +10,9 @@ package org.eclipse.m2e.wtp.internal;
 
 import java.text.Collator;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -36,16 +39,18 @@ public class WTPResourcesSorter extends ViewerSorter {
   }
   
   @Override
-public int compare(Viewer viewer, Object e1, Object e2) {
-//    if(e1 instanceof WebResourcesNode) {
-//      if(e2 instanceof IResource) {
-//        return 1;
-//      }
-//    } else if(e2 instanceof WebResourcesNode) {
-//      if(e2 instanceof IResource) {
-//        return -1;
-//      }
-//    }
+  public int compare(Viewer viewer, Object e1, Object e2) {
+    if(e1 instanceof WTPResourcesNode && e2 instanceof IResource) {
+        return -1;
+    } else if(e2 instanceof WTPResourcesNode && e1 instanceof IResource) {
+        return 1;
+    }
+	if (e1 instanceof IFolder && e2 instanceof IFile) {
+		return -1;
+	} else if (e2 instanceof IFolder && e1 instanceof IFile) {
+		return 1;
+	}
+    
     return super.compare(viewer, e1, e2);
   }
   

@@ -55,7 +55,7 @@ public class WTPResourcesNode implements IWorkbenchAdapter {
   // IWorkbenchAdapter
   
   @Override
-public String getLabel(Object o) {
+  public String getLabel(Object o) {
 //    IContainer[] folders = getRootFolders();
 //    StringBuilder label = new StringBuilder(getLabel());
 //    if(folders.length == 1) {
@@ -67,7 +67,7 @@ public String getLabel(Object o) {
   }
 
   @Override
-public ImageDescriptor getImageDescriptor(Object object) {
+  public ImageDescriptor getImageDescriptor(Object object) {
     try {
       IFacetedProject facetedProject = ProjectFacetsManager.create(project);
       if (facetedProject != null && facetedProject.hasProjectFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)) {
@@ -80,12 +80,12 @@ public ImageDescriptor getImageDescriptor(Object object) {
   }
 
   @Override
-public Object getParent(Object o) {
+  public Object getParent(Object o) {
     return project;
   }
 
   @Override
-public Object[] getChildren(Object o) {
+  public Object[] getChildren(Object o) {
     return getResources();
   }
 
@@ -108,14 +108,14 @@ public Object[] getChildren(Object o) {
   }
 
   @Override
-public boolean equals(Object o) {
+  public boolean equals(Object o) {
     if( !(o instanceof WTPResourcesNode))
       return false;
     IProject p = ((WTPResourcesNode)o).project;
     return this.project == null ? p == null : this.project.equals(p);
   }
   @Override
-public int hashCode() {
+  public int hashCode() {
     return HASHCODE_ADDITION + (project == null ? 0 : project.hashCode());
   }
   

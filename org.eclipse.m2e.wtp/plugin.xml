@@ -194,7 +194,12 @@
         <commonSorter id="org.maven.ide.eclipse.wtp.sorter"
                       class="org.eclipse.m2e.wtp.internal.WTPResourcesSorter">
           <parentExpression>
-            <instanceof value="org.eclipse.core.resources.IProject"/>
+	           <or>         
+	             <instanceof value="org.eclipse.core.resources.IProject"/>
+	             <instanceof value="org.eclipse.m2e.wtp.internal.WTPResourcesNode"/>
+	             <instanceof value="org.eclipse.core.resources.IFolder"/>
+	             <instanceof value="org.eclipse.core.resources.IFile"/>
+	           </or>
           </parentExpression>
         </commonSorter>
       </navigatorContent>
