@@ -41,4 +41,5 @@ public interface FileNameMapping
      * @return the name of the file for the specified artifact
      */
     String mapFileName( final Artifact a );
+    
 }

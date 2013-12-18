@@ -39,7 +39,9 @@ public abstract class AbstractFileNameMapping
 {
 
 
-    /**
+    private boolean useBaseVersion;
+
+	/**
      * Generates a standard file name for the specified {@link Artifact}.
      * <p/>
      * Returns something like <tt>artifactId-version[-classifier].extension</tt>
@@ -59,7 +61,13 @@ public abstract class AbstractFileNameMapping
         buffer.append( a.getArtifactId() );
         if ( addVersion )
         {
-            buffer.append( '-' ).append( a.getBaseVersion() );
+            buffer.append( '-' );
+            if (useBaseVersion) {
+            	buffer.append( a.getBaseVersion() );
+            } else {
+            	buffer.append( a.getVersion() );
+            }
+            
         }
         if ( a.hasClassifier() )
         {
@@ -72,4 +80,23 @@ public abstract class AbstractFileNameMapping
 
         return buffer.toString();
     }
+    
+    /**
+     * Introduced in maven-ear-plugin 2.9 : when using a fileNameMapping with versions, either use the 
+     * <code>baseVersion</code> or the <code>version</code>. When the artifact is a SNAPSHOT, version 
+     * will always return a value with a -SNAPSHOT postfix instead of the possible timestamped value.
+     * 
+     * @since 1.1.0
+     */
+    public void setUseBaseVersion(boolean useBaseVersion) {
+		this.useBaseVersion = useBaseVersion;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public boolean isUseBaseVersion() {
+    	return useBaseVersion;
+    }
+    
 }

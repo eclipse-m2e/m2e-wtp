@@ -31,6 +31,7 @@ import org.eclipse.m2e.wtp.earmodules.EarModuleFactory;
 import org.eclipse.m2e.wtp.earmodules.EarPluginException;
 import org.eclipse.m2e.wtp.earmodules.SecurityRoleKey;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.m2e.wtp.namemapping.AbstractFileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.FileNameMappingFactory;
 import org.eclipse.osgi.util.NLS;
@@ -265,16 +266,23 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private FileNameMapping getFileNameMapping() {
 
     Xpp3Dom config = getConfiguration();
-    if(config == null) {
-      return FileNameMappingFactory.getDefaultFileNameMapping();
+    FileNameMapping mapping = null;
+    boolean useBaseVersion = false;
+    if(config != null) {
+	    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
+	    if(fileNameMappingDom != null) {
+	      String fileNameMappingName = fileNameMappingDom.getValue().trim();
+	      mapping = FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
+	    }
+	    useBaseVersion = DomUtils.getBooleanChildValue(config, "useBaseVersion", false); //$NON-NLS-1$
     }
-
-    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
-    if(fileNameMappingDom != null) {
-      String fileNameMappingName = fileNameMappingDom.getValue().trim();
-      return FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
+    if (mapping == null) {
+    	mapping = FileNameMappingFactory.getDefaultFileNameMapping(); 
     }
-    return FileNameMappingFactory.getDefaultFileNameMapping();
+    if (mapping instanceof AbstractFileNameMapping) {
+    	((AbstractFileNameMapping)mapping).setUseBaseVersion(useBaseVersion);
+    }
+    return mapping;
   }
 
   /**

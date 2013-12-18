@@ -49,6 +49,14 @@ public class DomUtils {
     return Boolean.valueOf(getChildValue(parent, childName));
   }
 
+  public static final boolean getBooleanChildValue(Xpp3Dom parent, String childName, boolean defaultValue) {
+	  String result = getChildValue(parent, childName);
+	  if (result == null) {
+		  return defaultValue;
+	  }
+	  return Boolean.valueOf(result);
+  }
+
   /**
    * @param node
    */
