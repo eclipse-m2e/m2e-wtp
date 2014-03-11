@@ -35,8 +35,8 @@
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
-    <!-- Use signed version of m2eclipse-mavenarchiver 0.15.0.201207090125, built on build.eclipse.org -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.15.0/</mavenarchiver-repo.url>
+    <!-- Use signed version of m2eclipse-mavenarchiver 0.16.0.201401211452, built on build.eclipse.org -->
+    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.16.0/</mavenarchiver-repo.url>
 
   </properties>
 
