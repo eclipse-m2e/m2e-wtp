@@ -62,7 +62,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
     //Tell maven to package the project classes as a jar
     jarExecution.addGoal("jar"); //$NON-NLS-1$
     //The .jar must be created before the rar is packaged.
-    jarExecution.setPhase("process-classes"); //$NON-NLS-1$
+    jarExecution.setPhase("prepare-package"); //$NON-NLS-1$
     jarPlugin.addExecution(jarExecution);
 
     model.setBuild(build);

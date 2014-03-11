@@ -31,7 +31,7 @@ public abstract class AbstractWtpProjectConversionParticipant extends AbstractPr
   protected static final String CONFIGURATION_KEY = "configuration"; //$NON-NLS-1$
 
   @Override
-public boolean accept(IProject project) throws CoreException {
+  public boolean accept(IProject project) throws CoreException {
     IFacetedProject fp = ProjectFacetsManager.create(project);
     if (fp != null && fp.hasProjectFacet(getRequiredFaced()))  {
       return true;
