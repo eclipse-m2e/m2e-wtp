@@ -25,6 +25,7 @@
   <properties>
     <platform.id>e43</platform.id>
     <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/</m2e-wtp.url>
+    <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.jpa.git</tycho.scmUrl>
   </properties>
 
   <modules>
