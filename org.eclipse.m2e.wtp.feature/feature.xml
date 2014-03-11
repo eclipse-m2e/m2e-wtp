@@ -27,8 +27,8 @@
       <import feature="org.eclipse.jst.enterprise_ui.feature" version="3.2.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.wst.common.fproj" version="3.2.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.jst.common.fproj.enablement.jdt" version="3.2.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.m2e.feature" version="1.4.0" match="greaterOrEqual"/>
-      <import feature="org.sonatype.m2e.mavenarchiver.feature" version="0.14.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.m2e.feature" version="1.5.0" match="greaterOrEqual"/>
+      <import feature="org.sonatype.m2e.mavenarchiver.feature" version="0.16.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
