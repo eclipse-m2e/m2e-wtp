@@ -26,6 +26,7 @@
     <eclipse.target>juno</eclipse.target>
     <m2e-wtp.url>http://download.eclipse.org/m2e-wtp/snapshots/${eclipse.target}</m2e-wtp.url>    
     <platform.id>e42</platform.id>
+    <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.jpa.git</tycho.scmUrl>
   </properties>
 
   <modules>
