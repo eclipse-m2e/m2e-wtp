@@ -53,7 +53,9 @@ import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
 import org.eclipse.m2e.wtp.jpa.internal.util.JptUtils;
+import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
+import org.eclipse.wst.common.componentcore.internal.util.IModuleConstants;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -145,9 +147,8 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		Set<Action> actions = new LinkedHashSet<Action>();
 		installJavaFacet(actions, facetedProject.getProject(), facetedProject);
 		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, 
-								                version, 
-								                dataModel));
-		
+												version, 
+												dataModel));
 		facetedProject.modify(actions, monitor);
 	}
 
@@ -191,6 +192,12 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		if (!enabled || !project.hasNature(JavaCore.NATURE_ID) || JpaFacet.isInstalled(project)) {
 			return false;
 		}
+		// Bug 430178 : If imported project has modulecore nature without the component file, 
+		// Dali's ModuleResourceLocator#getRootFolder will NPE (ex: it.cosenonjaviste:jsf2-spring4-jpa2-archetype:1.0.3)
+		if (project.hasNature(IModuleConstants.MODULE_NATURE_ID) && !ModuleCoreNature.componentResourceExists(project)) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -221,34 +228,38 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	}
 	
 	private void installJavaFacet(Set<Action> actions, IProject project, IFacetedProject facetedProject) {
-	    IProjectFacetVersion javaFv = JavaFacet.FACET.getVersion(JavaFacetUtil.getCompilerLevel(project));
-	    if(!facetedProject.hasProjectFacet(JavaFacet.FACET)) {
-	      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, javaFv, null));
-	    } else if(!facetedProject.hasProjectFacet(javaFv)) {
-	      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, javaFv, null));
-	    } 
+		IProjectFacetVersion javaFv = JavaFacet.FACET.getVersion(JavaFacetUtil.getCompilerLevel(project));
+		if(!facetedProject.hasProjectFacet(JavaFacet.FACET)) {
+		  actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, javaFv, null));
+		} else if(!facetedProject.hasProjectFacet(javaFv)) {
+		  actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, javaFv, null));
+		} 
 	}
 	
 	 protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
-		    for (IPath p : facade.getCompileSourceLocations()) {
-		      if (p != null) {
-		        fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
-		        fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
+			for (IPath p : facade.getCompileSourceLocations()) {
+			  if (p != null) {
+				fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
+				fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
 				fileCleaner.addFolder(p);
-		      }
-		    }
-		    for (IPath p : facade.getResourceLocations()) {
-		      if (p != null) {
-			    fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
-			    fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
-		        fileCleaner.addFolder(p);
-		      }
-		    }
-		    for (IPath p : facade.getTestCompileSourceLocations()) {
-		      if (p != null) fileCleaner.addFolder(p);
-		    }
-		    for (IPath p : facade.getTestResourceLocations()) {
-		      if (p != null) fileCleaner.addFolder(p);
-		    }
+			  }
+			}
+			for (IPath p : facade.getResourceLocations()) {
+			  if (p != null) {
+				fileCleaner.addFiles(p.append("META-INF/persistence.xml")); //$NON-NLS-1$
+				fileCleaner.addFiles(p.append("META-INF/orm.xml")); //$NON-NLS-1$
+				fileCleaner.addFolder(p);
+			  }
+			}
+			for (IPath p : facade.getTestCompileSourceLocations()) {
+			  if (p != null) {
+				fileCleaner.addFolder(p);
+			}
+			}
+			for (IPath p : facade.getTestResourceLocations()) {
+			  if (p != null) {
+				fileCleaner.addFolder(p);
+			}
+			}
 		  }
 }
