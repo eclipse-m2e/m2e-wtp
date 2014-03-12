@@ -55,7 +55,9 @@ import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
 import org.eclipse.m2e.wtp.jpa.internal.util.JptUtils;
+import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
+import org.eclipse.wst.common.componentcore.internal.util.IModuleConstants;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -149,7 +151,6 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, 
 								                version, 
 								                dataModel));
-		
 		facetedProject.modify(actions, monitor);
 	}
 
@@ -200,6 +201,12 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		if (!enabled || !project.hasNature(JavaCore.NATURE_ID)) {
 			return false;
 		}
+		// Bug 430178 : If imported project has modulecore nature without the component file, 
+		// Dali's ModuleResourceLocator#getRootFolder will NPE (ex: it.cosenonjaviste:jsf2-spring4-jpa2-archetype:1.0.3)
+		if (project.hasNature(IModuleConstants.MODULE_NATURE_ID) && !ModuleCoreNature.componentResourceExists(project)) {
+			return false;
+		}
+		
 		IFacetedProject fProj = ProjectFacetsManager.create(project);
 		return  fProj == null || !fProj.hasProjectFacet(JpaProject.FACET);
 	}
@@ -255,10 +262,14 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		      }
 		    }
 		    for (IPath p : facade.getTestCompileSourceLocations()) {
-		      if (p != null) fileCleaner.addFolder(p);
+		      if (p != null) {
+				fileCleaner.addFolder(p);
+			}
 		    }
 		    for (IPath p : facade.getTestResourceLocations()) {
-		      if (p != null) fileCleaner.addFolder(p);
+		      if (p != null) {
+				fileCleaner.addFolder(p);
+			}
 		    }
 		  }
 }
