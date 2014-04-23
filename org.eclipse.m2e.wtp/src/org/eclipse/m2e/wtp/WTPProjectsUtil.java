@@ -501,11 +501,15 @@ public class WTPProjectsUtil {
     }
     IVirtualFolder jsrc = component.getRootFolder().getFolder(folder);
     for(IPath location : MavenProjectUtils.getSourceLocations(project, mavenProject.getTestCompileSourceRoots())) {
-      if (location == null) continue;
+      if (location == null) {
+		continue;
+	}
       jsrc.removeLink(location, 0, monitor);
     }
     for(IPath location : MavenProjectUtils.getResourceLocations(project, mavenProject.getTestResources())) {
-      if (location == null) continue;
+      if (location == null) {
+		continue;
+	}
       jsrc.removeLink(location, 0, monitor);
     }
 
@@ -544,7 +548,9 @@ public class WTPProjectsUtil {
   public static void updateContainerAttributes(IProject project, IClasspathAttribute attributeToAdd, String attributeToDelete, IProgressMonitor monitor)
   throws JavaModelException {
     IJavaProject javaProject = JavaCore.create(project);
-    if (javaProject == null) return;
+    if (javaProject == null) {
+		return;
+	}
     IClasspathEntry[] cp = javaProject.getRawClasspath();
     for(int i = 0; i < cp.length; i++ ) {
       if(IClasspathEntry.CPE_CONTAINER == cp[i].getEntryKind()
@@ -644,8 +650,9 @@ public class WTPProjectsUtil {
     IVirtualComponent component = vFolder.getComponent();
     if (defaultPath == null) {
       IContainer container = vFolder.getUnderlyingFolder();
-      if (container instanceof IFolder)
-        folder = (IFolder)container;
+      if (container instanceof IFolder) {
+		folder = (IFolder)container;
+	  }
     } else if (!defaultPath.isRoot()){
         folder = component.getProject().getFolder(defaultPath);
     }    
