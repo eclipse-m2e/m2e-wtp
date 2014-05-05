@@ -35,6 +35,10 @@
     <eclipse.target>luna</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.5/</m2e-repo.url>
+    <!--
+    <m2e-repo.url>http://repository.takari.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</m2e-repo.url>
+    -->
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.16.0.201401211452, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.16.0/</mavenarchiver-repo.url>
@@ -84,8 +88,7 @@
     <repository>
       <id>m2e-core</id>
       <layout>p2</layout>
-      <url>http://repository.takari.io:8081/nexus/content/sites/m2e.extras/m2e/1.5.0/N/LATEST/</url>
-      <!--<url>http://download.eclipse.org/technology/m2e/milestones/1.5/</url>-->
+      <url>${m2e-repo.url}</url>
     </repository>
     <repository>
       <id>eclipse</id>
