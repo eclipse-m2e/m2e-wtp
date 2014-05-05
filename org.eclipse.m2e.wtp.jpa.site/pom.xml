@@ -23,30 +23,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-            <execution>
-                <id>fix-content</id>
-                <phase>package</phase>
-                <goals>
-                    <goal>execute</goal>
-                </goals>
-            </execution>
-        </executions>
-        <configuration>
-            <source>${pom.basedir}/src/main/assembly/fixupdate.groovy</source>
-        </configuration>
-      </plugin>
-      <!--
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-p2-repository-plugin</artifactId>
-        <version>${tycho-version}</version>
-      </plugin>
-       -->
-      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
