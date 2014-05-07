@@ -4,7 +4,9 @@
       label="%featureName"
       version="1.1.0.qualifier"
       provider-name="%providerName"
-      plugin="org.eclipse.m2e.wtp.jsf">
+      plugin="org.eclipse.m2e.wtp.jsf"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
    <install-handler/>
 
    <description>
