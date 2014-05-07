@@ -390,5 +390,11 @@
          description="%template.contextRootProperty.description">
       <pattern>&lt;m2eclipse.wtp.contextRoot&gt;${cursor}&lt;/m2eclipse.wtp.contextRoot&gt;</pattern>
     </template>
+    <template id="org.eclipse.m2e.wtp.xml.templates.m2eWtpActivationProperty"
+         contextTypeId="org.eclipse.m2e.editor.xml.templates.contextType.properties"
+         name="%template.m2eWtpActivationProperty.name" 
+         description="%template.m2eWtpActivationProperty.description">
+      <pattern>&lt;m2e.wtp.activation&gt;${cursor}${false}&lt;/m2e.wtp.activation&gt;</pattern>
+    </template>
    </extension> 
 </plugin>
