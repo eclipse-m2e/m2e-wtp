@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (c) 2012 Red Hat, Inc. and others.
+ * Copyright (c) 2012-2014 Red Hat, Inc. and others.
  * All rights reserved. This program and the accompanying materials 
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.MavenWtpPlugin;
 import org.eclipse.m2e.wtp.ProjectUtils;
 import org.eclipse.m2e.wtp.ResourceCleaner;
+import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.facets.FacetDetectorManager;
 import org.eclipse.m2e.wtp.jpa.PlatformIdentifierManager;
 import org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator;
@@ -80,14 +81,13 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	static final String PERSISTENCE_XML_KEY = "persistencexml";  //$NON-NLS-1$
 	
 	@Override
-	public void configure(ProjectConfigurationRequest request,
-			IProgressMonitor monitor) throws CoreException {
-		IProject project = request.getProject();
+	public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 		
-		MavenProject mavenProject = request.getMavenProject();
-		if(!canConfigure(project, mavenProject )) {
+		if(!canConfigure(request.getMavenProjectFacade(), monitor)) {
 			return;
 		}
+		IProject project = request.getProject();
+		MavenProject mavenProject = request.getMavenProject();
 
 		IFile persistenceXml = getPersistenceXml(project);
 		if (persistenceXml == null || !persistenceXml.exists()) {
@@ -98,7 +98,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 		if (facetedProject != null) {
 			//Refresh parent in multi-module setups, or Dali throws an exception 
-			ProjectUtils.refreshHierarchy(request.getMavenProject().getBasedir(), 
+			ProjectUtils.refreshHierarchy(mavenProject.getBasedir(), 
 										  IResource.DEPTH_INFINITE, 
 										  new SubProgressMonitor(monitor, 1));
 			
@@ -196,14 +196,16 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return dm;
 	}
 
-	private boolean canConfigure(IProject project, MavenProject mavenProject) throws CoreException {
-		boolean enabled = isConfigurationEnabled(mavenProject);
-		if (!enabled || !project.hasNature(JavaCore.NATURE_ID)) {
+	private boolean canConfigure(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+		boolean enabled = isConfigurationEnabled(facade, monitor);
+		if (!enabled) {
 			return false;
 		}
+		IProject project = facade.getProject();
 		// Bug 430178 : If imported project has modulecore nature without the component file, 
 		// Dali's ModuleResourceLocator#getRootFolder will NPE (ex: it.cosenonjaviste:jsf2-spring4-jpa2-archetype:1.0.3)
-		if (project.hasNature(IModuleConstants.MODULE_NATURE_ID) && !ModuleCoreNature.componentResourceExists(project)) {
+		if (!project.hasNature(JavaCore.NATURE_ID) || 
+				(project.hasNature(IModuleConstants.MODULE_NATURE_ID) && !ModuleCoreNature.componentResourceExists(project))) {
 			return false;
 		}
 		
@@ -211,8 +213,12 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		return  fProj == null || !fProj.hasProjectFacet(JpaProject.FACET);
 	}
 
-	private boolean isConfigurationEnabled(MavenProject mavenProject) {
-		Object pomActivationValue = mavenProject.getProperties().get(M2E_JPA_ACTIVATION_PROPERTY);
+	private boolean isConfigurationEnabled(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+		if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
+			return false;
+		}
+		
+		Object pomActivationValue = facade.getMavenProject(monitor).getProperties().get(M2E_JPA_ACTIVATION_PROPERTY);
 		boolean enabled;
 		if (pomActivationValue == null) {
 			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
