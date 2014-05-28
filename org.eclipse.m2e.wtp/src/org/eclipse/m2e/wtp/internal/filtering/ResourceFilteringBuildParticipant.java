@@ -48,6 +48,7 @@ import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.wtp.DomUtils;
+import org.eclipse.m2e.wtp.MavenWtpConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.osgi.util.NLS;
@@ -310,7 +311,7 @@ public void clean(IProgressMonitor monitor) throws CoreException {
       
       if (session.getResult().hasExceptions()){
         
-          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), IMavenConstants.MARKER_CONFIGURATION_ID,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
+          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), MavenWtpConstants.WTP_MARKER_FILTERING_ERROR,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
           //move exceptions up to the original session, so they can be handled by the maven builder
           //XXX current exceptions refer to maven-resource-plugin (since that's what we used), we should probably 
           // throw a new exception instead to indicate the problem(s) come(s) from web resource filtering

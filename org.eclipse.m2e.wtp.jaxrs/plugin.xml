@@ -26,7 +26,7 @@
      <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.jaxrs.configuration"
          name="%Maven_Configuration_Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="true"/>
     </extension>
 

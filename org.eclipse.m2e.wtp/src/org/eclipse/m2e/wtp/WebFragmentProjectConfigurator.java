@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.j2ee.web.project.facet.IWebFragmentFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.web.project.facet.WebFragmentFacetInstallDataModelProvider;
-import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.internal.MavenPluginActivator;
 import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
@@ -71,10 +70,10 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     
     IMavenMarkerManager mavenMarkerManager = MavenPluginActivator.getDefault().getMavenMarkerManager();
     try {
-      mavenMarkerManager.deleteMarkers(project,IMavenConstants.MARKER_CONFIGURATION_ID);//FIXME This is utterly wrong. Need to handle non core markers
+      mavenMarkerManager.deleteMarkers(project,MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID);
       configureWebfragment(facade, monitor);
     } catch (CoreException cex) {
-      mavenMarkerManager.addErrorMarkers(project, IMavenConstants.MARKER_CONFIGURATION_ID, cex);
+      mavenMarkerManager.addErrorMarkers(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID, cex);
     }
   }
 

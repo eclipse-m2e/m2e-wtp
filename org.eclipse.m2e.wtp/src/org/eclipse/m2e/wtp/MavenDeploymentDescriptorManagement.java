@@ -87,9 +87,13 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
 
     IMavenProjectRegistry projectManager = MavenPlugin.getMavenProjectRegistry();
     IMavenProjectFacade mavenFacade = projectManager.getProject(project);
-    IMaven maven = MavenPlugin.getMaven();
-    //Create a maven request + session
+    IMavenMarkerManager markerManager  = MavenPluginActivator.getDefault().getMavenMarkerManager();
+    
     IFile pomResource = project.getFile(IMavenConstants.POM_FILE_NAME);
+    markerManager.deleteMarkers(pomResource, MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR);
+
+    //Create a maven request + session
+    IMaven maven = MavenPlugin.getMaven();
     MavenExecutionRequest request = projectManager.createExecutionRequest(pomResource, mavenFacade.getResolverConfiguration(), monitor);
     MavenSession session = maven.createSession(request, mavenProject);
 
@@ -145,7 +149,6 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     maven.execute(session, genConfigMojo, monitor);
     
     if (session.getResult().hasExceptions()){
-      IMavenMarkerManager markerManager  = MavenPluginActivator.getDefault().getMavenMarkerManager();
       markerManager.addMarkers(mavenFacade.getPom(), MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR, session.getResult());
     }
     

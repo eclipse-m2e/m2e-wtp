@@ -259,28 +259,39 @@
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.overlayError"
          name="Maven Java EE Configuration Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.manifestError"
          name="Maven Java EE Configuration Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.configuration"
          name="Maven Java EE Configuration Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.unsupportedDependencyProblem"
          name="Maven Java EE Dependency Problem">
-      <super type="org.eclipse.m2e.core.maven2Problem"/>
-      <persistent value="true"/>      
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
    </extension>
-
+   <extension point="org.eclipse.core.resources.markers"
+         id="org.eclipse.m2e.core.maven2Problem.wtp.applicationXmlError"
+         name="Maven Java EE Configuration Problem">
+      <super type="org.eclipse.m2e.core.maven2Problem.wtp.configuration"/>
+      <persistent value="true"/>
+   </extension>
+   <extension point="org.eclipse.core.resources.markers"
+         id="org.eclipse.m2e.core.maven2Problem.wtp.filteringError"
+         name="Maven Java EE Configuration Problem">
+      <super type="org.eclipse.m2e.core.maven2Problem.wtp.configuration"/>
+      <persistent value="true"/>
+   </extension>   
     <extension point="org.eclipse.ui.perspectiveExtensions">
  	    <perspectiveExtension
  	 	    targetID="org.eclipse.jst.j2ee.J2EEPerspective">

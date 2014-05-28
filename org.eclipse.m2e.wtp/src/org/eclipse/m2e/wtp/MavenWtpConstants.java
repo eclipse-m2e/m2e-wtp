@@ -27,7 +27,7 @@ public final class MavenWtpConstants {
 
   public static final String WTP_MARKER_OVERLAY_ERROR = WTP_MARKER_ID + ".overlayError"; //$NON-NLS-1$
 
-  public static final String WTP_MARKER_GENERATE_APPLICATIONXML_ERROR = WTP_MARKER_ID + ".filteringError"; //$NON-NLS-1$
+  public static final String WTP_MARKER_GENERATE_APPLICATIONXML_ERROR = WTP_MARKER_ID + ".applicationXmlError"; //$NON-NLS-1$
 
   public static final String WTP_MARKER_UNSUPPORTED_DEPENDENCY_PROBLEM = WTP_MARKER_ID + ".unsupportedDependencyProblem"; //$NON-NLS-1$
 
