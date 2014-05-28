@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jst.j2ee.internal.J2EEVersionConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
@@ -59,13 +60,13 @@ public class RarPluginConfiguration {
   final IMavenProjectFacade rarFacade;
   
   
-  public RarPluginConfiguration(IMavenProjectFacade facade) {
+  public RarPluginConfiguration(IMavenProjectFacade facade) throws CoreException {
     Assert.isNotNull(facade);
     if (JEEPackaging.RAR != JEEPackaging.getValue(facade.getPackaging()))
       throw new IllegalArgumentException(Messages.RarPluginConfiguration_Project_Must_Have_rar_Packaging);
     
     this.rarFacade = facade;
-    this.plugin = facade.getMavenProject().getPlugin("org.apache.maven.plugins:maven-rar-plugin"); //$NON-NLS-1$
+    this.plugin = facade.getMavenProject(new NullProgressMonitor()).getPlugin("org.apache.maven.plugins:maven-rar-plugin"); //$NON-NLS-1$
   }
 
   /**

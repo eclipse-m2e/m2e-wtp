@@ -8,6 +8,7 @@
 
 package org.eclipse.m2e.wtp.internal.filtering;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.wtp.JEEPackaging;
 
@@ -19,7 +20,7 @@ import org.eclipse.m2e.wtp.JEEPackaging;
 public class ResourceFilteringConfigurationFactory {
 
   //TODO Use an extension point to let 3rd party plugin register their own ResourceFilteringConfiguration 
-  public static ResourceFilteringConfiguration getConfiguration(IMavenProjectFacade mavenProjectFacade) {
+  public static ResourceFilteringConfiguration getConfiguration(IMavenProjectFacade mavenProjectFacade) throws CoreException {
 
     JEEPackaging packaging = JEEPackaging.getValue(mavenProjectFacade.getPackaging());
     if (packaging == null) {

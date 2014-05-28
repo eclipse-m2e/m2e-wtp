@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jst.j2ee.internal.J2EEVersionConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.jee.util.internal.JavaEEQuickPeek;
@@ -52,11 +53,12 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   
   final IMavenProjectFacade mavenProjectFacade;
 
-  public AcrPluginConfiguration(IMavenProjectFacade facade) {
+  public AcrPluginConfiguration(IMavenProjectFacade facade) throws CoreException {
 
-    MavenProject mavenProject = facade.getMavenProject();
-    if (JEEPackaging.APP_CLIENT != JEEPackaging.getValue(mavenProject.getPackaging()))
-      throw new IllegalArgumentException(Messages.AcrPluginConfiguration_Error_Project_Not_appclient);
+    MavenProject mavenProject = facade.getMavenProject(new NullProgressMonitor());
+    if (JEEPackaging.APP_CLIENT != JEEPackaging.getValue(mavenProject.getPackaging())) {
+    	throw new IllegalArgumentException(Messages.AcrPluginConfiguration_Error_Project_Not_appclient);
+    }
     
     this.mavenProjectFacade = facade;
     Plugin plugin = mavenProject.getPlugin("org.apache.maven.plugins:maven-acr-plugin"); //$NON-NLS-1$

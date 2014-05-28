@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
@@ -28,7 +29,7 @@ public class AppClientResourceFilteringConfiguration extends AbstractResourceFil
 
   private AcrPluginConfiguration acrPluginConfiguration;
   
-  public AppClientResourceFilteringConfiguration(IMavenProjectFacade mavenProjectFacade) {
+  public AppClientResourceFilteringConfiguration(IMavenProjectFacade mavenProjectFacade) throws CoreException {
     super(mavenProjectFacade);
     acrPluginConfiguration = new AcrPluginConfiguration(mavenProjectFacade);
   }
