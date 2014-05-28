@@ -44,7 +44,12 @@ public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 		if (WTPProjectsUtil.isM2eWtpDisabled(event.getMavenProject(), monitor)) {
 			return;
 		}
-		super.mavenProjectChanged(event, monitor);
+	    IMavenProjectFacade oldFacade = event.getOldMavenProject();
+	    IMavenProjectFacade newFacade = event.getMavenProject();
+	    if(oldFacade == null && newFacade == null) {
+	      return;
+	    }
+	    mavenProjectChanged(newFacade, oldFacade, true, monitor);
 	}
 	
 	public AbstractBuildParticipant getBuildParticipant(
