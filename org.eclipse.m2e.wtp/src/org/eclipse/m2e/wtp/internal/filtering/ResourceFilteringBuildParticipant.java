@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2014 Sonatype, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,11 +9,12 @@
 package org.eclipse.m2e.wtp.internal.filtering;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.execution.MavenExecutionRequest;
@@ -21,6 +22,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.Scanner;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomUtils;
@@ -35,14 +37,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
-import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.internal.MavenPluginActivator;
-import org.eclipse.m2e.core.internal.builder.plexusbuildapi.AbstractEclipseBuildContext;
-import org.eclipse.m2e.core.internal.builder.plexusbuildapi.AbstractEclipseBuildContext.Message;
-import org.eclipse.m2e.core.internal.builder.plexusbuildapi.EclipseBuildContext;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
@@ -67,10 +64,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
   
   private static final Logger LOG = LoggerFactory.getLogger(ResourceFilteringBuildParticipant.class );
 
-  //Need to duplicate org.eclipse.m2e.core.internal.builder.MavenBuilder.BUILD_CONTEXT_KEY since it's not accessible 
-  private static final QualifiedName BUILD_CONTEXT_KEY = new QualifiedName(IMavenConstants.PLUGIN_ID, "BuildContext"); //$NON-NLS-1$
-  
-  private EclipseBuildContext forceCopyBuildContext; 
+  private CleanBuildContext forceCopyBuildContext; 
   
   @Override
   public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
@@ -94,11 +88,8 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
       List<String> filters = configuration.getFilters();
       if (changeRequiresForcedCopy(facade, filters, delta)) {
         LOG.info(NLS.bind(Messages.ResourceFilteringBuildParticipant_Changed_Resources_Require_Clean_Build,project.getName()));
-        Map<String, Object> contextState = new HashMap<String, Object>();
-        project.setSessionProperty(BUILD_CONTEXT_KEY, contextState);
         //String id = "" + "-" + getClass().getName();
-        forceCopyBuildContext = new EclipseBuildContext(project, contextState);
-        forceCopyBuildContext.setCurrentBuildParticipantId(getBuildParticipantId());
+        forceCopyBuildContext = new CleanBuildContext(oldBuildContext);
         ThreadBuildContext.setThreadBuildContext(forceCopyBuildContext);
       }
       if (forceCopyBuildContext != null || hasResourcesChanged(facade, delta, resources)) {
@@ -117,31 +108,8 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     return null;
   }
 
-  /**
-   * Workaround to retrieve the buildParticipantId that is not exposed by AbstractEclipseBuildContext
-   */
-  private String getBuildParticipantId() {
-    BuildContext originalContext = super.getBuildContext();
-    String id = "org.apache.maven.plugins:maven-resources:copy-resources:::-"+getClass().getName();  //$NON-NLS-1$
-    if (originalContext != null && (originalContext instanceof AbstractEclipseBuildContext)) {
-      //That allows us to avoid doing some introspection
-      AbstractEclipseBuildContext eclipseContext = ((AbstractEclipseBuildContext)originalContext); 
-      Map<String, List<Message>> map = eclipseContext.getMessages();
-      if (map == null || map.isEmpty()) {
-        eclipseContext.addMessage(null, 0, 0, "dummy", 0, null); //$NON-NLS-1$
-        //adding a message initializes the map 
-        map = eclipseContext.getMessages();
-        id = map.keySet().iterator().next();
-        map.clear();
-      } else {
-        id = map.keySet().iterator().next();
-      }
-    }
-    return id;
-  }
-
   @Override
-protected BuildContext getBuildContext() {
+  protected BuildContext getBuildContext() {
      return (forceCopyBuildContext == null)?super.getBuildContext() : forceCopyBuildContext;
   }
 
@@ -477,5 +445,81 @@ public void clean(IProgressMonitor monitor) throws CoreException {
     return loadedParent; 
   }
   
-  
+
+  private static class CleanBuildContext implements BuildContext {
+
+	private BuildContext originalContext;
+
+	CleanBuildContext(BuildContext originalContext) {
+		this.originalContext = originalContext;
+	}
+	  
+	public boolean hasDelta(String relpath) {
+		return true;
+	}
+
+	public boolean hasDelta(File file) {
+		return true;
+	}
+
+	public boolean hasDelta(List relpaths) {
+		return true;
+	}
+
+	public void refresh(File file) {
+		originalContext.refresh(file);
+	}
+
+	public OutputStream newFileOutputStream(File file) throws IOException {
+		return originalContext.newFileOutputStream(file);
+	}
+
+	public Scanner newScanner(File basedir) {
+		return originalContext.newScanner(basedir);
+	}
+
+	public Scanner newDeleteScanner(File basedir) {
+		return originalContext.newDeleteScanner(basedir);
+	}
+
+	public Scanner newScanner(File basedir, boolean ignoreDelta) {
+		return originalContext.newScanner(basedir, ignoreDelta);
+	}
+
+	public boolean isIncremental() {
+		return false;
+	}
+
+	public void setValue(String key, Object value) {
+		originalContext.setValue(key, value);
+	}
+
+	public Object getValue(String key) {
+		return originalContext.getValue(key);
+	}
+
+	public void addWarning(File file, int line, int column, String message,
+			Throwable cause) {
+		originalContext.addWarning(file, line, column, message, cause);
+	}
+
+	public void addError(File file, int line, int column, String message,
+			Throwable cause) {
+		originalContext.addError(file, line, column, message, cause);
+	}
+
+	public void addMessage(File file, int line, int column, String message,
+			int severity, Throwable cause) {
+		originalContext.addMessage(file, line, column, message, severity, cause);
+	}
+
+	public void removeMessages(File file) {
+		originalContext.removeMessages(file);
+	}
+
+	public boolean isUptodate(File target, File source) {
+		return false;
+	}
+
+  }
 }
