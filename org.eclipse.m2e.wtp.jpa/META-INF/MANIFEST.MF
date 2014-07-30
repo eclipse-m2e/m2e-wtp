@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.m2e.wtp.jpa;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.eclipse.m2e.wtp.jpa.internal.MavenJpaActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -27,7 +27,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  JavaSE-1.7
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
-Export-Package: org.eclipse.m2e.wtp.jpa,
- org.eclipse.m2e.wtp.jpa.internal;x-friends:="org.eclipse.m2e.wtp.tests",
- org.eclipse.m2e.wtp.jpa.internal.configurators;x-friends:="org.eclipse.m2e.wtp.tests",
- org.eclipse.m2e.wtp.jpa.internal.util;x-friends:="org.eclipse.m2e.wtp.tests"
+Export-Package: org.eclipse.m2e.wtp.jpa,org.eclipse.m2e.wtp.jpa.intern
+ al;x-friends:="org.eclipse.m2e.wtp.tests",org.eclipse.m2e.wtp.jpa.int
+ ernal.configurators;x-friends:="org.eclipse.m2e.wtp.tests",org.eclips
+ e.m2e.wtp.jpa.internal.util;x-friends:="org.eclipse.m2e.wtp.tests"
