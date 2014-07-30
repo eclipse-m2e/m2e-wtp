@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Overlay support for Eclipse WTP
 Bundle-SymbolicName: org.eclipse.m2e.wtp.overlay;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime,
@@ -22,8 +22,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface,
  org.slf4j.api;bundle-version="1.6.0"
 Bundle-Vendor: Eclipse.org - m2e-wtp
-Export-Package: org.eclipse.m2e.wtp.overlay,
- org.eclipse.m2e.wtp.overlay.internal.modulecore;x-friends:="org.eclipse.m2e.wtp.overlay.ui,org.eclipse.m2e.wtp",
- org.eclipse.m2e.wtp.overlay.modulecore
+Export-Package: org.eclipse.m2e.wtp.overlay,org.eclipse.m2e.wtp.overla
+ y.internal.modulecore;x-friends:="org.eclipse.m2e.wtp.overlay.ui,org.
+ eclipse.m2e.wtp",org.eclipse.m2e.wtp.overlay.modulecore
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator

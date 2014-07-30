@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.m2e.wtp.jsf;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.eclipse.m2e.wtp.jsf.internal.MavenJSFActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -25,6 +25,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
-Export-Package: org.eclipse.m2e.wtp.jsf.internal,
- org.eclipse.m2e.wtp.jsf.internal.configurators,
- org.eclipse.m2e.wtp.jsf.internal.utils
+Export-Package: org.eclipse.m2e.wtp.jsf.internal,org.eclipse.m2e.wtp.j
+ sf.internal.configurators,org.eclipse.m2e.wtp.jsf.internal.utils
