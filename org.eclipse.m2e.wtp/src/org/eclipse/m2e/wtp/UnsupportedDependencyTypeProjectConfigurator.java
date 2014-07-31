@@ -55,13 +55,24 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
 
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-    //Nothing to configure
+	  IMavenProjectFacade facade =  request.getMavenProjectFacade();
+	  checkUnsupportedWorkspaceDependency(monitor, facade);
   }
 
   @Override
   public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
     IMavenProjectFacade facade = event.getMavenProject();
-    if(facade == null) {
+    checkUnsupportedWorkspaceDependency(monitor, facade);
+  }
+
+/**
+ * @param monitor
+ * @param facade
+ * @throws CoreException
+ */
+private void checkUnsupportedWorkspaceDependency(IProgressMonitor monitor,
+		IMavenProjectFacade facade) throws CoreException {
+	if(facade == null) {
       return;
     }
     
@@ -92,7 +103,7 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
         }
       }
     }
-  }
+}
 
   private void clearWarnings(IResource resource) throws CoreException {
     markerManager.deleteMarkers(resource, WTP_MARKER_UNSUPPORTED_DEPENDENCY_PROBLEM);

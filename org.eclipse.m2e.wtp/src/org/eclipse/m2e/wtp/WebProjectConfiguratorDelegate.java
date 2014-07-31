@@ -209,6 +209,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       
     }
     
+    setModuleDependencies(project, mavenProject, monitor);
     WTPProjectsUtil.removeWTPClasspathContainer(project);
   }
 
