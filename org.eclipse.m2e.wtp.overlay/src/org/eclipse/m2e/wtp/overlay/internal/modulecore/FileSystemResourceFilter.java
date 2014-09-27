@@ -295,20 +295,20 @@ public class FileSystemResourceFilter implements IResourceFilter {
 		public void writeExternal(ObjectOutput out) throws IOException {
 			out.writeUTF(scanId);
 			out.writeUTF(baseDirAsString);
-			out.writeUTF(toString(includedFiles));
-			out.writeUTF(toString(excludedFiles));
-			out.writeUTF(toString(includedFolders));
-			out.writeUTF(toString(excludedFolders));
+			out.writeObject(toString(includedFiles));
+			out.writeObject(toString(excludedFiles));
+			out.writeObject(toString(includedFolders));
+			out.writeObject(toString(excludedFolders));
 		}
 
 		public void readExternal(ObjectInput in) throws IOException,
 				ClassNotFoundException {
 			this.scanId = in.readUTF();
 			this.baseDirAsString = in.readUTF();
-			this.includedFiles = toSet(in.readUTF());
-			this.excludedFiles = toSet(in.readUTF());
-			this.includedFolders = toSet(in.readUTF());
-			this.excludedFolders = toSet(in.readUTF());
+			this.includedFiles = toSet((String)in.readObject());
+			this.excludedFiles = toSet((String)in.readObject());
+			this.includedFolders = toSet((String)in.readObject());
+			this.excludedFolders = toSet((String)in.readObject());
 		}
 
 		private Set<String> toSet(String arrayAsString) {
