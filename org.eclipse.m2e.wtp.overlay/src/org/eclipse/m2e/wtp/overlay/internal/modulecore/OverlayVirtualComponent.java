@@ -117,18 +117,22 @@ public class OverlayVirtualComponent extends VirtualComponent implements
 		return options;
 	}
 
+	@Override
 	public void setInclusions(Set<String> inclusionPatterns) {
 		this.inclusionPatterns = inclusionPatterns;
 	}
 
+	@Override
 	public void setExclusions(Set<String> exclusionPatterns) {
 		this.exclusionPatterns = exclusionPatterns;
 	}
 
+	@Override
 	public Set<String> getExclusions() {
 		return exclusionPatterns;
 	}
 
+	@Override
 	public Set<String> getInclusions() {
 		return inclusionPatterns;
 	}

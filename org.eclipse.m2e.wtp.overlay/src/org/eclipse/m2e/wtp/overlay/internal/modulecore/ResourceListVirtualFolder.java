@@ -74,6 +74,7 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 		addChildren(looseResources);
 	}
 
+	@Override
 	public void setFilter(IResourceFilter filter) {
 		this.filter = filter;
 	}
@@ -123,18 +124,18 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 	
 	@Override
 	public IContainer[] getUnderlyingFolders() {
-		return (IContainer[]) underlying.toArray(new IContainer[underlying.size()]);
+		return underlying.toArray(new IContainer[underlying.size()]);
 	}
 
 	@Override
 	public IVirtualResource[] members(int memberFlags) throws CoreException {
 		HashMap<String, IVirtualResource> virtualResources = new HashMap<String, IVirtualResource>(); // result
-		IResource[] resources = (IResource[]) this.children.toArray(new IResource[this.children.size()]);
+		IResource[] resources = this.children.toArray(new IResource[this.children.size()]);
 		for( int i = 0; i < resources.length; i++ ) {
 			handleResource(resources[i], virtualResources, memberFlags);
 		}
 		Collection<IVirtualResource> c = virtualResources.values();
-		return (IVirtualResource[]) c.toArray(new IVirtualResource[c.size()]);
+		return c.toArray(new IVirtualResource[c.size()]);
 	}
 
 	protected void handleResource(final IResource resource, HashMap<String, IVirtualResource> map, int memberFlags) throws CoreException {

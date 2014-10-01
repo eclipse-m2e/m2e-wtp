@@ -55,10 +55,12 @@ public class OverlayVirtualArchiveComponent extends VirtualArchiveComponent impl
 		this.unpackDirPath = unpackDirPath;
 	}
 
+	@Override
 	public void setInclusions(Set<String> inclusionPatterns) {
 		this.inclusions = inclusionPatterns;
 	}
 
+	@Override
 	public void setExclusions(Set<String> exclusionPatterns) {
 		this.exclusions = exclusionPatterns;
 	}
@@ -121,10 +123,12 @@ public class OverlayVirtualArchiveComponent extends VirtualArchiveComponent impl
 		return unpackDirPath;
 	}
 
+	@Override
 	public Set<String> getExclusions() {
 		return exclusions;
 	}
 
+	@Override
 	public Set<String> getInclusions() {
 		return inclusions;
 	}

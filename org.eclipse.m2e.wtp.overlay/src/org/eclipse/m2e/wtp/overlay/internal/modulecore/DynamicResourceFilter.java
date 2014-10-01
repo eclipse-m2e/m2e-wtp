@@ -289,6 +289,7 @@ public class DynamicResourceFilter implements IResourceFilter {
     	return SelectorUtils.matchPath(pattern, str, isCaseSensitive);
     }
 
+	@Override
 	public boolean accepts(String path, boolean isFile) {
 		if (path == null) return false;
 		path = PathUtil.useSystemSeparator(path);
