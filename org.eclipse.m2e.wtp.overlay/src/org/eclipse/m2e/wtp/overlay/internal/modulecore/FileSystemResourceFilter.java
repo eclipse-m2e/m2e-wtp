@@ -63,6 +63,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 		scanner.scan();
 	}
 
+	@Override
 	public boolean accepts(String resourcePath, boolean isFile) {
 		return scanner.accepts(resourcePath, isFile);
 	}
@@ -292,6 +293,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 			}
 		}
 
+		@Override
 		public void writeExternal(ObjectOutput out) throws IOException {
 			out.writeUTF(scanId);
 			out.writeUTF(baseDirAsString);
@@ -301,6 +303,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 			out.writeObject(toString(excludedFolders));
 		}
 
+		@Override
 		public void readExternal(ObjectInput in) throws IOException,
 				ClassNotFoundException {
 			this.scanId = in.readUTF();
