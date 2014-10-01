@@ -155,6 +155,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     
     //MECLIPSEWTP-221 : add (in|ex)clusion patterns as .component metadata
     addComponentExclusionPatterns(earComponent, config);
+    
+    setModuleDependencies(project, mavenProject, monitor);
   }
 
   private IDataModel getEarModel(String contentDir) {
