@@ -8,11 +8,13 @@
 
 package org.eclipse.m2e.wtp;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.m2e.wtp.internal.AntPathMatcher;
 
 
 /**
- * Packaging configuration based on ANT patterns.
+ * Packaging configuration based on ANT and %regex[] patterns.
  * 
  * @provisional This class has been added as part of a work in progress. 
  * It is not guaranteed to work or remain the same in future releases. 
@@ -29,6 +31,9 @@ public class PackagingConfiguration implements IPackagingConfiguration {
 
   private AntPathMatcher matcher;
 
+  private final static String REGEX_BEGIN = "%regex["; //$NON-NLS-1$
+  private final static String REGEX_END = "]"; //$NON-NLS-1$
+
   public PackagingConfiguration(String[] packagingIncludes, String[] packagingExcludes) {
     this.packagingIncludes = toPortablePathArray(packagingIncludes);
     this.packagingExcludes = toPortablePathArray(packagingExcludes);
@@ -43,7 +48,7 @@ public boolean isPackaged(String virtualPath) {
     virtualPath = toPortablePath(virtualPath);
     if (packagingIncludes != null) {
       for(String excl : packagingExcludes) {
-        if(matcher.match(excl, virtualPath)) {
+        if(matches(excl, virtualPath)) {
           //stop here already, since exclusions have precedence over inclusions
           return false;
         }
@@ -55,7 +60,7 @@ public boolean isPackaged(String virtualPath) {
       return true;
     }
     for(String incl : packagingIncludes) {
-      if(matcher.match(incl, virtualPath)) {
+      if(matches(incl, virtualPath)) {
         return true;
       }
     }
@@ -79,4 +84,19 @@ public boolean isPackaged(String virtualPath) {
     return (path==null)?null:path.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
   }
   
+  private boolean isRegex(String regEx){
+	  return regEx.startsWith(REGEX_BEGIN) && regEx.endsWith(REGEX_END);
+  }
+
+  private boolean matches(String pattern, String input){
+	  if (isRegex(pattern)){
+		  //%regex[] pattern
+		  return Pattern.matches(convertToJavaRegEx(pattern), input);
+      }
+	  return matcher.match(pattern, input);
+  }
+
+  private String convertToJavaRegEx(String regEx){
+	  return regEx.substring(REGEX_BEGIN.length(), regEx.length()-REGEX_END.length());
+  }
 }
