@@ -113,7 +113,7 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 	}
 
 	private boolean isPublishOverlaysEnabled() {
-	  boolean isEnabled = new InstanceScope().getNode(OverlayConstants.PLUGIN_ID)
+	  boolean isEnabled = InstanceScope.INSTANCE.getNode(OverlayConstants.PLUGIN_ID)
 	                      .getBoolean(OverlayConstants.P_REPUBLISH_ON_PROJECT_CHANGE, true);
 	  return isEnabled;
 	}

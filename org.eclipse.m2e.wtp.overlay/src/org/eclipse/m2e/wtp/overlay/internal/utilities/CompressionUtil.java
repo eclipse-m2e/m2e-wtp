@@ -61,7 +61,7 @@ public class CompressionUtil {
 		initialize(projectFolderFile);
 		
 		ZipFile zipFile = new ZipFile(archive);
-		Enumeration<ZipEntry> e = (Enumeration<ZipEntry>) zipFile.entries();
+		Enumeration<? extends ZipEntry> e = zipFile.entries();
 
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
@@ -70,7 +70,7 @@ public class CompressionUtil {
 		monitor.beginTask(Messages.CompressionUtil_Extracting_Task, zipFile.size());
 		try {
 			while (e.hasMoreElements()) {
-				ZipEntry zipEntry = (ZipEntry) e.nextElement();
+				ZipEntry zipEntry = e.nextElement();
 				File file = new File(projectFolderFile, zipEntry.getName());
 				
 				if (!zipEntry.isDirectory()) {

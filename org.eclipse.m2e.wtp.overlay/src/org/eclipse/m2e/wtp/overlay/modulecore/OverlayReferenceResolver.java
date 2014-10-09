@@ -57,12 +57,14 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 
   private static final String EXCLUDES = "excludes"; //$NON-NLS-1$
 
-  public boolean canResolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
+  @Override
+public boolean canResolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
     URI uri = referencedComponent.getHandle();
     return uri != null && (uri.segmentCount() > 2) && (uri.segment(0).equals("overlay")); //$NON-NLS-1$
   }
 
-  public IVirtualReference resolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
+  @Override
+public IVirtualReference resolve(IVirtualComponent component, ReferencedComponent referencedComponent) {
 	String type = referencedComponent.getHandle().segment(1); 
     IOverlayVirtualComponent comp = null;
 	String url = referencedComponent.getHandle().toString();
@@ -137,11 +139,13 @@ public class OverlayReferenceResolver implements IReferenceResolver {
 	return new OverlayVirtualComponent(p);
   }
 
-  public boolean canResolve(IVirtualReference reference) {
+  @Override
+public boolean canResolve(IVirtualReference reference) {
     return  reference != null && reference.getReferencedComponent() instanceof IOverlayVirtualComponent;
   }
 
-  public ReferencedComponent resolve(IVirtualReference reference) {
+  @Override
+public ReferencedComponent resolve(IVirtualReference reference) {
     if(canResolve(reference)) {
       IOverlayVirtualComponent comp = (IOverlayVirtualComponent)reference.getReferencedComponent();
       ReferencedComponent rc = ComponentcorePackage.eINSTANCE.getComponentcoreFactory().createReferencedComponent();

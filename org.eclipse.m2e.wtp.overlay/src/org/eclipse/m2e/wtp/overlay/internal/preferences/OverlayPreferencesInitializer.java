@@ -10,7 +10,6 @@ package org.eclipse.m2e.wtp.overlay.internal.preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.m2e.wtp.overlay.OverlayConstants;
 import org.eclipse.m2e.wtp.overlay.internal.OverlayPluginActivator;
 
@@ -21,7 +20,7 @@ public class OverlayPreferencesInitializer extends AbstractPreferenceInitializer
    */
   @Override
 public void initializeDefaultPreferences() {
-    IEclipsePreferences store = ((IScopeContext) new DefaultScope()).getNode(OverlayPluginActivator.PLUGIN_ID);
+    IEclipsePreferences store = DefaultScope.INSTANCE.getNode(OverlayPluginActivator.PLUGIN_ID);
     store.putBoolean(OverlayConstants.P_REPUBLISH_ON_PROJECT_CHANGE, true);
   }
 }
