@@ -56,11 +56,15 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
       throws CoreException {
+	  mavenProjectChanged(request.getMavenProjectFacade(), monitor);
   }
 
   @Override
   public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
-    IMavenProjectFacade facade = event.getMavenProject();
+	  mavenProjectChanged(event.getMavenProject(), monitor);
+  }
+  
+  private void mavenProjectChanged(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
     if(facade == null) { return; }
     IProject project = facade.getProject();
     if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || project.getResourceAttributes().isReadOnly()){
@@ -79,7 +83,6 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
     } catch(Exception ex) {
       markerManager.addErrorMarkers(facade.getPom(), MavenWtpConstants.WTP_MARKER_OVERLAY_ERROR,ex);
     }
-    
   }
 
   /**

@@ -10,13 +10,13 @@ package org.eclipse.m2e.wtp;
 
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -50,7 +49,6 @@ import org.eclipse.m2e.jdt.IClasspathEntryDescriptor;
 import org.eclipse.m2e.wtp.internal.ExtensionReader;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.filtering.WebResourceFilteringConfiguration;
-import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
@@ -208,9 +206,9 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       addComponentExclusionPatterns(component, config);
       
     }
+    WTPProjectsUtil.removeWTPClasspathContainer(project);
     
     setModuleDependencies(project, mavenProject, monitor);
-    WTPProjectsUtil.removeWTPClasspathContainer(project);
   }
 
   private IDataModel getWebModelConfig(String warSourceDirectory, String contextRoot) {
@@ -223,9 +221,13 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
   }
 
   @Override
-public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
+  public void setModuleDependencies(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
-    IVirtualComponent component = ComponentCore.createComponent(project);
+    if (!ModuleCoreNature.isFlexibleProject(project)) {
+      return;
+    }
+    
+    IVirtualComponent component = ComponentCore.createComponent(project,true);
     //if the attempt to create dependencies happens before the project is actually created, abort. 
     //this will be created again when the project exists.
     if(component == null){
@@ -234,20 +236,17 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
-    DebugUtilities.debug("==============Processing "+project.getName()+" dependencies ==============="); //$NON-NLS-1$ //$NON-NLS-2$
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
-    IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
-    FileNameMapping fileNameMapping = config.getFileNameMapping();
+   
+    Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(mavenProject.getArtifacts(), config);
     
     List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager, 
         MavenPlugin.getMavenRuntimeManager(), mavenMarkerManager);
     
     Set<IVirtualReference> references = new LinkedHashSet<IVirtualReference>();
+
     List<IMavenProjectFacade> exportedDependencies = getWorkspaceDependencies(project, mavenProject);
     
-    Set<String> dups = new HashSet<String>();
-    Set<String> names = new HashSet<String>();
-    Map<IVirtualReference, Artifact> referenceMapping = new HashMap<IVirtualReference, Artifact>(exportedDependencies.size()); 
     for(IMavenProjectFacade dependency : exportedDependencies) {
       String depPackaging = dependency.getPackaging();
       if ("pom".equals(depPackaging) //MNGECLIPSE-744 pom dependencies shouldn't be deployed //$NON-NLS-1$
@@ -256,58 +255,35 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
         continue;
       }
       
-      try {
-        preConfigureDependencyProject(dependency, monitor);
-        
-        if (!ModuleCoreNature.isFlexibleProject(dependency.getProject())) {
-          //Projects unsupported by WTP (ex. adobe flex projects) should not be added as references
-          continue;
-        }
-        MavenProject depMavenProject =  dependency.getMavenProject(monitor);
-  
-        IVirtualComponent depComponent = ComponentCore.createComponent(dependency.getProject());
-  		      
-        ArtifactKey artifactKey = ArtifactHelper.toArtifactKey(depMavenProject.getArtifact());
-        //Get artifact using the proper classifier
-        Artifact artifact = ArtifactHelper.getArtifact(mavenProject.getArtifacts(), artifactKey);
-        if (artifact == null) {
-          //could not map key to artifact
-          artifact = depMavenProject.getArtifact();
-        }
-        ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
-        String deployedName = fileNameMapping.mapFileName(artifact);
-        
-        boolean isDeployed = !artifact.isOptional() && opts.isPackaged("WEB-INF/lib/"+deployedName); //$NON-NLS-1$
-          
-    		//an artifact in mavenProject.getArtifacts() doesn't have the "optional" value as depMavenProject.getArtifact();  
-    		if (isDeployed) {
-    		  IVirtualReference reference = ComponentCore.createReference(component, depComponent);
-    		  IPath path = new Path("/WEB-INF/lib"); //$NON-NLS-1$
-    		  reference.setArchiveName(deployedName);
-    		  reference.setRuntimePath(path);
-    		  references.add(reference);
-    		  
-    		  referenceMapping.put(reference, artifact);
-          if (!names.add(deployedName)) {
-            dups.add(deployedName);
-          }
-    		}
-      } catch(RuntimeException ex) {
-        //Should probably be NPEs at this point
-        String dump = DebugUtilities.dumpProjectState("An error occured while configuring a dependency of  "+project.getName()+DebugUtilities.SEP, dependency.getProject()); //$NON-NLS-1$
-        LOG.error(dump); 
-        throw ex;
+      preConfigureDependencyProject(dependency, monitor);
+      
+      if (!ModuleCoreNature.isFlexibleProject(dependency.getProject())) {
+        //Projects unsupported by WTP (ex. adobe flex projects) should not be added as references
+        continue;
       }
+      MavenProject depMavenProject =  dependency.getMavenProject(monitor);
+
+      IVirtualComponent depComponent = ComponentCore.createComponent(dependency.getProject());
+		      
+      ArtifactKey artifactKey = ArtifactHelper.toArtifactKey(depMavenProject.getArtifact());
+      //Get artifact using the proper classifier
+      Artifact artifact = ArtifactHelper.getArtifact(mavenProject.getArtifacts(), artifactKey);
+      if (artifact == null) {
+        //could not map key to artifact
+        artifact = depMavenProject.getArtifact();
+      }
+      String deployedName = deployedArtifacts.get(artifact);
+      
+  		//an artifact in mavenProject.getArtifacts() doesn't have the "optional" value as depMavenProject.getArtifact();  
+  		if (deployedName != null) {
+  		  IVirtualReference reference = ComponentCore.createReference(component, depComponent);
+  		  IPath path = new Path("/WEB-INF/lib"); //$NON-NLS-1$
+  		  reference.setArchiveName(deployedName);
+  		  reference.setRuntimePath(path);
+  		  references.add(reference);
+  		}
     }
 
-    for (IVirtualReference reference : references) {
-      if (dups.contains(reference.getArchiveName())) {
-        Artifact a = referenceMapping.get(reference); 
-        String newName = a.getGroupId() + "-" + reference.getArchiveName(); //$NON-NLS-1$
-        reference.setArchiveName(newName);
-      }
-    }
-    
     IVirtualReference[] oldRefs = WTPProjectsUtil.extractHardReferences(component, false);
     
     IVirtualReference[] newRefs = references.toArray(new IVirtualReference[references.size()]);
@@ -333,9 +309,8 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
         }
       }
     }
-    
   }
-
+  
   /**
    * Get the context root from a maven web project
    * @param mavenProject
@@ -362,143 +337,79 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
   }
 
   @Override
-public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
+  public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
     
-    //Improve skinny war support by generating the manifest classpath
-    //similar to mvn eclipse:eclipse 
-    //http://maven.apache.org/plugins/maven-war-plugin/examples/skinny-wars.html
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
-    IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
-    /*
-     * Need to take care of three separate cases
-     * 
-     * 1. remove any project dependencies (they are represented as J2EE module dependencies)
-     * 2. add non-dependency attribute for entries originated by artifacts with
-     *    runtime, system, test scopes or optional dependencies (not sure about the last one)
-     * 3. make sure all dependency JAR files have unique file names, i.e. artifactId/version collisions
-     */
-
-    Set<String> dups = new LinkedHashSet<String>();
-    Set<String> names = new HashSet<String>();
+    Set<Artifact> artifacts = mavenProject.getArtifacts();
+    Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(artifacts, config);
     
-    IVirtualComponent component = ComponentCore.createComponent(project);
-    if (component != null) {
-      for (IVirtualReference vr : component.getReferences()) {
-        if (!vr.getReferencedComponent().isBinary()) {
-          names.add(vr.getArchiveName());
-        }
-      }
-    }
-    
-    FileNameMapping fileNameMapping = config.getFileNameMapping();
-    String targetDir = mavenProject.getBuild().getDirectory();
-
-    // first pass removes projects, adds non-dependency attribute and collects colliding filenames
     Iterator<IClasspathEntryDescriptor> iter = classpath.getEntryDescriptors().iterator();
     while (iter.hasNext()) {
       IClasspathEntryDescriptor descriptor = iter.next();
-      String scope = descriptor.getScope();
-      Artifact artifact = ArtifactHelper.getArtifact(mavenProject.getArtifacts(), descriptor.getArtifactKey());
-
-      ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
-
-      String deployedName = fileNameMapping.mapFileName(artifact);
-    
-      boolean isDeployed = (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope)) 
-    		  				&& !descriptor.isOptionalDependency()
-    		  				&& opts.isPackaged("WEB-INF/lib/"+deployedName) //$NON-NLS-1$
-    		  				&& !isWorkspaceProject(artifact);
+      Artifact artifact = ArtifactHelper.getArtifact(artifacts, descriptor.getArtifactKey());
+      if (artifact == null) {
+        return;
+      }
       
-      // add non-dependency attribute if this classpathentry is not meant to be deployed
-      // or if it's a workspace project (projects already have a reference created in configure())
-      if(!isDeployed) {
+      String deployedName = deployedArtifacts.get(artifact);
+    
+      if(deployedName == null || isWorkspaceProject(artifact)) {
         descriptor.setClasspathAttribute(NONDEPENDENCY_ATTRIBUTE.getName(), NONDEPENDENCY_ATTRIBUTE.getValue());
-        //Bug #382078 : no need to rename non-deployed artifacts.
         continue;
       }
-    
-      String fileName = descriptor.getPath().lastSegment(); 
-      if (!deployedName.equals(fileName)) {
-        if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-          //If custom fileName is used, check if the underlying file already exists
-          // if it doesn't, copy and rename the artifact under the build dir
-          IPath newPath = descriptor.getPath().removeLastSegments(1).append(deployedName);
-          if (!new File(newPath.toOSString()).exists()) {
-            newPath = renameArtifact(targetDir, descriptor.getPath(), deployedName );
-          } 
-          if (newPath != null) {
-            descriptor.setPath(newPath);
-          }
-        } else {
-          descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, deployedName);
-        }
-      }
-      
-      if (!names.add(deployedName)) {
-        dups.add(deployedName);
-      }
+      descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, deployedName);
     }
-
-    // second pass disambiguates colliding entry file names
-    iter = classpath.getEntryDescriptors().iterator();
-    while (iter.hasNext()) {
-      IClasspathEntryDescriptor descriptor = iter.next();
-      if (descriptor.getClasspathAttributes().containsKey(NONDEPENDENCY_ATTRIBUTE.getName())) {
-        //No need to rename if not deployed
-        continue;
-      }
-      if (dups.contains(descriptor.getPath().lastSegment())) {
-        String newName = descriptor.getGroupId() + "-" + descriptor.getPath().lastSegment(); //$NON-NLS-1$
-        if (CLASSPATH_ARCHIVENAME_ATTRIBUTE == null) {
-          IPath newPath = renameArtifact(targetDir, descriptor.getPath(), newName );
-          if (newPath != null) {
-            descriptor.setPath(newPath);
-          }
-        } else {
-          descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, newName);
-        }
-      }
-    }
-  }
-
-
-  @Deprecated
-  private IPath renameArtifact(String targetDir, IPath source, String newName) {
-    File src = new File(source.toOSString());
-    File dst = new File(targetDir, newName);
-    try {
-      if (src.isFile() && src.canRead()) {
-        if (isDifferent(src, dst)) { // uses lastModified
-          FileUtils.copyFile(src, dst);
-          dst.setLastModified(src.lastModified());
-        }
-        return Path.fromOSString(dst.getCanonicalPath());
-      }
-    } catch(IOException ex) {
-      LOG.error(Messages.WebProjectConfiguratorDelegate_File_Copy_Failed, ex);
-    }
-    return null;
   }
 
   private boolean isWorkspaceProject(Artifact artifact) {
-	IMavenProjectFacade facade = projectManager.getMavenProject(artifact.getGroupId(), 
+	  IMavenProjectFacade facade = projectManager.getMavenProject(artifact.getGroupId(), 
 																	artifact.getArtifactId(),
 																	artifact.getVersion());
 		      
-	return facade != null 
-			&& facade.getFullPath(artifact.getFile()) != null;
-	
-  }
-
-  @Deprecated
-  private static boolean isDifferent(File src, File dst) {
-    if (!dst.exists()) {
-      return true;
-    }
-
-    return src.length() != dst.length() 
-        || src.lastModified() != dst.lastModified();
+	  return facade != null && facade.getFullPath(artifact.getFile()) != null;
   }
  
+  private Map<Artifact, String> getDeployedArtifacts(Collection<Artifact> artifacts, WarPluginConfiguration config ) {
+    if (artifacts == null || artifacts.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    int size = artifacts.size();
+    Map<Artifact, String> artifactsMap = new LinkedHashMap<Artifact, String>(size);
+    
+    IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
+    FileNameMapping fileNameMapping = config.getFileNameMapping();
+    
+    Set<String> names = new HashSet<String>(size);
+
+    Set<String> duplicates = new HashSet<String>(size);
+    
+    for (Artifact artifact : artifacts) {
+      ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
+      String deployedName = fileNameMapping.mapFileName(artifact);
+      String scope = artifact.getScope();
+    	boolean isDeployed =  (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope)) 
+    	                      && !artifact.isOptional()
+    	                      && opts.isPackaged("WEB-INF/lib/"+deployedName); //$NON-NLS-1$
+    	if (isDeployed) {
+    	  if (!names.add(deployedName)) {
+    		  duplicates.add(deployedName);
+     	  }
+    	  artifactsMap.put(artifact, deployedName);
+    	}
+	  }
+    
+    //disambiguate duplicates
+    for (String name : duplicates) {
+    	for (Map.Entry<Artifact, String> entry : artifactsMap.entrySet()) {
+    		if (name.equals(entry.getValue())) {
+    		    String newDeployedName = entry.getKey().getGroupId() + "-" + name; //$NON-NLS-1$
+    			entry.setValue(newDeployedName);
+    		}
+    	}
+    }
+    
+    return artifactsMap;
+  }
+  
 }

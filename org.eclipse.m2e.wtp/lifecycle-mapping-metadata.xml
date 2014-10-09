@@ -66,7 +66,22 @@
               <id>org.maven.ide.eclipse.configuration.wtp.overlay.configurator</id>
             </configurator>
           </action>
-        </pluginExecution>        
+        </pluginExecution>
+		<pluginExecution>
+          <pluginExecutionFilter>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <versionRange>[2.0.1,)</versionRange>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </pluginExecutionFilter>
+          <action>
+            <configurator>
+              <id>org.maven.ide.eclipse.configuration.wtp.nonjava.unsupportedDependencyTypeConfigurator</id>
+            </configurator>
+          </action>
+        </pluginExecution>       
         <pluginExecution>
           <pluginExecutionFilter>
             <groupId>org.apache.maven.plugins</groupId>
@@ -119,9 +134,26 @@
               <id>org.maven.ide.eclipse.configuration.wtp.ejbmanifest.configurator</id>
             </configurator>
           </action>
-        </pluginExecution>        
+        </pluginExecution>
+      <pluginExecution>
+          <pluginExecutionFilter>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-ejb-plugin</artifactId>
+            <versionRange>[1.0,)</versionRange>
+            <goals>
+              <goal>ejb</goal>
+            </goals>
+          </pluginExecutionFilter>
+          <action>
+            <configurator>
+              <id>org.maven.ide.eclipse.configuration.wtp.nonjava.unsupportedDependencyTypeConfigurator</id>
+            </configurator>
+          </action>
+        </pluginExecution>          
       </pluginExecutions>
     </lifecycleMapping>
+    
+    
     <lifecycleMapping>
       <packagingType>ear</packagingType>
       <lifecycleMappingId>org.maven.ide.eclipse.wtp.EarLifecycleMapping</lifecycleMappingId>
@@ -208,6 +240,21 @@
               <id>org.maven.ide.eclipse.configuration.wtp.rarmanifest.configurator</id>
             </configurator>
           </action>
+        </pluginExecution>
+        <pluginExecution>
+          <pluginExecutionFilter>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-rar-plugin</artifactId>
+            <versionRange>[1.0,)</versionRange>
+            <goals>
+              <goal>rar</goal>
+            </goals>
+          </pluginExecutionFilter>
+          <action>
+            <configurator>
+              <id>org.maven.ide.eclipse.configuration.wtp.java.unsupportedDependencyTypeConfigurator</id>
+            </configurator>
+          </action>
         </pluginExecution>        
       </pluginExecutions>
     </lifecycleMapping>
@@ -244,7 +291,22 @@
               <id>org.maven.ide.eclipse.configuration.wtp.acrmanifest.configurator</id>
             </configurator>
           </action>
-        </pluginExecution>        
+        </pluginExecution>
+        <pluginExecution>
+          <pluginExecutionFilter>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-acr-plugin</artifactId>
+            <versionRange>[1.0,)</versionRange>
+            <goals>
+              <goal>acr</goal>
+            </goals>
+          </pluginExecutionFilter>
+          <action>
+            <configurator>
+              <id>org.maven.ide.eclipse.configuration.wtp.java.unsupportedDependencyTypeConfigurator</id>
+            </configurator>
+          </action>
+        </pluginExecution>      
       </pluginExecutions>
     </lifecycleMapping>
     

@@ -145,6 +145,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     //Remove "library unavailable at runtime" warning. TODO is it relevant for connector projects?
     WTPProjectsUtil.removeWTPClasspathContainer(project);
     
+    setModuleDependencies(project, mavenProject, monitor);
+    
   }
 
   private void addSourceLinks(IVirtualComponent component, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException {
