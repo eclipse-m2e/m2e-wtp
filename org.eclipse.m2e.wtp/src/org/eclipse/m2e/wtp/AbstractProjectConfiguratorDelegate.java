@@ -44,6 +44,7 @@ import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.jdt.IClasspathDescriptor;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
+import org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.StructureEdit;
@@ -124,7 +125,7 @@ public void configureProject(IProject project, MavenProject mavenProject, IProgr
     MavenProject mavenProject = facade.getMavenProject();
     if(  !WTPProjectsUtil.isJavaProject(facade)
        || WTPProjectsUtil.isJavaEEProject(project) 
-       || WTPProjectsUtil.isQualifiedAsWebFragment(facade)) {
+       || WebFragmentUtil.isQualifiedAsWebFragment(facade)) {
       return;
     }
     

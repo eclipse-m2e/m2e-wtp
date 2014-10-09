@@ -8,18 +8,23 @@
 
 package org.eclipse.m2e.wtp;
 
-import static org.eclipse.m2e.wtp.WTPProjectsUtil.hasWebFragmentFacet;
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.installJavaFacet;
-import static org.eclipse.m2e.wtp.WTPProjectsUtil.isQualifiedAsWebFragment;
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
+import static org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil.getWebFragment;
+import static org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil.isQualifiedAsWebFragment;
 
+import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.codehaus.plexus.util.IOUtil;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jst.j2ee.web.project.facet.IWebFragmentFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.web.project.facet.WebFragmentFacetInstallDataModelProvider;
 import org.eclipse.m2e.core.internal.MavenPluginActivator;
@@ -30,10 +35,13 @@ import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.m2e.wtp.internal.webfragment.WebFragmentQuickPeek;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action.Type;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +86,17 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
   }
 
   private void configureWebfragment(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+	  
+	IFile webFragment = getWebFragment(facade);
+	if (webFragment == null) {
+		return;
+	}
+	
+	IProjectFacetVersion facetVersion = getVersion(webFragment);
+	if (facetVersion == null) {
+		return;
+	}
+	
     IProject project = facade.getProject();
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     
@@ -85,28 +104,31 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     
     ResourceCleaner fileCleaner = new ResourceCleaner(project);
     addFoldersToClean(fileCleaner, facade);
-    
-    removeConflictingFacets(facetedProject, WTPProjectsUtil.WEB_FRAGMENT_3_0, actions);
      
     try {
-      //Install or update the java facet
-      installJavaFacet(actions, project, facetedProject);
-      
-      //Only install the web facet fragment if necessary
-      if(!hasWebFragmentFacet(project)) {
-        IDataModel cfg = DataModelFactory.createDataModel(new WebFragmentFacetInstallDataModelProvider());
-        //Don't create a associated war project
-        cfg.setProperty(IWebFragmentFacetInstallDataModelProperties.ADD_TO_WAR, false);
- 
-        actions.add(new IFacetedProject.Action(
-                            IFacetedProject.Action.Type.INSTALL, 
-                            WTPProjectsUtil.WEB_FRAGMENT_3_0, cfg));
+      IProjectFacetVersion currentFacetVersion = facetedProject.getProjectFacetVersion(WTPProjectsUtil.WEB_FRAGMENT_FACET);
+      Type actionType = null;
+      if(currentFacetVersion == null) {
+    	  removeConflictingFacets(facetedProject, facetVersion, actions);
+          installJavaFacet(actions, project, facetedProject);
+
+    	  //Only install the web facet fragment if necessary
+    	  actionType = IFacetedProject.Action.Type.INSTALL;
+      } else if (facetVersion.compareTo(currentFacetVersion) > 0) {
+    	  actionType = IFacetedProject.Action.Type.VERSION_CHANGE;  
       }
 
-      facetedProject.modify(actions, monitor);
+ 	  if (actionType != null) {
+          IDataModel cfg = DataModelFactory.createDataModel(new WebFragmentFacetInstallDataModelProvider());
+          //Don't create an associated war project
+          cfg.setProperty(IWebFragmentFacetInstallDataModelProperties.ADD_TO_WAR, false);
+    	  actions.add(new IFacetedProject.Action(actionType,facetVersion, cfg)); 
+      }
       
-      //remove test folder links
-      WTPProjectsUtil.removeTestFolderLinks(project, facade.getMavenProject(), monitor, "/"); //$NON-NLS-1$
+      if (!actions.isEmpty()) {
+    	  facetedProject.modify(actions, monitor);
+      }
+      
     } finally {
       try {
         //Remove any WTP created files (extras fragment descriptor and manifest) 
@@ -115,7 +137,28 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
         LOG.error(Messages.Error_Cleaning_WTP_Files, cex);
       }
     }
+    //remove test folder links
+    WTPProjectsUtil.removeTestFolderLinks(project, facade.getMavenProject(), monitor, "/"); //$NON-NLS-1$
     
+  }
+
+  private IProjectFacetVersion getVersion(IFile webFragment) {
+	InputStream in = null;
+	try {
+		webFragment.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
+		in = webFragment.getContents();
+		WebFragmentQuickPeek peek = new WebFragmentQuickPeek(in);
+		String version = peek.getVersion();
+		if (version != null) {
+			return WTPProjectsUtil.WEB_FRAGMENT_FACET.getVersion(version);
+		}
+	} catch (CoreException e) {
+		// ignore
+		LOG.error("Error_Reading_WebFragment", e); //$NON-NLS-1$
+	} finally {
+		IOUtil.close(in);
+	}
+	return null;
   }
 
   protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {

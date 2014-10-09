@@ -47,6 +47,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.jdt.internal.MavenClasspathHelpers;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -470,22 +471,7 @@ public class WTPProjectsUtil {
    * @return
    */
   public static boolean isQualifiedAsWebFragment(IMavenProjectFacade facade) {
-    if ("jar".equals(facade.getPackaging())) { //$NON-NLS-1$
-      IFolder classes = getClassesFolder(facade);
-      if (classes != null && classes.getFile("META-INF/web-fragment.xml").exists()) { //$NON-NLS-1$
-        return true;
-      } 
-      
-      //No processed/filtered web-fragment.xml found 
-      //fall back : iterate over the resource folders
-      IProject project = facade.getProject();
-      for (IPath resourceFolderPath : facade.getResourceLocations()) {
-        if (resourceFolderPath != null && project.exists(resourceFolderPath.append("META-INF/web-fragment.xml"))) { //$NON-NLS-1$
-          return true;
-        }
-      }
-    }
-    return false;
+    return WebFragmentUtil.isQualifiedAsWebFragment(facade);
   }
   
   /**
