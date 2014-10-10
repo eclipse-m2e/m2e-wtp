@@ -152,9 +152,10 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
 		if (version != null) {
 			return WTPProjectsUtil.WEB_FRAGMENT_FACET.getVersion(version);
 		}
-	} catch (CoreException e) {
+	} catch (Exception e) {
 		// ignore
 		LOG.error("Error_Reading_WebFragment", e); //$NON-NLS-1$
+		return WTPProjectsUtil.WEB_FRAGMENT_FACET.getDefaultVersion();
 	} finally {
 		IOUtil.close(in);
 	}
