@@ -140,6 +140,7 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     //remove test folder links
     WTPProjectsUtil.removeTestFolderLinks(project, facade.getMavenProject(), monitor, "/"); //$NON-NLS-1$
     
+    WTPProjectsUtil.setNonDependencyAttributeToContainer(project, monitor);
   }
 
   private IProjectFacetVersion getVersion(IFile webFragment) {
