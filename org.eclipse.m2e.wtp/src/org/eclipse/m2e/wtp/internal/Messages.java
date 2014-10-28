@@ -40,6 +40,7 @@ public class Messages extends NLS {
 	public static String MavenWtpPreferencePage_Updating_Maven_Projects_Job;
 	public static String MavenWtpPreferencePage_Updating_Maven_Projects_Monitor;
 	public static String MavenWtpPreferencePage_Using_Build_Directory;
+	public static String MavenWtpPreferencePage_Using_EAR_Build_Directory;
 	public static String MavenWtpPreferencePage_WAR_Project_Preferences;
 	public static String MavenWtpPreferencesManagerImpl_0;
 	public static String ResourceFilteringBuildParticipant_Changed_Resources_Require_Clean_Build;

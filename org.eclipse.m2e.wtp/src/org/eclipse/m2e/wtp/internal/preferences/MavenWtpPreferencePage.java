@@ -157,6 +157,7 @@ protected Control createContents(Composite parent) {
 
     genApplicationXmlButton = new Button(earPrefGroup, SWT.CHECK);
     genApplicationXmlButton.setText(Messages.MavenWtpPreferencePage_Generate_ApplicationXml_Under_Build_Dir);
+    genApplicationXmlButton.setToolTipText(Messages.MavenWtpPreferencePage_Using_EAR_Build_Directory);
   }
 
   private void createOverridePrefs(Composite main, IProject project) {

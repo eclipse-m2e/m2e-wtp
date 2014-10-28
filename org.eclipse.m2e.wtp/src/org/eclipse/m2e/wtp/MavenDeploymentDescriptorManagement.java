@@ -254,11 +254,9 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
       if(dir.isFile()) {
         if(!dir.delete()) {
           throw new IOException(NLS.bind(Messages.MavenDeploymentDescriptorManagement_Error_Deleting_Temp_Folder, dir.getAbsolutePath()));
-        } else {
-          if(!deleteDirectory(dir)) {
-            throw new IOException(NLS.bind(Messages.MavenDeploymentDescriptorManagement_Error_Deleting_Temp_Folder, dir.getAbsolutePath())); 
-          }
         }
+      } else if(!deleteDirectory(dir)) {
+          throw new IOException(NLS.bind(Messages.MavenDeploymentDescriptorManagement_Error_Deleting_Temp_Folder, dir.getAbsolutePath())); 
       }
     }
     dir.mkdir();

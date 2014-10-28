@@ -124,7 +124,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
 
     //MECLIPSEWTP-56 : application.xml should not be generated in the source directory
     boolean useBuildDirectory = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project).isApplicationXmGeneratedInBuildDirectory();
-
+    useBuildDirectory = useBuildDirectory || config.isFilteringDeploymentDescriptorsEnabled();
+    
     List<IPath> sourcePaths = new ArrayList<IPath>();
     sourcePaths.add(contentDirPath);
     
