@@ -20,6 +20,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -124,12 +125,16 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
 
     //MECLIPSEWTP-56 : application.xml should not be generated in the source directory
     boolean useBuildDirectory = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project).isApplicationXmGeneratedInBuildDirectory();
-    useBuildDirectory = useBuildDirectory || config.isFilteringDeploymentDescriptorsEnabled();
+    boolean useResourcefiltering = config.isFilteringDeploymentDescriptorsEnabled();
     
     List<IPath> sourcePaths = new ArrayList<IPath>();
     sourcePaths.add(contentDirPath);
     
-    if (useBuildDirectory) {
+    if (!useBuildDirectory && useResourcefiltering) {
+        mavenMarkerManager.addMarker(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID, 
+                                    Messages.markers_mavenarchiver_output_settings_ignored_warning, -1, IMarker.SEVERITY_WARNING);
+    }
+    if (useBuildDirectory || useResourcefiltering) {
       IPath m2eclipseWtpFolderPath = new Path("/").append(ProjectUtils.getM2eclipseWtpFolder(mavenProject, project)); //$NON-NLS-1$
       ProjectUtils.hideM2eclipseWtpFolder(mavenProject, project);
       IPath generatedResourcesPath = m2eclipseWtpFolderPath.append(Path.SEPARATOR+MavenWtpConstants.EAR_RESOURCES_FOLDER);
