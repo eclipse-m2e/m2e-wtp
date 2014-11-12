@@ -55,7 +55,7 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
 
   private void setWarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String warPluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "2.4"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String warPluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "2.5"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     Plugin warPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-war-plugin", warPluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     // Set  <warSourceDirectory>WebContent</warSourceDirectory>
