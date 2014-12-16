@@ -26,7 +26,7 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>0.21.0</tycho-version>
+    <tycho-version>0.22.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
