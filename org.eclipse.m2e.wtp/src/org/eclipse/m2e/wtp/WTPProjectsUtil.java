@@ -9,7 +9,6 @@
 package org.eclipse.m2e.wtp;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -613,19 +612,7 @@ public class WTPProjectsUtil {
    *          the default folder is the root of the project.
    */
   public static IFolder getDefaultDeploymentDescriptorFolder(IVirtualFolder vFolder) {
-    IPath defaultPath = null;
-    try {
-      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
-                                                                                               IVirtualFolder.class);
-      defaultPath =(IPath) getDefaultDeploymentDescriptorFolder.invoke(null, vFolder);
-      
-    } catch (NoSuchMethodException nsme) {
-      //Not available in this WTP version, let's ignore it
-    } catch(Exception ex) {
-      //The exception shouldn't halt the configuration process.
-      ex.printStackTrace();
-    }
-    
+    IPath defaultPath = J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(vFolder);
     IFolder folder = null;
     IVirtualComponent component = vFolder.getComponent();
     if (defaultPath == null) {
