@@ -91,7 +91,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 			
 			FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
 			IProjectFacetVersion jsfVersion = facetDetectorManager.findFacetVersion(mavenProjectFacade, JSF_FACET.getId(), monitor);
-			if (fproj != null && jsfVersion != null) { 
+			if (jsfVersion != null) { 
 				installJSFFacet(fproj, mavenProject, jsfVersion, monitor);
 			}
 		}
