@@ -599,24 +599,11 @@ public class WTPProjectsUtil {
    * Sets the default deployment descriptor folder for Eclipse > Indigo
    */
   public static void setDefaultDeploymentDescriptorFolder(IVirtualFolder folder, IPath aProjectRelativeLocation, IProgressMonitor monitor) {
-    try {
-      Method getDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("getDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
-                                                                                               IVirtualFolder.class);
-      IPath currentDefaultLocation =(IPath) getDefaultDeploymentDescriptorFolder.invoke(null, folder);
+      IPath currentDefaultLocation = J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(folder);
       if (aProjectRelativeLocation.equals(currentDefaultLocation)) {
         return;
       }
-      Method setDefaultDeploymentDescriptorFolder = J2EEModuleVirtualComponent.class.getMethod("setDefaultDeploymentDescriptorFolder",  //$NON-NLS-1$
-                                                                                               IVirtualFolder.class, 
-                                                                                               IPath.class, 
-                                                                                               IProgressMonitor.class);
-      setDefaultDeploymentDescriptorFolder.invoke(null, folder, aProjectRelativeLocation, monitor);
-    } catch (NoSuchMethodException nsme) {
-      //Not available in this WTP version, let's ignore it
-    } catch(Exception ex) {
-      //The exception shouldn't halt the configuration process.
-      ex.printStackTrace();
-    } 
+      J2EEModuleVirtualComponent.setDefaultDeploymentDescriptorFolder(folder, aProjectRelativeLocation, monitor);
   }
 
   

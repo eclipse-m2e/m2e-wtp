@@ -10,8 +10,6 @@ package org.eclipse.m2e.wtp;
 
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,6 +33,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jst.j2ee.classpathdep.IClasspathDependencyConstants;
+import org.eclipse.jst.j2ee.componentcore.J2EEModuleVirtualComponent;
 import org.eclipse.jst.j2ee.internal.project.J2EEProjectUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEModuleFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.web.project.facet.IWebFacetInstallDataModelProperties;
@@ -53,6 +52,7 @@ import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
+import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.componentcore.resources.IVirtualResource;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
@@ -61,8 +61,6 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
@@ -75,26 +73,13 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("restriction")
 class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate {
 
-  private static final Logger LOG = LoggerFactory.getLogger(WebProjectConfiguratorDelegate.class);
+  //private static final Logger LOG = LoggerFactory.getLogger(WebProjectConfiguratorDelegate.class);
   /**
    * See http://wiki.eclipse.org/ClasspathEntriesPublishExportSupport
    */
   static final IClasspathAttribute DEPENDENCY_ATTRIBUTE = JavaCore.newClasspathAttribute(
       IClasspathDependencyConstants.CLASSPATH_COMPONENT_DEPENDENCY, "/WEB-INF/lib"); //$NON-NLS-1$
 
-  private static final String CLASSPATH_ARCHIVENAME_ATTRIBUTE;
-  
-  static {
-    String archiveNameAttribute = null;
-    try {
-      Field classpathArchiveNameField = IClasspathDependencyConstants.class.getField("CLASSPATH_ARCHIVENAME_ATTRIBUTE"); //$NON-NLS-1$
-      archiveNameAttribute = (String)classpathArchiveNameField.get(null);
-    } catch (Exception e) {
-      LOG.warn(Messages.WebProjectConfiguratorDelegate_Renamed_Dependencies_Will_Be_Copied); 
-    }
-    CLASSPATH_ARCHIVENAME_ATTRIBUTE = archiveNameAttribute;
-  }
-  
   /**
   * Name of maven property that overrides WTP context root.
   */
@@ -172,11 +157,15 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     
     component = ComponentCore.createComponent(project, true);
     if(component != null) {      
+      IVirtualFolder rootFolder = component.getRootFolder();
       IPath warPath = new Path("/").append(contentFolder.getProjectRelativePath()); //$NON-NLS-1$
-      List<IPath> sourcePaths = new ArrayList<IPath>();
-      sourcePaths.add(warPath);
-      if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, warPath, monitor)) {
+      boolean warPathExists = WTPProjectsUtil.hasLink(project, ROOT_PATH, warPath, monitor);
+      if (!warPathExists) {
         component.getRootFolder().createLink(warPath, IVirtualResource.NONE, monitor); 
+      }
+      IPath currentDefaultLocation = J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(rootFolder);
+      if (currentDefaultLocation == null) {
+    	  WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(rootFolder , warPath, monitor);
       }
       //MECLIPSEWTP-22 support web filtered resources. Filtered resources directory must be declared BEFORE
       //the regular web source directory. First resources discovered take precedence on deployment
@@ -193,18 +182,14 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
           mavenMarkerManager.addMarker(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID, 
                                       Messages.markers_mavenarchiver_output_settings_ignored_warning, -1, IMarker.SEVERITY_WARNING);
         }
-        sourcePaths.add(filteredFolder);
-        WTPProjectsUtil.insertLinkBefore(project, filteredFolder, warPath, new Path("/"), monitor); //$NON-NLS-1$
+        if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, filteredFolder, monitor)) {
+        	WTPProjectsUtil.insertLinkBefore(project, filteredFolder, warPath, ROOT_PATH, monitor);
+        }
       } else {
         component.getRootFolder().removeLink(filteredFolder,IVirtualResource.NONE, monitor);
       }
 
-      WTPProjectsUtil.deleteLinks(project, ROOT_PATH, sourcePaths, monitor);
-      
-      WTPProjectsUtil.setDefaultDeploymentDescriptorFolder(component.getRootFolder(), warPath, monitor);
-
       addComponentExclusionPatterns(component, config);
-      
     }
     WTPProjectsUtil.removeWTPClasspathContainer(project);
     
@@ -358,7 +343,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
         descriptor.setClasspathAttribute(NONDEPENDENCY_ATTRIBUTE.getName(), NONDEPENDENCY_ATTRIBUTE.getValue());
         continue;
       }
-      descriptor.getClasspathAttributes().put(CLASSPATH_ARCHIVENAME_ATTRIBUTE, deployedName);
+      descriptor.getClasspathAttributes().put(IClasspathDependencyConstants.CLASSPATH_ARCHIVENAME_ATTRIBUTE, deployedName);
     }
   }
 
