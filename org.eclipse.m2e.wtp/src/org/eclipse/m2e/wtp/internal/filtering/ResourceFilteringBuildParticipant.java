@@ -86,7 +86,7 @@ public class ResourceFilteringBuildParticipant extends AbstractBuildParticipant 
     try {
       forceCopyBuildContext = null;
       List<String> filters = configuration.getFilters();
-      if (changeRequiresForcedCopy(facade, filters, delta)) {
+      if (!project.getFolder(targetFolder).exists() || changeRequiresForcedCopy(facade, filters, delta)) {
         LOG.info(NLS.bind(Messages.ResourceFilteringBuildParticipant_Changed_Resources_Require_Clean_Build,project.getName()));
         //String id = "" + "-" + getClass().getName();
         forceCopyBuildContext = new CleanBuildContext(oldBuildContext);

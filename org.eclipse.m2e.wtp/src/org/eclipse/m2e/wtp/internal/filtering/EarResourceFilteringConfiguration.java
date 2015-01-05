@@ -36,7 +36,7 @@ public class EarResourceFilteringConfiguration extends AbstractResourceFiltering
   }
 
   @Override
-public IPath getTargetFolder() {
+  public IPath getTargetFolder() {
     return getTargetFolder(mavenProjectFacade.getMavenProject(), mavenProjectFacade.getProject());
   }
 
@@ -45,7 +45,7 @@ public IPath getTargetFolder() {
   }
 
   @Override
-public List<Xpp3Dom> getResources() {
+  public List<Xpp3Dom> getResources() {
     if (!earPluginConfiguration.isFilteringDeploymentDescriptorsEnabled()) {
       return null;
     }
