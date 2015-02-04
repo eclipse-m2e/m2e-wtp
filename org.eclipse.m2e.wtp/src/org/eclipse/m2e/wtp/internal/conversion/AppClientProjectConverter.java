@@ -59,7 +59,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 
   private void setAcrPlugin(IVirtualComponent component, Model model) {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String pluginVersion = getAcrPluginVersion();
     Plugin acrPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-acr-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
     acrPlugin.setExtensions(true);
     
@@ -138,8 +138,16 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
   }
 
   @Override
-protected IProjectFacet getRequiredFaced() {
+  protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.APP_CLIENT_FACET;
   }
 
+  private String getAcrPluginVersion() {
+	 //For test purposes only, must not be considered API behavior.
+	 String version = System.getProperty("org.eclipse.m2e.wtp.conversion.acrplugin.version");//$NON-NLS-1$
+	 if(version != null) {
+	   return version;
+	 }
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  }
 }

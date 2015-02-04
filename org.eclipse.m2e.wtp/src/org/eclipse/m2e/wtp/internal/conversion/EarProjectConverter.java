@@ -148,6 +148,6 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 	 if(version != null) {
 	   return version;
 	 }
-	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.9.1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ear-plugin", "2.10"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 }

@@ -49,7 +49,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 
   private void setEjbPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ejb-plugin", "2.3"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String pluginVersion = getEjbPluginVersion();
     Plugin ejbPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-ejb-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
   
     IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());
@@ -68,8 +68,17 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
   }
 
   @Override
-protected IProjectFacet getRequiredFaced() {
+  protected IProjectFacet getRequiredFaced() {
     return WTPProjectsUtil.EJB_FACET;
   }
 
+  private String getEjbPluginVersion() {
+	 //For test purposes only, must not be considered API behavior.
+	 String version = System.getProperty("org.eclipse.m2e.wtp.conversion.ejbplugin.version");//$NON-NLS-1$
+	 if(version != null) {
+	   return version;
+	 }
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-ejb-plugin", "2.5"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  }
+  
 }

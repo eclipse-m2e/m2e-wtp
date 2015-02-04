@@ -70,7 +70,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 
   private void setRarPlugin(IVirtualComponent component, Model model) throws CoreException {
     Build build = getCloneOrCreateBuild(model);
-    String pluginVersion = MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-rar-plugin", "2.2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String pluginVersion = getRarPluginVersion();
     Plugin rarPlugin = setPlugin(build, "org.apache.maven.plugins", "maven-rar-plugin", pluginVersion); //$NON-NLS-1$ //$NON-NLS-2$
     IFile raXml = findRaXml(component);
     if (raXml != null) {
@@ -81,7 +81,6 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
         model.setBuild(build);
       }
     }
-    
   }
 
   @Override
@@ -102,5 +101,14 @@ protected IProjectFacet getRequiredFaced() {
       }
     }
     return null;
+  }
+  
+  private String getRarPluginVersion() {
+	 //For test purposes only, must not be considered API behavior.
+	 String version = System.getProperty("org.eclipse.m2e.wtp.conversion.rarplugin.version");//$NON-NLS-1$
+	 if(version != null) {
+	   return version;
+	 }
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-rar-plugin", "2.4"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 }
