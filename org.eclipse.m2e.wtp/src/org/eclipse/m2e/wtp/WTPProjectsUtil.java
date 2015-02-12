@@ -42,6 +42,7 @@ import org.eclipse.jst.j2ee.internal.project.J2EEProjectUtilities;
 import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.core.internal.IMavenConstants;
+import org.eclipse.m2e.core.internal.lifecyclemapping.LifecycleMappingFactory;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
@@ -654,11 +655,10 @@ public class WTPProjectsUtil {
   }
 
 
-  public static boolean isLastConfigurator(
-		Map<String, AbstractProjectConfigurator> projectConfigurators,
-		Class<? extends AbstractProjectConfigurator> clazz, String id) {
+  public static boolean isLastConfigurator(IMavenProjectFacade facade, Class<? extends AbstractProjectConfigurator> clazz, String id) {
 	String  lastConfigurator = null;
-	for (Map.Entry<String, AbstractProjectConfigurator> e : projectConfigurators.entrySet()) {
+	Map<String, AbstractProjectConfigurator> configurators = LifecycleMappingFactory.getProjectConfigurators(facade);
+	for (Map.Entry<String, AbstractProjectConfigurator> e : configurators.entrySet()) {
 		if (e.getValue().getClass().equals(clazz)){
 			lastConfigurator = e.getKey();
 		}
