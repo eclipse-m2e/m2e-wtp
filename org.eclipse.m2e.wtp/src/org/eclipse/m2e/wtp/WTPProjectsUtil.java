@@ -44,6 +44,7 @@ import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectUtils;
+import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.jdt.internal.MavenClasspathHelpers;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil;
@@ -652,4 +653,16 @@ public class WTPProjectsUtil {
 	return !enabled;
   }
 
+
+  public static boolean isLastConfigurator(
+		Map<String, AbstractProjectConfigurator> projectConfigurators,
+		Class<? extends AbstractProjectConfigurator> clazz, String id) {
+	String  lastConfigurator = null;
+	for (Map.Entry<String, AbstractProjectConfigurator> e : projectConfigurators.entrySet()) {
+		if (e.getValue().getClass().equals(clazz)){
+			lastConfigurator = e.getKey();
+		}
+	}
+	return id.equals(lastConfigurator);
+  }  
 }
