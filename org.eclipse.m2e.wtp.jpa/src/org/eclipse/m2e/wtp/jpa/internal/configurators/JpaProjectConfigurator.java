@@ -197,6 +197,9 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	}
 
 	private boolean canConfigure(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+		if (!WTPProjectsUtil.isLastConfigurator(facade, getClass(), getId())) {
+			return false;
+		}
 		boolean enabled = isConfigurationEnabled(facade, monitor);
 		if (!enabled) {
 			return false;
