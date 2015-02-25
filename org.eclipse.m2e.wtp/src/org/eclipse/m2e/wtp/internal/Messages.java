@@ -48,6 +48,7 @@ public class Messages extends NLS {
 	public static String ResourceFilteringBuildParticipant_Error_While_Filtering_Resources;
 	public static String ResourceFilteringBuildParticipant_Executing_Resource_Filtering;
 	public static String WarClassesClassifierClasspathProvider_WAR_Classes_Classifier_Classpath_Provider;
+	public static String WarProjectBuildParticipant_Error_FailOnMissingWebXml;
 	public static String WarVersionChangeListener_Error_Notifying_WebApp_Version_Change;
 	public static String WTPResourcesContentProvider_Error_Getting_Pipelined_Children;
 	public static String WTPResourcesImages_Error_Creating_ImageDescriptor;

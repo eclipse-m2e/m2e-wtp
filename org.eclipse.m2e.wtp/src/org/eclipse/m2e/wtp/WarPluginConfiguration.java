@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2015 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,4 +405,12 @@ protected String getFilteringAttribute() {
   }
 
   
+  public boolean isFailOnMissingWebXml() {
+    Xpp3Dom config = getConfiguration();
+    boolean failOnMissingWebXml = true;
+    if (config != null) {
+    	failOnMissingWebXml = DomUtils.getBooleanChildValue(config, "failOnMissingWebXml", true); //$NON-NLS-1$
+    };
+    return failOnMissingWebXml;
+  }
 }

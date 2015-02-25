@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Sonatype, Inc.
+ * Copyright (c) 2008-2015 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,9 @@ public final class MavenWtpConstants {
 
   public static final String WTP_MARKER_UNSUPPORTED_DEPENDENCY_PROBLEM = WTP_MARKER_ID + ".unsupportedDependencyProblem"; //$NON-NLS-1$
 
+  public static final String WTP_MARKER_FAIL_ON_MISSING_WEBXML_ERROR = WTP_MARKER_ID + ".failOnMissingWebXml"; //$NON-NLS-1$
+
+  
   public static final String M2E_WTP_FOLDER = "m2e-wtp"; //$NON-NLS-1$
   
   public static final String WEB_RESOURCES_FOLDER = "web-resources"; //$NON-NLS-1$

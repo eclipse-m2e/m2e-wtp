@@ -31,6 +31,7 @@ import org.sonatype.m2e.mavenarchiver.internal.JarArchiverConfigurator;
  */
 public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 
+	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
 		if (WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor)) {
@@ -39,6 +40,7 @@ public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 		super.configure(request, monitor);
 	}
 
+	@Override
 	public void mavenProjectChanged(MavenProjectChangedEvent event,
 			IProgressMonitor monitor) throws CoreException {
 		if (WTPProjectsUtil.isM2eWtpDisabled(event.getMavenProject(), monitor)) {
@@ -52,6 +54,7 @@ public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 	    mavenProjectChanged(newFacade, oldFacade, true, monitor);
 	}
 	
+	@Override
 	public AbstractBuildParticipant getBuildParticipant(
 			IMavenProjectFacade projectFacade, MojoExecution execution,
 			IPluginExecutionMetadata executionMetadata) {

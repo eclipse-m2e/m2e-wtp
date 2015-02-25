@@ -287,6 +287,12 @@
       <persistent value="true"/>
    </extension>
    <extension point="org.eclipse.core.resources.markers"
+         id="org.eclipse.m2e.core.maven2Problem.wtp.failOnMissingWebXml"
+         name="Maven Java EE Configuration Problem">
+      <super type="org.eclipse.m2e.core.maven2Problem.wtp.configuration"/>
+      <persistent value="true"/>
+   </extension>
+   <extension point="org.eclipse.core.resources.markers"
          id="org.eclipse.m2e.core.maven2Problem.wtp.filteringError"
          name="Maven Java EE Configuration Problem">
       <super type="org.eclipse.m2e.core.maven2Problem.wtp.configuration"/>
