@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
@@ -77,6 +79,8 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   private Set<EarModule>  earModules;
   
+  private boolean supportsUseBaseVersion = false;
+  
   public EarPluginConfiguration(MavenProject mavenProject) {
     if(JEEPackaging.EAR != JEEPackaging.getValue(mavenProject.getPackaging())) {
       throw new IllegalArgumentException(Messages.EarPluginConfiguration_Project_Must_Have_ear_Packaging);
@@ -84,6 +88,15 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
     this.mavenProject = mavenProject;
     Plugin plugin = getPlugin();
+    try {
+    	VersionRange ear_2_9 = VersionRange.createFromVersionSpec("[2.9,)"); //$NON-NLS-1$
+    	if(ear_2_9.containsVersion(new DefaultArtifactVersion(plugin.getVersion()))) {
+    		supportsUseBaseVersion = true;
+    	}
+    } catch(Exception ex) {
+        //Can't happen
+    }
+    
     setConfiguration((Xpp3Dom)plugin.getConfiguration());
   }
 
@@ -267,14 +280,16 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
     Xpp3Dom config = getConfiguration();
     FileNameMapping mapping = null;
-    boolean useBaseVersion = false;
+    boolean useBaseVersion = !supportsUseBaseVersion;
     if(config != null) {
 	    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
 	    if(fileNameMappingDom != null) {
 	      String fileNameMappingName = fileNameMappingDom.getValue().trim();
 	      mapping = FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
 	    }
-	    useBaseVersion = DomUtils.getBooleanChildValue(config, "useBaseVersion", false); //$NON-NLS-1$
+	    if (supportsUseBaseVersion) {// for ear-plugin >= 2.9
+	    	useBaseVersion = DomUtils.getBooleanChildValue(config, "useBaseVersion", false); //$NON-NLS-1$
+	    }
     }
     if (mapping == null) {
     	mapping = FileNameMappingFactory.getDefaultFileNameMapping(); 
