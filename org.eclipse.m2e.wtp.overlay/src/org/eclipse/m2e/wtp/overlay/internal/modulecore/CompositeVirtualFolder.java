@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sonatype, Inc.
+ * Copyright (c) 2011-2015 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.m2e.wtp.overlay.internal.Messages;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.internal.flat.FlatVirtualComponent;
+import org.eclipse.wst.common.componentcore.internal.flat.IChildModuleReference;
 import org.eclipse.wst.common.componentcore.internal.flat.IFlatFile;
 import org.eclipse.wst.common.componentcore.internal.flat.IFlatFolder;
 import org.eclipse.wst.common.componentcore.internal.flat.IFlatResource;
@@ -98,6 +99,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	
 	public void treeWalk() throws CoreException {	 
 		IFlatResource[] flatResources = flatVirtualComponent.fetchResources();
+		
 		List<IVirtualResource> membersList = new ArrayList<IVirtualResource>(flatResources.length);
 		for (IFlatResource flatResource : flatResources) {
 			IVirtualResource resource = convert(flatResource);
@@ -105,6 +107,16 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 				membersList.add(resource);	
 			}
 		}
+		for (IChildModuleReference childModule : flatVirtualComponent.getChildModules()) {
+			IVirtualReference reference = childModule.getReference();
+			if (reference != null) {
+				String filePath = getFilePath(reference);
+				if (filter == null || filter.accepts(filePath, true)) {
+					references.add(reference);
+				}
+			}
+		}
+		
 		members = new IVirtualResource[membersList.size()];
 		membersList.toArray(members);
 	}
@@ -429,4 +441,19 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 		this.filter = filter;
 	}
 	
+	
+	private String getFilePath(IVirtualReference reference) {
+		StringBuilder path = new StringBuilder();
+		String prefix = reference.getRuntimePath().makeRelative().toString();
+		path.append(prefix);
+		if (prefix.length() > 0 && prefix.charAt(prefix.length() - 1)!= '/') {
+			path.append("/"); //$NON-NLS-1$
+		}
+		String archiveName = reference.getArchiveName();
+		if (archiveName == null || archiveName.isEmpty()) {
+			archiveName = reference.getReferencedComponent().getDeployedName() + ".jar"; //$NON-NLS-1$
+		}
+		path.append(archiveName);
+		return path.toString();
+	}
 }
