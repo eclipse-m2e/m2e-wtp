@@ -8,6 +8,7 @@
 package org.eclipse.m2e.wtp.overlay.internal.servers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,12 +22,10 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.m2e.wtp.overlay.OverlayConstants;
-import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlaySelfComponent;
-import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
+import org.eclipse.m2e.wtp.overlay.internal.modulecore.OverlayVirtualComponent;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
@@ -70,12 +69,24 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 		}
 		
 		Map<IServer, List<IModule>> republishableServers = new HashMap<IServer, List<IModule>>(servers.length);
+		Map<IProject, Collection<IProject>> overlaidProjects = new HashMap<IProject, Collection<IProject>>();
 		
 		for (IServer server : servers) {
 			modules : for (IModule module : server.getModules()) {
+				if (server.getModulePublishState(new IModule[]{module}) == IServer.PUBLISH_STATE_INCREMENTAL) {
+					continue;
+				}
 				IProject moduleProject = module.getProject();
+				Collection<IProject> overlays = overlaidProjects.get(moduleProject);
+				if (overlays == null) {
+					overlays = new HashSet<IProject>();
+					overlaidProjects.put(moduleProject, overlays);
+					Set<IProject> analyzedProjects = new HashSet<IProject>();
+					analyzedProjects.add(moduleProject);
+					collectOverlays(moduleProject, overlays, analyzedProjects);
+				}
 				for (IProject changedProject : changedProjects) {
-					if (hasOverlayChanged(changedProject, moduleProject, delta)) {
+					if (overlays.contains(changedProject)) {
 						List<IModule> republishableModules = republishableServers.get(server);
 						if (republishableModules == null) {
 							republishableModules = new ArrayList<IModule>(server.getModules().length);
@@ -123,48 +134,12 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 		if (projectDeltas != null) {
 			for (IResourceDelta delta : projectDeltas) {
 				IResource resource = delta.getResource();
-				if (resource != null && resource instanceof IProject) {
+				if (resource instanceof IProject) {
 					projects.add((IProject) resource);
 				}
 			}
 		}
 		return projects;
-	}
-	
-	/**
-	 * Return true if moduleProject references changedProject as an IOverlayComponent
-	 * @param changedProject
-	 * @param projectDeployedOnServer
-	 * @param delta 
-	 * @return true if moduleProject references changedProject as an IOverlayComponent
-	 */
-	private boolean hasOverlayChanged(IProject changedProject, IProject projectDeployedOnServer, IResourceDelta delta) {
-		if (!ModuleCoreNature.isFlexibleProject(projectDeployedOnServer)) {
-			return false; 
-		}
-		IVirtualComponent component = ComponentCore.createComponent(projectDeployedOnServer);
-		if (component == null) {
-			return false;
-		}
-		IVirtualReference[] references = component.getReferences();
-		if (references == null || references.length == 0) {
-			return false;
-		}
-		for (IVirtualReference reference : references) {
-			IVirtualComponent vc = reference.getReferencedComponent();
-			if (vc instanceof IOverlayVirtualComponent){
-			  IProject overlaidProject = vc.getProject(); 
-			  if (vc instanceof OverlaySelfComponent) {
-			    IPath componentFilePath = overlaidProject.getFile(".settings/org.eclipse.wst.common.component").getFullPath(); //$NON-NLS-1$
-			    if (delta.findMember(componentFilePath) != null) {
-			      return true;
-			    }
-			  } else if (!vc.isBinary() && overlaidProject.equals(changedProject)){
-			    return true;
-			  }
-			}
-		}
-		return false;
 	}
 
      private boolean hasBuildOccurred(IResourceChangeEvent event) {
@@ -177,4 +152,33 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
                 ((kind == IncrementalProjectBuilder.AUTO_BUILD && ResourcesPlugin.getWorkspace().isAutoBuilding()));
      }
 
+     private void collectOverlays(IProject project, Collection<IProject> overlays, Set<IProject> analyzedProjects) {
+       if (!ModuleCoreNature.isFlexibleProject(project)) {
+         return;
+       }
+       IVirtualComponent component = ComponentCore.createComponent(project);
+       if (component == null) {
+         return;
+       }
+       IVirtualReference[] references = component.getReferences();
+       if (references == null || references.length == 0) {
+         return;
+       }
+       for (IVirtualReference reference : references) {
+         IVirtualComponent vc = reference.getReferencedComponent();
+         IProject refProject = vc.getProject();
+         if(project == refProject) {
+           continue;
+         }
+         if (OverlayVirtualComponent.class.equals(vc.getClass())){
+           if (!overlays.contains(refProject)) {
+             overlays.add(refProject);
+           }
+         }
+         if (!analyzedProjects.contains(refProject)) {
+           analyzedProjects.add(refProject);
+           collectOverlays(refProject, overlays, analyzedProjects);
+         }
+       }
+     }
 }
