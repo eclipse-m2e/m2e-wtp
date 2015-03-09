@@ -44,7 +44,7 @@ public class ExtensionReader {
   public static List<AbstractDependencyConfigurator> readDependencyConfiguratorExtensions(IMavenProjectRegistry projectManager,
       MavenRuntimeManager runtimeManager, IMavenMarkerManager markerManager) {
     if (dependencyConfigurators == null) {
-      dependencyConfigurators = new ArrayList<AbstractDependencyConfigurator>();
+      dependencyConfigurators = new ArrayList<>();
       
       IExtensionRegistry registry = Platform.getExtensionRegistry();
       IExtensionPoint configuratorsExtensionPoint = registry.getExtensionPoint(EXTENSION_DEPENDENCY_CONFIGURATORS);

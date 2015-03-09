@@ -108,7 +108,7 @@ public IVirtualReference resolve(IVirtualComponent component, ReferencedComponen
 	if (patterns == null || patterns.trim().length() == 0) {
 		return Collections.emptySet();
 	}
-	Set<String> patternSet = new LinkedHashSet<String>();
+	Set<String> patternSet = new LinkedHashSet<>();
 	for (String pattern : patterns.split(";")) { //$NON-NLS-1$
 		patternSet.add(pattern);
 	}
@@ -152,7 +152,7 @@ public ReferencedComponent resolve(IVirtualReference reference) {
       rc.setArchiveName(reference.getArchiveName());
       rc.setRuntimePath(reference.getRuntimePath());
       URI handle;
-      Map<String, String> parameters = new LinkedHashMap<String, String>(3);
+      Map<String, String> parameters = new LinkedHashMap<>(3);
       if (comp instanceof OverlayVirtualArchiveComponent) {
     	  OverlayVirtualArchiveComponent archivecomp = (OverlayVirtualArchiveComponent) comp;
     	  handle = URI.createURI(VAR_ARCHIVE_PROTOCOL+archivecomp.getArchivePath().toPortableString());

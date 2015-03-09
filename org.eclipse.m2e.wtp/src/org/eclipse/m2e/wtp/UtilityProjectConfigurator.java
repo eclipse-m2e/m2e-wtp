@@ -59,7 +59,7 @@ public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
 
       MavenProject mavenProject = request.getMavenProject();
 
-      Set<Action> actions = new LinkedHashSet<Action>();
+      Set<Action> actions = new LinkedHashSet<>();
       installJavaFacet(actions, project, facetedProject);
       if(!actions.isEmpty()) {
         facetedProject.modify(actions, monitor);

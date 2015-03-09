@@ -61,7 +61,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       return;
     }
 
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
     installJavaFacet(actions, project, facetedProject);
 
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project, monitor);
@@ -195,7 +195,7 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
 
     IVirtualComponent rarComponent = ComponentCore.createComponent(project);
     
-    Set<IVirtualReference> newRefs = new LinkedHashSet<IVirtualReference>();
+    Set<IVirtualReference> newRefs = new LinkedHashSet<>();
     
     Set<Artifact> artifacts =  mavenProject.getArtifacts();
     

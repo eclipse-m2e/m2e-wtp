@@ -41,7 +41,7 @@ public class ArtifactTypeMappingService {
 
   static final String MAPPING_ATTRIBUTE = "mapping"; //$NON-NLS-1$
 
-  public final static List<String> standardArtifactTypes = new ArrayList<String>(10);
+  public final static List<String> standardArtifactTypes = new ArrayList<>(10);
 
   static {
     standardArtifactTypes.add("jar"); //$NON-NLS-1$
@@ -141,7 +141,7 @@ public class ArtifactTypeMappingService {
 
     // Initialize the mapping with the standard artifact types
     for(String type : getStandardArtifactTypes()) {
-      List<String> typeMapping = new ArrayList<String>();
+      List<String> typeMapping = new ArrayList<>();
       typeMapping.add(type);
       this.typeMappings.put(type, typeMapping);
     }

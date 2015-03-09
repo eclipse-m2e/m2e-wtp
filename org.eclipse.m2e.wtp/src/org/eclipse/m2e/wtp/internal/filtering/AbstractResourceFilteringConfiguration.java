@@ -34,7 +34,7 @@ public abstract class AbstractResourceFilteringConfiguration implements Resource
 
   @Override
 public List<String> getFilters() {
-    List<String> filters = new ArrayList<String>(mavenProjectFacade.getMavenProject().getFilters());
+    List<String> filters = new ArrayList<>(mavenProjectFacade.getMavenProject().getFilters());
     if (pluginConfiguration != null) {
       filters.addAll(pluginConfiguration.getFilters());
     }

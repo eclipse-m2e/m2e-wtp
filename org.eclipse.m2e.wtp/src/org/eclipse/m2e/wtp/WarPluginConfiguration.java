@@ -317,7 +317,7 @@ public String[] getSourceIncludes() {
     if(config != null) {
       Xpp3Dom overlaysNode = config.getChild("overlays"); //$NON-NLS-1$
       if (overlaysNode != null && overlaysNode.getChildCount() > 0) {
-        List<Overlay> overlays = new ArrayList<Overlay>(overlaysNode.getChildCount());
+        List<Overlay> overlays = new ArrayList<>(overlaysNode.getChildCount());
         for (Xpp3Dom overlayNode : overlaysNode.getChildren("overlay")) { //$NON-NLS-1$
           overlays.add(parseOverlay(overlayNode));
         }

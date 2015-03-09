@@ -50,7 +50,7 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
   private static final Set<String> UNSUPPORTED_DEPENDENCY_TYPES;
 
   static {
-    UNSUPPORTED_DEPENDENCY_TYPES = new HashSet<String>(Arrays.asList(new String[] {"ejb-client", "test-jar"})); //$NON-NLS-1$ //$NON-NLS-2$
+    UNSUPPORTED_DEPENDENCY_TYPES = new HashSet<>(Arrays.asList(new String[] {"ejb-client", "test-jar"})); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override

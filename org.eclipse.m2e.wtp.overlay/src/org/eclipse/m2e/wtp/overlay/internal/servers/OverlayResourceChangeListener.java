@@ -79,9 +79,9 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 				IProject moduleProject = module.getProject();
 				Collection<IProject> overlays = overlaidProjects.get(moduleProject);
 				if (overlays == null) {
-					overlays = new HashSet<IProject>();
+					overlays = new HashSet<>();
 					overlaidProjects.put(moduleProject, overlays);
-					Set<IProject> analyzedProjects = new HashSet<IProject>();
+					Set<IProject> analyzedProjects = new HashSet<>();
 					analyzedProjects.add(moduleProject);
 					collectOverlays(moduleProject, overlays, analyzedProjects);
 				}
@@ -89,7 +89,7 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 					if (overlays.contains(changedProject)) {
 						List<IModule> republishableModules = republishableServers.get(server);
 						if (republishableModules == null) {
-							republishableModules = new ArrayList<IModule>(server.getModules().length);
+							republishableModules = new ArrayList<>(server.getModules().length);
 							republishableServers.put(server, republishableModules);
 						}
 						republishableModules.add(module);
@@ -130,7 +130,7 @@ public class OverlayResourceChangeListener implements IResourceChangeListener {
 	}
 
 	private Set<IProject> getChangedProjects(IResourceDelta[] projectDeltas) {
-		Set<IProject> projects = new HashSet<IProject>();
+		Set<IProject> projects = new HashSet<>();
 		if (projectDeltas != null) {
 			for (IResourceDelta delta : projectDeltas) {
 				IResource resource = delta.getResource();

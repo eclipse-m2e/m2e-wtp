@@ -118,7 +118,7 @@ public class DynamicResourceFilter implements IResourceFilter {
      *
      * @since Ant 1.6.3
      */
-    private Set<String> includeNonPatterns = new HashSet<String>();
+    private Set<String> includeNonPatterns = new HashSet<>();
 
     /**
      * Set of all include patterns that are full file names and don't
@@ -133,7 +133,7 @@ public class DynamicResourceFilter implements IResourceFilter {
      *
      * @since Ant 1.6.3
      */
-    private Set<String> excludeNonPatterns = new HashSet<String>();
+    private Set<String> excludeNonPatterns = new HashSet<>();
 
     
     public DynamicResourceFilter(Collection<String> inclusions, Collection<String> exclusions) {
@@ -219,7 +219,7 @@ public class DynamicResourceFilter implements IResourceFilter {
      * @since Ant 1.6.3
      */
     private String[] fillNonPatternSet(Set<String> set, String[] patterns) {
-        ArrayList<String> al = new ArrayList<String>(patterns.length);
+        ArrayList<String> al = new ArrayList<>(patterns.length);
         for (int i = 0; i < patterns.length; i++) {
             if (!SelectorUtils.hasWildcards(patterns[i])) {
                 set.add(isCaseSensitive() ? patterns[i]

@@ -71,7 +71,7 @@ public class StringUtils {
       return null;
     }
     StringTokenizer st = new StringTokenizer(str, delimiters);
-    List<String> tokens = new ArrayList<String>();
+    List<String> tokens = new ArrayList<>();
     while (st.hasMoreTokens()) {
       String token = st.nextToken();
       if (trimTokens) {
@@ -90,7 +90,7 @@ public class StringUtils {
    * @return a non-null String
    */
   public static String joinAsString(String[] ... someArrays) {
-    Set<String> stringSet = new LinkedHashSet<String>();
+    Set<String> stringSet = new LinkedHashSet<>();
     if (someArrays != null) {
       for (String[] strings : someArrays)
         if (strings != null) {

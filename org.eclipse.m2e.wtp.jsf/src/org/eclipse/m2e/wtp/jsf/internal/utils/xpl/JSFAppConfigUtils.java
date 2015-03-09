@@ -113,7 +113,7 @@ public class JSFAppConfigUtils {
 	}
 
 	private static List<String> getConfigFilesForJ2EEApp(IProject project){
-		List<String> filesList = new ArrayList<String>();
+		List<String> filesList = new ArrayList<>();
 		WebArtifactEdit webArtifactEdit = WebArtifactEdit.getWebArtifactEditForRead(project);
 		if (webArtifactEdit != null) {
 			try {
@@ -160,7 +160,7 @@ public class JSFAppConfigUtils {
 	}
 	
 	private static List<String> parseFilesString(String filesString) {
-		List<String> filesList = new ArrayList<String>();
+		List<String> filesList = new ArrayList<>();
 		if (filesString != null && filesString.trim().length() > 0) {			
 			StringTokenizer stFilesString = new StringTokenizer(filesString, ","); //$NON-NLS-1$
 			while (stFilesString.hasMoreTokens()) {

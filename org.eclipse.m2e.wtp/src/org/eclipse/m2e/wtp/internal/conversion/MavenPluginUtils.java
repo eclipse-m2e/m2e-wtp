@@ -110,7 +110,7 @@ public class MavenPluginUtils {
               }
             }
             if(!versions.isEmpty()) {
-              List<String> sorted = new ArrayList<String>(versions.size());
+              List<String> sorted = new ArrayList<>(versions.size());
               for(ComparableVersion v : versions) {
                 sorted.add(v.toString());
               }

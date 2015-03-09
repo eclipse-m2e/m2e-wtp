@@ -48,7 +48,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
    
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
     installJavaFacet(actions, project, facetedProject);
 
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), true, monitor);

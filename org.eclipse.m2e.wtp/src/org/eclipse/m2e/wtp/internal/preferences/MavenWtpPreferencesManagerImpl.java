@@ -160,7 +160,7 @@ public class MavenWtpPreferencesManagerImpl implements IMavenWtpPreferencesManag
     if (enablerConfigs == null) {
       return Collections.emptyList();
     }
-    ArrayList<ConfiguratorEnabler> enablers = new ArrayList<ConfiguratorEnabler>();
+    ArrayList<ConfiguratorEnabler> enablers = new ArrayList<>();
     for (IConfigurationElement config : enablerConfigs) {
         String enablerId = config.getAttribute(ATTR_ENABLER_ID);
         String[] configuratorIds = split(config.getAttribute(ATTR_CONFIGURATOR_IDS));

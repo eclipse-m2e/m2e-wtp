@@ -100,7 +100,7 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
     IProject project = facade.getProject();
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
     
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
     
     ResourceCleaner fileCleaner = new ResourceCleaner(project);
     addFoldersToClean(fileCleaner, facade);

@@ -226,7 +226,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
       return Collections.<EarModule> emptySet();
     }
 
-    Set<EarModule> earModules = new LinkedHashSet<EarModule>(artifacts.size());
+    Set<EarModule> earModules = new LinkedHashSet<>(artifacts.size());
     String defaultBundleDir = getDefaultBundleDirectory();
     IProjectFacetVersion javaEEVersion = getEarFacetVersion();
     EarModuleFactory earModuleFactory = EarModuleFactory.createEarModuleFactory(getArtifactTypeMappingService(),
@@ -306,7 +306,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
    * @param earModuleFactory
    */
   private Set<EarModule> getEarModulesFromConfig(EarModuleFactory earModuleFactory, String defaultBundleDir, IProjectFacetVersion javaEEVersion) throws EarPluginException {
-    Set<EarModule> earModules = new LinkedHashSet<EarModule>();
+    Set<EarModule> earModules = new LinkedHashSet<>();
     Xpp3Dom configuration = getConfiguration();
     if(configuration == null) {
       return earModules;
@@ -352,7 +352,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   }
   
   public Set<SecurityRoleKey>  getSecurityRoleKeys() {
-    Set<SecurityRoleKey> securityRoles = new HashSet<SecurityRoleKey>();
+    Set<SecurityRoleKey> securityRoles = new HashSet<>();
     Xpp3Dom configuration = getConfiguration();
     if(configuration == null) {
       return securityRoles;

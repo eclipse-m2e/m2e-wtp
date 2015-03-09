@@ -50,7 +50,7 @@ public IPath getTargetFolder() {
   @Override
 public List<Xpp3Dom> getResources() {
     Xpp3Dom[] domResources = warPluginConfiguration.getWebResources();
-    List<Xpp3Dom> resources = new ArrayList<Xpp3Dom>();
+    List<Xpp3Dom> resources = new ArrayList<>();
     
     if(domResources != null && domResources.length > 0){
       resources.addAll(Arrays.asList(domResources));

@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
               AbstractFacetDetector facetDetector = (AbstractFacetDetector) o;
               List<AbstractFacetDetector> detectors = map.get(facetId);
               if (detectors == null){
-                detectors = new ArrayList<AbstractFacetDetector>();
+                detectors = new ArrayList<>();
                 map.put(facetId, detectors);
               }
               detectors.add(facetDetector);

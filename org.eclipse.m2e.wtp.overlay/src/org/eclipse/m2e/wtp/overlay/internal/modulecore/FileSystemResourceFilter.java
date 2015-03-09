@@ -171,10 +171,10 @@ public class FileSystemResourceFilter implements IResourceFilter {
 		private Set<String> excludedFolders;
 
 		public ScanResult() {
-			includedFiles = new HashSet<String>(0);
-			excludedFiles = new HashSet<String>(0);
-			includedFolders = new HashSet<String>(0);
-			excludedFolders = new HashSet<String>(0);
+			includedFiles = new HashSet<>(0);
+			excludedFiles = new HashSet<>(0);
+			includedFolders = new HashSet<>(0);
+			excludedFolders = new HashSet<>(0);
 		}
 
 		public ScanResult(String scanId, String baseDirAsString,
@@ -182,10 +182,10 @@ public class FileSystemResourceFilter implements IResourceFilter {
 				String[] excDirs) {
 			this.scanId = scanId;
 			this.baseDirAsString = baseDirAsString;
-			includedFiles = new HashSet<String>(Arrays.asList(incFiles));
-			excludedFiles = new HashSet<String>(Arrays.asList(excFiles));
-			includedFolders = new HashSet<String>(Arrays.asList(incDirs));
-			excludedFolders = new HashSet<String>(Arrays.asList(excDirs));
+			includedFiles = new HashSet<>(Arrays.asList(incFiles));
+			excludedFiles = new HashSet<>(Arrays.asList(excFiles));
+			includedFolders = new HashSet<>(Arrays.asList(incDirs));
+			excludedFolders = new HashSet<>(Arrays.asList(excDirs));
 			completeIncludedFolders();
 		}
 
@@ -259,7 +259,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 		}
 
 		private void completeIncludedFolders() {
-			Set<String> missingParentFolders = new HashSet<String>();
+			Set<String> missingParentFolders = new HashSet<>();
 			for (String folder : includedFolders) {
 				IPath filePath = new Path(folder);
 				IPath parentPath = filePath.removeLastSegments(1);
@@ -318,7 +318,7 @@ public class FileSystemResourceFilter implements IResourceFilter {
 			if (arrayAsString == null) {
 				return Collections.emptySet();
 			}
-			return new HashSet<String>(Arrays.asList(arrayAsString.split(COLLECTION_SEPARATOR)));
+			return new HashSet<>(Arrays.asList(arrayAsString.split(COLLECTION_SEPARATOR)));
 		}
 
 		private String toString(Set<String> stringSet) {

@@ -162,7 +162,7 @@ public class ProjectUtils {
     try {
       int count = 0;
       final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-      final List<IProject> projects = new ArrayList<IProject>(Arrays.asList(root.getProjects()));
+      final List<IProject> projects = new ArrayList<>(Arrays.asList(root.getProjects()));
       
       final IPath rootLocation = root.getLocation();
       IPath basedirPath = new Path(basedir.getAbsolutePath());

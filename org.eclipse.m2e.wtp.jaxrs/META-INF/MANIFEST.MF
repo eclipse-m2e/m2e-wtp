@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.slf4j.api
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.m2e.wtp.jaxrs.internal,org.eclipse.m2e.wtp
  .jaxrs.internal.configurators

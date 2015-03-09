@@ -77,7 +77,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), true, monitor);
     
     EarPluginConfiguration config = new EarPluginConfiguration(mavenProject);
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
 
     String contentDir = config.getEarContentDirectory(project);
     contentDir = PathUtil.toPortablePath(contentDir);
@@ -127,7 +127,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     boolean useBuildDirectory = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project).isApplicationXmGeneratedInBuildDirectory();
     boolean useResourcefiltering = config.isFilteringDeploymentDescriptorsEnabled();
     
-    List<IPath> sourcePaths = new ArrayList<IPath>();
+    List<IPath> sourcePaths = new ArrayList<>();
     sourcePaths.add(contentDirPath);
     
     if (!useBuildDirectory && useResourcefiltering) {
@@ -182,7 +182,7 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
 
     IVirtualComponent earComponent = ComponentCore.createComponent(project);
     
-    Set<IVirtualReference> newRefs = new LinkedHashSet<IVirtualReference>();
+    Set<IVirtualReference> newRefs = new LinkedHashSet<>();
     
     EarPluginConfiguration config = new EarPluginConfiguration(mavenProject);
     // Retrieving all ear module configuration from maven-ear-plugin : User defined modules + artifacts dependencies.

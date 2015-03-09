@@ -201,7 +201,7 @@ public void clean(IProgressMonitor monitor) throws CoreException {
 
   
   private Set<IPath> getResourcePaths(IMavenProjectFacade facade, List<Xpp3Dom> resources) {
-    Set<IPath> resourcePaths = new LinkedHashSet<IPath>();
+    Set<IPath> resourcePaths = new LinkedHashSet<>();
     for(Xpp3Dom resource : resources) {
       IPath folder= null;
       Xpp3Dom xpp3Directory = resource.getChild("directory"); //$NON-NLS-1$

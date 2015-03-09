@@ -39,11 +39,11 @@ public class ResourceCleaner {
 
   private final IProject project;
 
-  private List<IFolder> folders = new ArrayList<IFolder>(); 
+  private List<IFolder> folders = new ArrayList<>(); 
 
-  private List<IFile> files = new ArrayList<IFile>(); 
+  private List<IFile> files = new ArrayList<>(); 
   
-  private Set<IFolder> keepers = new HashSet<IFolder>();
+  private Set<IFolder> keepers = new HashSet<>();
 
   /**
    * @param project

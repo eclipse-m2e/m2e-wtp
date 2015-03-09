@@ -49,7 +49,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
 
     IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), true, monitor);
 
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
     installJavaFacet(actions, project, facetedProject);
 
     EjbPluginConfiguration config = new EjbPluginConfiguration(mavenProject);

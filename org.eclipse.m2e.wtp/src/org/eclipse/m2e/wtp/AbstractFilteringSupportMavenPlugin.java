@@ -61,7 +61,7 @@ public abstract class AbstractFilteringSupportMavenPlugin {
     if(config != null) {
       Xpp3Dom filtersNode = config.getChild("filters"); //$NON-NLS-1$
       if (filtersNode != null && filtersNode.getChildCount() > 0) {
-        List<String> filters = new ArrayList<String>(filtersNode.getChildCount());
+        List<String> filters = new ArrayList<>(filtersNode.getChildCount());
         for (Xpp3Dom filterNode : filtersNode.getChildren("filter")) { //$NON-NLS-1$
           String  filter = filterNode.getValue();
           if (!StringUtils.nullOrEmpty(filter)) {

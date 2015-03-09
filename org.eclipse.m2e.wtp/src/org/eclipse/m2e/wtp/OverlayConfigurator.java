@@ -98,7 +98,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
       return;
     }
     
-    Set<IVirtualReference> newOverlayRefs = new LinkedHashSet<IVirtualReference>();
+    Set<IVirtualReference> newOverlayRefs = new LinkedHashSet<>();
     MavenSessionHelper helper = new MavenSessionHelper(mavenProject);
     try {
       helper.ensureDependenciesAreResolved("maven-war-plugin", "war:war"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -145,8 +145,8 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
 
         if (overlayComponent != null) {
           
-          overlayComponent.setInclusions(new LinkedHashSet<String>(Arrays.asList(overlay.getIncludes())));
-          overlayComponent.setExclusions(new LinkedHashSet<String>(Arrays.asList(overlay.getExcludes())));
+          overlayComponent.setInclusions(new LinkedHashSet<>(Arrays.asList(overlay.getIncludes())));
+          overlayComponent.setExclusions(new LinkedHashSet<>(Arrays.asList(overlay.getExcludes())));
           
           IVirtualReference depRef = ComponentCore.createReference(warComponent, overlayComponent);
           String targetPath = StringUtils.nullOrEmpty(overlay.getTargetPath())?"/":overlay.getTargetPath(); //$NON-NLS-1$

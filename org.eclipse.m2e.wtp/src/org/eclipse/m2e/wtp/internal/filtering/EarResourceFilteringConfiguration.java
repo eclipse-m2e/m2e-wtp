@@ -55,7 +55,7 @@ public class EarResourceFilteringConfiguration extends AbstractResourceFiltering
 		
 		IPath cliPackageDir = getCLIPackageDir(project, mavenProject.getBuild().getDirectory());
 		
-		List<Xpp3Dom> resources = new ArrayList<Xpp3Dom>();
+		List<Xpp3Dom> resources = new ArrayList<>();
 		
 		IPath targetClasses = WTPProjectsUtil.getClassesFolder(mavenProjectFacade).getLocation();
 		

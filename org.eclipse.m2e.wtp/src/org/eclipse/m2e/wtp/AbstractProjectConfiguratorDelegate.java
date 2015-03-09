@@ -102,8 +102,8 @@ public void configureProject(IProject project, MavenProject mavenProject, IProgr
   protected abstract void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor) throws CoreException;
 
   protected List<IMavenProjectFacade> getWorkspaceDependencies(IProject project, MavenProject mavenProject) {
-    Set<IProject> projects = new HashSet<IProject>();
-    List<IMavenProjectFacade> dependencies = new ArrayList<IMavenProjectFacade>();
+    Set<IProject> projects = new HashSet<>();
+    List<IMavenProjectFacade> dependencies = new ArrayList<>();
     Set<Artifact> artifacts = mavenProject.getArtifacts();
     for(Artifact artifact : artifacts) {
       IMavenProjectFacade dependency = projectManager.getMavenProject(artifact.getGroupId(), artifact.getArtifactId(),
@@ -147,7 +147,7 @@ public void configureProject(IProject project, MavenProject mavenProject, IProgr
     // 2 - check if the manifest already exists, and its parent folder
     
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
     installJavaFacet(actions, project, facetedProject);
 
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET)) {
@@ -198,7 +198,7 @@ public void configureProject(IProject project, MavenProject mavenProject, IProgr
     if (cpEntries == null) {
       return false;
     }
-    Set<IPath> currentPaths = new HashSet<IPath>();
+    Set<IPath> currentPaths = new HashSet<>();
     for (IClasspathEntry entry  : cpEntries) {
       if (IClasspathEntry.CPE_SOURCE == entry.getEntryKind()){
         currentPaths.add(entry.getPath().makeRelativeTo(project.getFullPath()));

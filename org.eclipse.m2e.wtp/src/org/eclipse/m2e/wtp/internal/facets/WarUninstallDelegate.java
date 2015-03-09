@@ -35,7 +35,7 @@ public class WarUninstallDelegate implements IDelegate {
 public void execute(IProject project, IProjectFacetVersion fv, Object config, IProgressMonitor monitor)
       throws CoreException {
     // remove web containers
-    ArrayList<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+    ArrayList<IClasspathEntry> entries = new ArrayList<>();
 
     IClasspathEntry[] cp = JavaCore.create(project).getRawClasspath();
     for(IClasspathEntry entry : cp) {

@@ -120,7 +120,7 @@ protected Control createContents(Composite parent) {
     configuratorEnablerGroup.setText(Messages.MavenWtpPreferencePage_Select_Active_JavaEE_Configurators);
     GridDataFactory.fillDefaults().applyTo(configuratorEnablerGroup);
     GridLayoutFactory.fillDefaults().margins(5, 0).applyTo(configuratorEnablerGroup);
-    enablersComposites = new ArrayList<ConfiguratorEnablerComposite>(configuratorEnablers.length);
+    enablersComposites = new ArrayList<>(configuratorEnablers.length);
 
     for (ConfiguratorEnabler configuratorEnabler : configuratorEnablers) {
       ConfiguratorEnablerComposite enablerComposite = new ConfiguratorEnablerComposite(configuratorEnablerGroup, 
@@ -408,7 +408,7 @@ protected Control createContents(Composite parent) {
    * @return
    */
   private List<IMavenProjectFacade> getImpactedProjects(final IMavenProjectRegistry projectManager) {
-    final List<IMavenProjectFacade> facades = new ArrayList<IMavenProjectFacade>();
+    final List<IMavenProjectFacade> facades = new ArrayList<>();
     IProject project = getProject();
     if(project == null) {
       //Get all workspace projects that might be impacted by the configuration change 

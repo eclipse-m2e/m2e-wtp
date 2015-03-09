@@ -55,8 +55,8 @@ public class ResourceListVirtualFolder extends VirtualFolder implements IFiltere
 			IProject aComponentProject,
 			IPath aRuntimePath) {
 		super(aComponentProject, aRuntimePath);
-		this.children = new ArrayList<IResource>();
-		this.underlying = new ArrayList<IContainer>();
+		this.children = new ArrayList<>();
+		this.underlying = new ArrayList<>();
 	}
 
 	public ResourceListVirtualFolder(

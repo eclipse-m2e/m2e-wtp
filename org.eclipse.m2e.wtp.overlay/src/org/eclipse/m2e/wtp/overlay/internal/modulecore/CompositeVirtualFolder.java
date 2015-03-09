@@ -61,7 +61,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	private FlatVirtualComponent flatVirtualComponent;
 	private IPath runtimePath;
 	private IProject project;
-	private Set<IVirtualReference> references = new LinkedHashSet<IVirtualReference>();
+	private Set<IVirtualReference> references = new LinkedHashSet<>();
 	private IVirtualResource[] members;
 	private IResourceFilter filter;
 	
@@ -100,7 +100,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	public void treeWalk() throws CoreException {	 
 		IFlatResource[] flatResources = flatVirtualComponent.fetchResources();
 		
-		List<IVirtualResource> membersList = new ArrayList<IVirtualResource>(flatResources.length);
+		List<IVirtualResource> membersList = new ArrayList<>(flatResources.length);
 		for (IFlatResource flatResource : flatResources) {
 			IVirtualResource resource = convert(flatResource);
 			if (resource != null) {
@@ -134,7 +134,7 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 
 	private IVirtualFolder convertFolder(IFlatFolder flatFolder) {
 		IFlatResource[] flatMembers = flatFolder.members();
-		List<IVirtualResource> membersList = new ArrayList<IVirtualResource>(flatMembers.length);
+		List<IVirtualResource> membersList = new ArrayList<>(flatMembers.length);
 		for (IFlatResource flatResource : flatMembers) {
 			IVirtualResource resource = convert(flatResource);
 			if (resource != null) {

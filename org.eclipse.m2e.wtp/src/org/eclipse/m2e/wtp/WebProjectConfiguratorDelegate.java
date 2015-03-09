@@ -97,7 +97,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     
     IFolder contentFolder = project.getFolder(warSourceDirectory);
 
-    Set<Action> actions = new LinkedHashSet<Action>();
+    Set<Action> actions = new LinkedHashSet<>();
 
     installJavaFacet(actions, project, facetedProject);
     
@@ -228,7 +228,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager, 
         MavenPlugin.getMavenRuntimeManager(), mavenMarkerManager);
     
-    Set<IVirtualReference> references = new LinkedHashSet<IVirtualReference>();
+    Set<IVirtualReference> references = new LinkedHashSet<>();
 
     List<IMavenProjectFacade> exportedDependencies = getWorkspaceDependencies(project, mavenProject);
     
@@ -360,14 +360,14 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       return Collections.emptyMap();
     }
     int size = artifacts.size();
-    Map<Artifact, String> artifactsMap = new LinkedHashMap<Artifact, String>(size);
+    Map<Artifact, String> artifactsMap = new LinkedHashMap<>(size);
     
     IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
     FileNameMapping fileNameMapping = config.getFileNameMapping();
     
-    Set<String> names = new HashSet<String>(size);
+    Set<String> names = new HashSet<>(size);
 
-    Set<String> duplicates = new HashSet<String>(size);
+    Set<String> duplicates = new HashSet<>(size);
     
     for (Artifact artifact : artifacts) {
       ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());

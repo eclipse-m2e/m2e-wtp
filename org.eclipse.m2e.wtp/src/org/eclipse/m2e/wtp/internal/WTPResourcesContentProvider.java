@@ -78,7 +78,7 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
           if(facetedProject != null && 
               (facetedProject.hasProjectFacet(WTPProjectsUtil.DYNAMIC_WEB_FACET) || 
                facetedProject.hasProjectFacet(WTPProjectsUtil.EAR_FACET))) {
-            List newChildren = new ArrayList<Object>(currentChildren.size()+1);
+            List newChildren = new ArrayList<>(currentChildren.size()+1);
             newChildren.add(new WTPResourcesNode(project));
             newChildren.addAll(currentChildren);
             currentChildren.clear();

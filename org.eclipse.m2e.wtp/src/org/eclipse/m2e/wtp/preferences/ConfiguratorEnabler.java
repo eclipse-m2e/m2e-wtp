@@ -35,7 +35,7 @@ public class ConfiguratorEnabler {
 
   private String id;
 
-  private Set<String> projectConfiguratorIds = new LinkedHashSet<String>();
+  private Set<String> projectConfiguratorIds = new LinkedHashSet<>();
 
   IEclipsePreferences preferenceStore;
 
