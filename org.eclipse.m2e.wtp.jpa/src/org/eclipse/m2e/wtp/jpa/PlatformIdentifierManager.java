@@ -23,7 +23,7 @@ import org.eclipse.jpt.jpa.core.resource.persistence.XmlProperty;
  */
 public class PlatformIdentifierManager {
 
-	private List<IPlatformIdentifier> platformIdentifiers = new ArrayList<IPlatformIdentifier>();
+	private List<IPlatformIdentifier> platformIdentifiers = new ArrayList<>();
 	
 	public PlatformIdentifierManager() {
 		//TODO use extension points

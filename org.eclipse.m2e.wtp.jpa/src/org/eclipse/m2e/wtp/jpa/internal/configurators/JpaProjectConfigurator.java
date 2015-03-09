@@ -146,7 +146,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		
 		IDataModel dataModel = getDataModel(facetedProject, version, platform);
 
-		Set<Action> actions = new LinkedHashSet<Action>();
+		Set<Action> actions = new LinkedHashSet<>();
 		installJavaFacet(actions, facetedProject.getProject(), facetedProject);
 		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, 
 								                version, 
