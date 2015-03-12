@@ -43,7 +43,7 @@
 			</pluginExecutionFilter>
 			<action>
 				<configurator>
-					<id>org.eclipse.m2e.wtp.jpa.internal.configurator.wtp</id>
+					<id>org.eclipse.m2e.wtp.jpa.configurator.wtp</id>
 				</configurator>
 			</action>
 		</pluginExecution>        
