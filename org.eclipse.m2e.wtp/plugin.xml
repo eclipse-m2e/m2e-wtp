@@ -50,14 +50,14 @@
           id="org.maven.ide.eclipse.configuration.wtp.overlay.configurator"
           class="org.eclipse.m2e.wtp.OverlayConfigurator"
           name="Overlay" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"/>
+          runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator"/>
     </extension>        
 	<extension point="org.eclipse.m2e.core.projectConfigurators">
       <configurator 
           id="org.maven.ide.eclipse.configuration.wtp.warmanifest.configurator"
           class="org.eclipse.m2e.wtp.internal.mavenarchiver.WarMavenArchiverConfigurator"
           name="WarManifestConfigurator" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
+          runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator"
           />
     </extension>  
    	<extension point="org.eclipse.m2e.core.projectConfigurators">
@@ -65,7 +65,7 @@
           id="org.maven.ide.eclipse.configuration.wtp.ejbmanifest.configurator"
           class="org.eclipse.m2e.wtp.internal.mavenarchiver.EjbMavenArchiverConfigurator"
           name="EjbManifestConfigurator" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
+          runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator"
           />
     </extension> 
 	<extension point="org.eclipse.m2e.core.projectConfigurators">
@@ -80,7 +80,7 @@
           id="org.maven.ide.eclipse.configuration.wtp.rarmanifest.configurator"
           class="org.eclipse.m2e.wtp.internal.mavenarchiver.RarMavenArchiverConfigurator"
           name="RarManifestConfigurator" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
+          runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator"
           />
     </extension>  
 	<extension point="org.eclipse.m2e.core.projectConfigurators">
@@ -88,7 +88,7 @@
           id="org.maven.ide.eclipse.configuration.wtp.acrmanifest.configurator"
           class="org.eclipse.m2e.wtp.internal.mavenarchiver.AcrMavenArchiverConfigurator"
           name="AcrManifestConfigurator" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
+          runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator"
           />
     </extension>                    
     
@@ -97,7 +97,7 @@
           id="org.maven.ide.eclipse.configuration.wtp.webfragment.configurator"
           class="org.eclipse.m2e.wtp.WebFragmentProjectConfigurator"
           name="WebFragmentConfigurator" 
-          secondaryTo="org.eclipse.m2e.jdt.javaConfigurator"
+          runsAfter="org.eclipse.m2e.jdt.javaConfigurator"
           />
     </extension> 
     
@@ -106,7 +106,7 @@
           id="org.maven.ide.eclipse.configuration.wtp.utility.configurator"
           class="org.eclipse.m2e.wtp.UtilityProjectConfigurator"
           name="UtilityConfigurator" 
-          secondaryTo="org.eclipse.m2e.jdt.javaConfigurator"
+          runsAfter="org.eclipse.m2e.jdt.javaConfigurator"
           />
     </extension>     
 
@@ -114,19 +114,10 @@
       <configurator 
           id="org.maven.ide.eclipse.configuration.wtp.java.unsupportedDependencyTypeConfigurator"
           class="org.eclipse.m2e.wtp.UnsupportedDependencyTypeProjectConfigurator"
-          name="Unsupported Dependency Type Project Configurator - for Java projects" 
-          secondaryTo="org.eclipse.m2e.jdt.javaConfigurator"
+          name="Unsupported Dependency Type Project Configurator" 
+          runsAfter="org.eclipse.m2e.jdt.javaConfigurator?,org.maven.ide.eclipse.configuration.wtp.configurator?"
           />
     </extension>
-    <!-- This one is used for EAR projects that don't have a java nature -->  
-  	<extension point="org.eclipse.m2e.core.projectConfigurators">
-      <configurator 
-          id="org.maven.ide.eclipse.configuration.wtp.nonjava.unsupportedDependencyTypeConfigurator"
-          class="org.eclipse.m2e.wtp.UnsupportedDependencyTypeProjectConfigurator"
-          name="Unsupported Dependency Type Project Configurator - for non-Java projects" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
-          />
-    </extension>  
 
    <!-- A workaround to allow to uninstall WTP facets -->   
    <extension point="org.eclipse.wst.common.project.facet.core.facets">

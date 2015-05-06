@@ -39,7 +39,7 @@
     <!--
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.6/</m2e-repo.url>
     -->
-    <m2e-repo.url>http://repository.takari.io:8081/nexus/content/sites/m2e.extras/m2e/1.6.0/N/LATEST/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/snapshots/1.6.0/latest/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.16.0.201401211452, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.16.0/</mavenarchiver-repo.url>
@@ -300,7 +300,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>sdk</id>
       <activation>

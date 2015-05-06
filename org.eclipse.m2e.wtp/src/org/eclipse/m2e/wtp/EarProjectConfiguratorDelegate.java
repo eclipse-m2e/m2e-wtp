@@ -179,13 +179,13 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
     if(!facetedProject.hasProjectFacet(WTPProjectsUtil.EAR_FACET)) {
       return;
     }
-
     IVirtualComponent earComponent = ComponentCore.createComponent(project);
     
     Set<IVirtualReference> newRefs = new LinkedHashSet<>();
     
     EarPluginConfiguration config = new EarPluginConfiguration(mavenProject);
     // Retrieving all ear module configuration from maven-ear-plugin : User defined modules + artifacts dependencies.
+    
     Set<EarModule> earModules = config.getEarModules();
 
     String libBundleDir = config.getDefaultBundleDirectory();
