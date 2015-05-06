@@ -205,6 +205,7 @@ public class MavenResourceLocator implements ResourceLocator {
 															new NullProgressMonitor());
 	}
 
+	@Override
 	public IPath getRuntimePath(IProject project, IPath resourcePath) {
 		IPath runtimePath = getDelegate(project).getRuntimePath(project, resourcePath);
 		return runtimePath;

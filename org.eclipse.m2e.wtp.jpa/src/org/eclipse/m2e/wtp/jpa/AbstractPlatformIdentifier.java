@@ -23,6 +23,7 @@ import org.eclipse.jpt.jpa.core.resource.persistence.XmlProperty;
 public abstract class AbstractPlatformIdentifier implements IPlatformIdentifier {
 
 	
+	@Override
 	public String getPlatformId(XmlPersistenceUnit xmlPersistenceUnit) {
 		if (xmlPersistenceUnit == null) {
 			return null;
