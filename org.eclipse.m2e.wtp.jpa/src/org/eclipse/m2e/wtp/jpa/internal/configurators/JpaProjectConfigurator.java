@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jpt.common.core.resource.ResourceLocator;
 import org.eclipse.jpt.common.core.resource.xml.JptXmlResource;
 import org.eclipse.jpt.jpa.core.JpaPlatform;
 import org.eclipse.jpt.jpa.core.JpaProject;
@@ -89,7 +88,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		IProject project = request.getProject();
 		MavenProject mavenProject = request.getMavenProject();
 
-		IFile persistenceXml = getPersistenceXml(project);
+		IFile persistenceXml = getPersistenceXml(request.getMavenProjectFacade());
 		if (persistenceXml == null || !persistenceXml.exists()) {
 			//No persistence.xml => not a JPA project 
 			return;
@@ -113,10 +112,9 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		} 
 	}
 
-	private IFile getPersistenceXml(IProject project) {
-		ResourceLocator resourceLocator = new MavenResourceLocator();
-		
-		IPath path = resourceLocator.getWorkspacePath(project, new Path("META-INF/persistence.xml")); //$NON-NLS-1$
+	private IFile getPersistenceXml(IMavenProjectFacade mavenProjectFacade) {
+		MavenResourceLocator resourceLocator = new MavenResourceLocator();
+		IPath path = resourceLocator.lookupMavenResources(mavenProjectFacade, new Path("META-INF/persistence.xml")); //$NON-NLS-1$
 		IFile persistenceXml = null;
 		if (path != null) {
 			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		

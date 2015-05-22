@@ -35,10 +35,13 @@ import org.eclipse.jpt.common.core.resource.ResourceLocator;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Maven resource Locator
@@ -47,6 +50,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
  */
 @SuppressWarnings("restriction")
 public class MavenResourceLocator implements ResourceLocator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(MavenResourceLocator.class);
 
 	private static IPath META_INF_PATH = new Path("META-INF"); //$NON-NLS-1$
 	
@@ -100,43 +105,61 @@ public class MavenResourceLocator implements ResourceLocator {
 	}
 
 	/**
-	 * Returns the resource path from Maven's resource folders mapped to theP
+	 * Returns the resource path from Maven's resource folders mapped to the
 	 * runtimePath.
 	 */
 	@Override
 	public IPath getWorkspacePath(IProject project, IPath runtimePath) {
-		IPath resourcePath = null;
 		IMavenProjectFacade mavenProjectFacade = getMavenProjectFacade(project);
-		if (mavenProjectFacade != null 	&& mavenProjectFacade.getMavenProject() != null) {
-			List<Resource> resources = mavenProjectFacade.getMavenProject().getBuild().getResources();
-			for (Resource resourceFolder : resources) {
-				resourcePath = getFilePath(getWorkspaceRelativePath(resourceFolder), runtimePath);
-				if (resourcePath != null) {
-					break;
-				}
-			}
+		IPath resourcePath = null;
+		if (mavenProjectFacade != null) {
+			resourcePath = lookupMavenResources(mavenProjectFacade, runtimePath);
 		} else {
 			// Maven project not loaded yet, we fallback on the JavaProject
 			// source folders lookup
-			IJavaProject javaProject = JavaCore.create(project);
-			try {
-				for (IClasspathEntry entry : javaProject.getRawClasspath()) {
-					if (IClasspathEntry.CPE_SOURCE == entry.getEntryKind()) {
-						resourcePath = getFilePath(entry.getPath(), runtimePath);
-						if (resourcePath != null) {
-							break;
-						}
-					}
-				}
-			} catch (JavaModelException e) {
-				e.printStackTrace();
-			}
+			resourcePath = lookupProjectSources(project, runtimePath);
 		}
 
 		if (resourcePath == null) {
 			resourcePath = getDelegate(project).getWorkspacePath(project, runtimePath);
 		}
 		return resourcePath;
+	}
+
+	IPath lookupMavenResources(IMavenProjectFacade mavenProjectFacade, IPath runtimePath) {
+		if (mavenProjectFacade == null) {
+			return null;
+		}
+		IPath resourcePath = null;
+		if (mavenProjectFacade.getMavenProject() != null) {
+			List<Resource> resources = mavenProjectFacade.getMavenProject().getBuild().getResources();
+			for (Resource resourceFolder : resources) {
+				resourcePath = getFilePath(getWorkspaceRelativePath(resourceFolder), runtimePath);
+				if (resourcePath != null) {
+					return resourcePath;
+				}
+			}
+		}
+
+		return lookupProjectSources(mavenProjectFacade.getProject(), runtimePath);
+	}
+
+	IPath lookupProjectSources(IProject project, IPath runtimePath) {
+		IJavaProject javaProject = JavaCore.create(project);
+		IPath resourcePath = null;
+		try {
+			for (IClasspathEntry entry : javaProject.getRawClasspath()) {
+				if (IClasspathEntry.CPE_SOURCE == entry.getEntryKind()) {
+					resourcePath = getFilePath(entry.getPath(), runtimePath);
+					if (resourcePath != null) {
+						return resourcePath;
+					}
+				}
+			}
+		} catch (JavaModelException e) {
+			LOG.error(NLS.bind("An error occured while looking up {0} sources",project),e); //$NON-NLS-1$
+		}
+		return null;
 	}
 
 	private IPath getFilePath(IPath containerPath, IPath runtimePath) {
