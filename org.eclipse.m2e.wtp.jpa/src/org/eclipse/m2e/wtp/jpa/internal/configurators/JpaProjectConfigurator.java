@@ -1,10 +1,10 @@
 /*************************************************************************************
- * Copyright (c) 2012-2014 Red Hat, Inc. and others.
- * All rights reserved. This program and the accompanying materials 
+ * Copyright (c) 2012-2015 Red Hat, Inc. and others.
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Fred Bricon (Red Hat, Inc.) - initial API and implementation
  ************************************************************************************/
@@ -74,14 +74,14 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 	private static final String JPA_NO_OP_LIBRARY_PROVIDER = "jpa-no-op-library-provider"; //$NON-NLS-1$
-	
+
 	private static final String M2E_JPA_ACTIVATION_PROPERTY = "m2e.jpa.activation"; //$NON-NLS-1$
-	
+
 	static final String PERSISTENCE_XML_KEY = "persistencexml";  //$NON-NLS-1$
-	
+
 	@Override
 	public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-		
+
 		if(!canConfigure(request.getMavenProjectFacade(), monitor)) {
 			return;
 		}
@@ -90,17 +90,17 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 		IFile persistenceXml = getPersistenceXml(request.getMavenProjectFacade());
 		if (persistenceXml == null || !persistenceXml.exists()) {
-			//No persistence.xml => not a JPA project 
+			//No persistence.xml => not a JPA project
 			return;
 		}
-		
+
 		IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 		if (facetedProject != null) {
-			//Refresh parent in multi-module setups, or Dali throws an exception 
-			ProjectUtils.refreshHierarchy(mavenProject.getBasedir(), 
-										  IResource.DEPTH_INFINITE, 
+			//Refresh parent in multi-module setups, or Dali throws an exception
+			ProjectUtils.refreshHierarchy(mavenProject.getBasedir(),
+										  IResource.DEPTH_INFINITE,
 										  new SubProgressMonitor(monitor, 1));
-			
+
 			//Configurators should *never* create files in the user's source folders
 			ResourceCleaner cleaner = new ResourceCleaner(facetedProject.getProject());
 			addFoldersToClean(cleaner, request.getMavenProjectFacade());
@@ -109,7 +109,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 			} finally {
 				cleaner.cleanUp();
 			}
-		} 
+		}
 	}
 
 	private IFile getPersistenceXml(IMavenProjectFacade mavenProjectFacade) {
@@ -117,42 +117,42 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		IPath path = resourceLocator.lookupMavenResources(mavenProjectFacade, new Path("META-INF/persistence.xml")); //$NON-NLS-1$
 		IFile persistenceXml = null;
 		if (path != null) {
-			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);		
+			persistenceXml = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		}
 		return persistenceXml;
 	}
 
 	private void configureFacets(IFacetedProject facetedProject, IMavenProjectFacade mavenProjectFacade, IFile persistenceXml, IProgressMonitor monitor)
 			throws CoreException {
-		
+
 		//Need to refresh the persistence.xml as the resource provider might crash badly on some occasions
 		//if it finds the file is out-of-sync
 		persistenceXml.refreshLocal(IResource.DEPTH_ZERO, null);
-		
+
 		PersistenceXmlResourceProvider provider = PersistenceXmlResourceProvider.getXmlResourceProvider(persistenceXml);
-		
-		JptXmlResource jpaXmlResource = provider.getXmlResource(); 
+
+		JptXmlResource jpaXmlResource = provider.getXmlResource();
 		Map<?,?> context = Collections.singletonMap(PERSISTENCE_XML_KEY, jpaXmlResource);
 		FacetDetectorManager facetDetectorManager = FacetDetectorManager.getInstance();
-		
+
 		IProjectFacetVersion version = facetDetectorManager.findFacetVersion(mavenProjectFacade, JpaProject.FACET.getId(), context, monitor);
 		if (version == null) {
 			return;
 		}
-		
+
 		JpaPlatform.Config platform = getPlatform(jpaXmlResource, version);
-		
+
 		IDataModel dataModel = getDataModel(facetedProject, version, platform);
 
 		Set<Action> actions = new LinkedHashSet<>();
 		installJavaFacet(actions, facetedProject.getProject(), facetedProject);
-		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, 
-								                version, 
+		actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL,
+								                version,
 								                dataModel));
 		facetedProject.modify(actions, monitor);
 	}
 
-	
+
 	private JpaPlatform.Config getPlatform(JptXmlResource persistenceXml, IProjectFacetVersion facetVersion) {
 		XmlPersistenceUnit xmlPersistenceUnit = JptUtils.getFirstXmlPersistenceUnit(persistenceXml);
 		if (xmlPersistenceUnit == null) {
@@ -171,7 +171,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		//If no adequate platform found, Dali will use a default one.
 		return null;
 	}
-	
+
 	private JpaPlatformManager getPlatformManager() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		JpaWorkspace jpaWorkspace = (JpaWorkspace) workspace.getAdapter(JpaWorkspace.class);
@@ -179,18 +179,18 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	}
 
 	private IDataModel getDataModel(IFacetedProject facetedProject,
-									IProjectFacetVersion version, 
+									IProjectFacetVersion version,
 									JpaPlatform.Config platformConfig) {
-		
-		IDataModel dm = DataModelFactory.createDataModel(new JpaFacetInstallDataModelProvider()); 
 
-		dm.setProperty(IFacetDataModelProperties.FACET_VERSION_STR, version.getVersionString()); 
-		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platformConfig); 
+		IDataModel dm = DataModelFactory.createDataModel(new JpaFacetInstallDataModelProvider());
+
+		dm.setProperty(IFacetDataModelProperties.FACET_VERSION_STR, version.getVersionString());
+		dm.setProperty(JpaFacetDataModelProperties.PLATFORM, platformConfig);
 		//Gone in Kepler M7 dm.setProperty(JpaFacetInstallDataModelProperties.CREATE_ORM_XML, false);
 		dm.setProperty(JpaFacetInstallDataModelProperties.DISCOVER_ANNOTATED_CLASSES, true);
 		LibraryInstallDelegate libraryInstallDelegate = getNoOpLibraryProvider(facetedProject, version);
 		dm.setProperty(JpaFacetInstallDataModelProperties.LIBRARY_PROVIDER_DELEGATE, libraryInstallDelegate);
-		
+
 		return dm;
 	}
 
@@ -203,13 +203,13 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 			return false;
 		}
 		IProject project = facade.getProject();
-		// Bug 430178 : If imported project has modulecore nature without the component file, 
+		// Bug 430178 : If imported project has modulecore nature without the component file,
 		// Dali's ModuleResourceLocator#getRootFolder will NPE (ex: it.cosenonjaviste:jsf2-spring4-jpa2-archetype:1.0.3)
-		if (!project.hasNature(JavaCore.NATURE_ID) || 
+		if (!project.hasNature(JavaCore.NATURE_ID) ||
 				(project.hasNature(IModuleConstants.MODULE_NATURE_ID) && !ModuleCoreNature.componentResourceExists(project))) {
 			return false;
 		}
-		
+
 		IFacetedProject fProj = ProjectFacetsManager.create(project);
 		return  fProj == null || !fProj.hasProjectFacet(JpaProject.FACET);
 	}
@@ -218,24 +218,24 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
 			return false;
 		}
-		
+
 		Object pomActivationValue = facade.getMavenProject(monitor).getProperties().get(M2E_JPA_ACTIVATION_PROPERTY);
 		boolean enabled;
 		if (pomActivationValue == null) {
 			enabled = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().isEnabled(getId());
 		} else {
 			enabled = Boolean.parseBoolean(pomActivationValue.toString());
-		}	
+		}
 		return enabled;
 	}
-	
+
 	private LibraryInstallDelegate getNoOpLibraryProvider(IFacetedProject facetedProject, IProjectFacetVersion facetVersion) {
 		LibraryInstallDelegate libraryDelegate = new LibraryInstallDelegate(facetedProject, facetVersion);
-		ILibraryProvider provider = LibraryProviderFramework.getProvider(JPA_NO_OP_LIBRARY_PROVIDER); 
+		ILibraryProvider provider = LibraryProviderFramework.getProvider(JPA_NO_OP_LIBRARY_PROVIDER);
 		libraryDelegate.setLibraryProvider(provider);
 		return libraryDelegate;
 	}
-	
+
 	@Override
 	public boolean hasConfigurationChanged(IMavenProjectFacade newFacade,
 			ILifecycleMappingConfiguration oldProjectConfiguration,
@@ -243,16 +243,16 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 		//Changes to maven-compiler-plugin in pom.xml don't make it "dirty" wrt JPA config
 		return false;
 	}
-	
+
 	private void installJavaFacet(Set<Action> actions, IProject project, IFacetedProject facetedProject) {
 	    IProjectFacetVersion javaFv = JavaFacet.FACET.getVersion(JavaFacetUtil.getCompilerLevel(project));
 	    if(!facetedProject.hasProjectFacet(JavaFacet.FACET)) {
 	      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, javaFv, null));
 	    } else if(!facetedProject.hasProjectFacet(javaFv)) {
 	      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, javaFv, null));
-	    } 
+	    }
 	}
-	
+
 	 protected void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
 		    for (IPath p : facade.getCompileSourceLocations()) {
 		      if (p != null) {

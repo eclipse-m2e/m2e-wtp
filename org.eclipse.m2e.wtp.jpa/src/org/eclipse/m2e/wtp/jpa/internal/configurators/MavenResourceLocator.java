@@ -1,10 +1,10 @@
 /*************************************************************************************
- * Copyright (c) 2012 Red Hat, Inc. and others.
- * All rights reserved. This program and the accompanying materials 
+ * Copyright (c) 2012-2015 Red Hat, Inc. and others.
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Fred Bricon (Red Hat, Inc.) - initial API and implementation
  ************************************************************************************/
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Maven resource Locator
- * 
+ *
  * @author Fred Bricon
  */
 @SuppressWarnings("restriction")
@@ -54,7 +54,7 @@ public class MavenResourceLocator implements ResourceLocator {
 	private static final Logger LOG = LoggerFactory.getLogger(MavenResourceLocator.class);
 
 	private static IPath META_INF_PATH = new Path("META-INF"); //$NON-NLS-1$
-	
+
 	private static final IProjectFacet WEB_FACET = ProjectFacetsManager.getProjectFacet("jst.web"); //$NON-NLS-1$
 
 	/**
@@ -81,7 +81,7 @@ public class MavenResourceLocator implements ResourceLocator {
 			accept = getDelegate(project).locationIsValid(project, container);
 		}
 		// Sometimes src/main/resources/META-INF is not even sent immediately to
-		// this method, resulting in persistence.xml not being added to the jpaFiles 
+		// this method, resulting in persistence.xml not being added to the jpaFiles
 		// of the jpaProject hence the creation of a
 		// "The persistence.xml file does not have recognized content." error
 		// marker
@@ -223,8 +223,8 @@ public class MavenResourceLocator implements ResourceLocator {
 	 * Returns the cached IMavenProjectFacade in m2e's project registry
 	 */
 	private IMavenProjectFacade getMavenProjectFacade(IProject project) {
-		return MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME), 
-															true, 
+		return MavenPlugin.getMavenProjectRegistry().create(project.getFile(IMavenConstants.POM_FILE_NAME),
+															true,
 															new NullProgressMonitor());
 	}
 
