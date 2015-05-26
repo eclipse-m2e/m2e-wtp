@@ -245,7 +245,6 @@
                 <goals>
                   <goal>normalize</goal>
                 </goals>
-                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -260,7 +259,6 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
-                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
@@ -275,7 +273,6 @@
                 <goals>
                   <goal>pack</goal>
                 </goals>
-                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
