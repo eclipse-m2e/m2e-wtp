@@ -26,20 +26,20 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>0.22.0</tycho-version>
+    <tycho-version>0.23.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>luna</eclipse.target>
+    <eclipse.target>mars</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
     <!--
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.6/</m2e-repo.url>
     -->
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/snapshots/1.6.0/latest/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/releases/1.6/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.0.201502101659, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.0/</mavenarchiver-repo.url>
