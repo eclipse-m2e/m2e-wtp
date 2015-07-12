@@ -70,6 +70,8 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   private static final String WEB_3_1_TEXT = "3.1"; //$NON-NLS-1$
   
+  private static final String FAIL_ON_MISSING_WEB_XML = "failOnMissingWebXml";
+  
   //Keep backward compat with WTP < Kepler
   private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
                                                               WebFacetUtils.WEB_FACET.getVersion(WEB_3_1_TEXT)
@@ -408,9 +410,16 @@ protected String getFilteringAttribute() {
   public boolean isFailOnMissingWebXml() {
     Xpp3Dom config = getConfiguration();
     boolean failOnMissingWebXml = true;
+    String fail = null;
     if (config != null) {
-    	failOnMissingWebXml = DomUtils.getBooleanChildValue(config, "failOnMissingWebXml", true); //$NON-NLS-1$
-    };
+      fail = DomUtils.getChildValue(config, FAIL_ON_MISSING_WEB_XML); //$NON-NLS-1$
+    }
+    if (fail == null) {
+      fail = mavenProject.getProperties().getProperty(FAIL_ON_MISSING_WEB_XML); //$NON-NLS-1$
+    }
+    if (fail != null) {
+      failOnMissingWebXml = Boolean.parseBoolean(fail);
+    }
     return failOnMissingWebXml;
   }
 }
