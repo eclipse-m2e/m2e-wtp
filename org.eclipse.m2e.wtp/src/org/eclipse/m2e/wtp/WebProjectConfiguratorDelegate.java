@@ -140,6 +140,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
     
+    configureDeployedName(project, config.getWarName());
+    
     // MNGECLIPSE-632 remove test sources/resources from WEB-INF/classes
     removeTestFolderLinks(project, mavenProject, monitor, "/WEB-INF/classes"); //$NON-NLS-1$
 
@@ -222,7 +224,6 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     fixMissingModuleCoreNature(project, monitor);
     
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
-   
     Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(mavenProject.getArtifacts(), config);
     
     List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager, 
