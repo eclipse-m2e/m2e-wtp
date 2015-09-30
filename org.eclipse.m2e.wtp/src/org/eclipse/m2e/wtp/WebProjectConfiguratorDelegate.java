@@ -48,6 +48,7 @@ import org.eclipse.m2e.jdt.IClasspathEntryDescriptor;
 import org.eclipse.m2e.wtp.internal.ExtensionReader;
 import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.internal.filtering.WebResourceFilteringConfiguration;
+import org.eclipse.m2e.wtp.internal.utilities.ComponentModuleUtil;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
@@ -61,19 +62,21 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 /**
  * Configures web projects based on their maven-war-plugin configuration.
- * 
+ *
  * @author Igor Fedorenko
  * @author Fred Bricon
  */
 @SuppressWarnings("restriction")
 class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate {
 
-  //private static final Logger LOG = LoggerFactory.getLogger(WebProjectConfiguratorDelegate.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WebProjectConfiguratorDelegate.class);
   /**
    * See http://wiki.eclipse.org/ClasspathEntriesPublishExportSupport
    */
@@ -84,7 +87,7 @@ class WebProjectConfiguratorDelegate extends AbstractProjectConfiguratorDelegate
   * Name of maven property that overrides WTP context root.
   */
   private static final String M2ECLIPSE_WTP_CONTEXT_ROOT = "m2eclipse.wtp.contextRoot"; //$NON-NLS-1$
-  
+
   @Override
 protected void configure(IProject project, MavenProject mavenProject, IProgressMonitor monitor)
       throws CoreException {
@@ -94,32 +97,32 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     // make sure to update the main deployment folder
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     String warSourceDirectory = config.getWarSourceDirectory();
-    
+
     IFolder contentFolder = project.getFolder(warSourceDirectory);
 
     Set<Action> actions = new LinkedHashSet<>();
 
     installJavaFacet(actions, project, facetedProject);
-    
+
     IVirtualComponent component = ComponentCore.createComponent(project, true);
-    
+
     //MNGECLIPSE-2279 get the context root from the final name of the project, or artifactId by default.
     String contextRoot = getContextRoot(mavenProject, config.getWarName());
-    
+
     IProjectFacetVersion webFv = config.getWebFacetVersion(project);
     IDataModel webModelCfg = getWebModelConfig(warSourceDirectory, contextRoot);
     if(!facetedProject.hasProjectFacet(WebFacetUtils.WEB_FACET)) {
       removeConflictingFacets(facetedProject, webFv, actions);
       actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, webFv, webModelCfg));
     } else {
-      IProjectFacetVersion projectFacetVersion = facetedProject.getProjectFacetVersion(WebFacetUtils.WEB_FACET);     
+      IProjectFacetVersion projectFacetVersion = facetedProject.getProjectFacetVersion(WebFacetUtils.WEB_FACET);
       if(webFv.getVersionString() != null && !webFv.getVersionString().equals(projectFacetVersion.getVersionString())){
           actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, webFv, webModelCfg));
       }
     }
 
     String customWebXml = config.getCustomWebXml(project);
-    
+
     if(!actions.isEmpty()) {
       ResourceCleaner fileCleaner = new ResourceCleaner(project, contentFolder);
       try {
@@ -129,19 +132,19 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
         if (customWebXml != null) {
           fileCleaner.addFiles(contentFolder.getFile("WEB-INF/web.xml").getProjectRelativePath()); //$NON-NLS-1$
         }
-        
+
         facetedProject.modify(actions, monitor);
       } finally {
         //Remove any unwanted MANIFEST.MF the Facet installation has created
         fileCleaner.cleanUp();
       }
     }
-    
+
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
-    
+
     configureDeployedName(project, config.getWarName());
-    
+
     // MNGECLIPSE-632 remove test sources/resources from WEB-INF/classes
     removeTestFolderLinks(project, mavenProject, monitor, "/WEB-INF/classes"); //$NON-NLS-1$
 
@@ -151,19 +154,19 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     if (!contextRoot.equals(J2EEProjectUtilities.getServerContextRoot(project))) {
       J2EEProjectUtilities.setServerContextRoot(project, contextRoot);
     }
-    
+
     if (customWebXml != null) {
       linkFileFirst(project, customWebXml, "/WEB-INF/web.xml", monitor); //$NON-NLS-1$
     }
 
-    
+
     component = ComponentCore.createComponent(project, true);
-    if(component != null) {      
+    if(component != null) {
       IVirtualFolder rootFolder = component.getRootFolder();
       IPath warPath = new Path("/").append(contentFolder.getProjectRelativePath()); //$NON-NLS-1$
       boolean warPathExists = WTPProjectsUtil.hasLink(project, ROOT_PATH, warPath, monitor);
       if (!warPathExists) {
-        component.getRootFolder().createLink(warPath, IVirtualResource.NONE, monitor); 
+        component.getRootFolder().createLink(warPath, IVirtualResource.NONE, monitor);
       }
       IPath currentDefaultLocation = J2EEModuleVirtualComponent.getDefaultDeploymentDescriptorFolder(rootFolder);
       if (currentDefaultLocation == null) {
@@ -172,16 +175,16 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       //MECLIPSEWTP-22 support web filtered resources. Filtered resources directory must be declared BEFORE
       //the regular web source directory. First resources discovered take precedence on deployment
       IPath filteredFolder = new Path("/").append(WebResourceFilteringConfiguration.getTargetFolder(mavenProject, project)); //$NON-NLS-1$
-      
+
       boolean useBuildDir = MavenWtpPlugin.getDefault().getMavenWtpPreferencesManager().getPreferences(project).isWebMavenArchiverUsesBuildDirectory();
-      boolean useWebresourcefiltering = config.getWebResources() != null 
-                                        && config.getWebResources().length > 0 
+      boolean useWebresourcefiltering = config.getWebResources() != null
+                                        && config.getWebResources().length > 0
                                         || config.isFilteringDeploymentDescriptorsEnabled();
 
       if (useBuildDir || useWebresourcefiltering) {
-        
+
         if (!useBuildDir && useWebresourcefiltering) {
-          mavenMarkerManager.addMarker(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID, 
+          mavenMarkerManager.addMarker(project, MavenWtpConstants.WTP_MARKER_CONFIGURATION_ERROR_ID,
                                       Messages.markers_mavenarchiver_output_settings_ignored_warning, -1, IMarker.SEVERITY_WARNING);
         }
         if (!WTPProjectsUtil.hasLink(project, ROOT_PATH, filteredFolder, monitor)) {
@@ -194,7 +197,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       addComponentExclusionPatterns(component, config);
     }
     WTPProjectsUtil.removeWTPClasspathContainer(project);
-    
+
     setModuleDependencies(project, mavenProject, monitor);
   }
 
@@ -213,26 +216,28 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     if (!ModuleCoreNature.isFlexibleProject(project)) {
       return;
     }
-    
-    IVirtualComponent component = ComponentCore.createComponent(project,true);
-    //if the attempt to create dependencies happens before the project is actually created, abort. 
-    //this will be created again when the project exists.
-    if(component == null){
-      return;
-    }
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
-    
+
+    IVirtualComponent component = ComponentModuleUtil.getOrCreateComponent(project, monitor);
+    //if the attempt to create dependencies happens before the project is actually created, abort.
+    //this will be created again when the project exists.
+    if(component == null){
+      LOG.error(project.getName() + "/.settings/org.eclipse.wst.common.component is missing or invalid. "
+      		+ "Skipping module dependency configuration. Deployment issues may arise.");
+      return;
+    }
+
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(mavenProject.getArtifacts(), config);
-    
-    List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager, 
+
+    List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager,
         MavenPlugin.getMavenRuntimeManager(), mavenMarkerManager);
-    
+
     Set<IVirtualReference> references = new LinkedHashSet<>();
 
     List<IMavenProjectFacade> exportedDependencies = getWorkspaceDependencies(project, mavenProject);
-    
+
     for(IMavenProjectFacade dependency : exportedDependencies) {
       String depPackaging = dependency.getPackaging();
       if ("pom".equals(depPackaging) //MNGECLIPSE-744 pom dependencies shouldn't be deployed //$NON-NLS-1$
@@ -240,9 +245,9 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
           || "zip".equals(depPackaging)) { //$NON-NLS-1$
         continue;
       }
-      
+
       preConfigureDependencyProject(dependency, monitor);
-      
+
       if (!ModuleCoreNature.isFlexibleProject(dependency.getProject())) {
         //Projects unsupported by WTP (ex. adobe flex projects) should not be added as references
         continue;
@@ -250,7 +255,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       MavenProject depMavenProject =  dependency.getMavenProject(monitor);
 
       IVirtualComponent depComponent = ComponentCore.createComponent(dependency.getProject());
-		      
+
       ArtifactKey artifactKey = ArtifactHelper.toArtifactKey(depMavenProject.getArtifact());
       //Get artifact using the proper classifier
       Artifact artifact = ArtifactHelper.getArtifact(mavenProject.getArtifacts(), artifactKey);
@@ -259,8 +264,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
         artifact = depMavenProject.getArtifact();
       }
       String deployedName = deployedArtifacts.get(artifact);
-      
-  		//an artifact in mavenProject.getArtifacts() doesn't have the "optional" value as depMavenProject.getArtifact();  
+
+  		//an artifact in mavenProject.getArtifacts() doesn't have the "optional" value as depMavenProject.getArtifact();
   		if (deployedName != null) {
   		  IVirtualReference reference = ComponentCore.createReference(component, depComponent);
   		  IPath path = new Path("/WEB-INF/lib"); //$NON-NLS-1$
@@ -271,18 +276,18 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     }
 
     IVirtualReference[] oldRefs = WTPProjectsUtil.extractHardReferences(component, false);
-    
+
     IVirtualReference[] newRefs = references.toArray(new IVirtualReference[references.size()]);
-    
+
     if (WTPProjectsUtil.hasChanged(oldRefs, newRefs)){
-      //Only write in the .component file if necessary 
+      //Only write in the .component file if necessary
       IVirtualReference[] overlayRefs = WTPProjectsUtil.extractHardReferences(component, true);
       IVirtualReference[] allRefs = new IVirtualReference[overlayRefs.length + newRefs.length];
       System.arraycopy(newRefs, 0, allRefs, 0, newRefs.length);
       System.arraycopy(overlayRefs, 0, allRefs, newRefs.length, overlayRefs.length);
       component.setReferences(allRefs);
     }
-    
+
     //TODO why a 2nd loop???
     for(IMavenProjectFacade dependency : exportedDependencies) {
       MavenProject depMavenProject =  dependency.getMavenProject(monitor);
@@ -296,11 +301,11 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       }
     }
   }
-  
+
   /**
    * Get the context root from a maven web project
    * @param mavenProject
-   * @param warName 
+   * @param warName
    * @return the final name of the project if it exists, or the project's artifactId.
    */
   protected String getContextRoot(MavenProject mavenProject, String warName) {
@@ -309,7 +314,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
    String property = mavenProject.getProperties().getProperty(M2ECLIPSE_WTP_CONTEXT_ROOT);
    if (StringUtils.isBlank(property)) {
   		String finalName = warName;
-  		if (StringUtils.isBlank(finalName) 
+  		if (StringUtils.isBlank(finalName)
   		   || finalName.equals(mavenProject.getArtifactId() + "-" + mavenProject.getVersion())) { //$NON-NLS-1$
   		  contextRoot = mavenProject.getArtifactId();
   		}  else {
@@ -325,11 +330,11 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
   @Override
   public void configureClasspath(IProject project, MavenProject mavenProject, IClasspathDescriptor classpath,
       IProgressMonitor monitor) throws CoreException {
-    
+
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     Set<Artifact> artifacts = mavenProject.getArtifacts();
     Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(artifacts, config);
-    
+
     Iterator<IClasspathEntryDescriptor> iter = classpath.getEntryDescriptors().iterator();
     while (iter.hasNext()) {
       IClasspathEntryDescriptor descriptor = iter.next();
@@ -337,9 +342,9 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
       if (artifact == null) {
         return;
       }
-      
+
       String deployedName = deployedArtifacts.get(artifact);
-    
+
       if(deployedName == null || isWorkspaceProject(artifact)) {
         descriptor.setClasspathAttribute(NONDEPENDENCY_ATTRIBUTE.getName(), NONDEPENDENCY_ATTRIBUTE.getValue());
         continue;
@@ -349,32 +354,32 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
   }
 
   private boolean isWorkspaceProject(Artifact artifact) {
-	  IMavenProjectFacade facade = projectManager.getMavenProject(artifact.getGroupId(), 
+	  IMavenProjectFacade facade = projectManager.getMavenProject(artifact.getGroupId(),
 																	artifact.getArtifactId(),
 																	artifact.getVersion());
-		      
+
 	  return facade != null && facade.getFullPath(artifact.getFile()) != null;
   }
- 
+
   private Map<Artifact, String> getDeployedArtifacts(Collection<Artifact> artifacts, WarPluginConfiguration config ) {
     if (artifacts == null || artifacts.isEmpty()) {
       return Collections.emptyMap();
     }
     int size = artifacts.size();
     Map<Artifact, String> artifactsMap = new LinkedHashMap<>(size);
-    
+
     IPackagingConfiguration opts = new PackagingConfiguration(config.getPackagingIncludes(), config.getPackagingExcludes());
     FileNameMapping fileNameMapping = config.getFileNameMapping();
-    
+
     Set<String> names = new HashSet<>(size);
 
     Set<String> duplicates = new HashSet<>(size);
-    
+
     for (Artifact artifact : artifacts) {
       ArtifactHelper.fixArtifactHandler(artifact.getArtifactHandler());
       String deployedName = fileNameMapping.mapFileName(artifact);
       String scope = artifact.getScope();
-    	boolean isDeployed =  (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope)) 
+    	boolean isDeployed =  (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope))
     	                      && !artifact.isOptional()
     	                      && opts.isPackaged("WEB-INF/lib/"+deployedName); //$NON-NLS-1$
     	if (isDeployed) {
@@ -384,7 +389,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     	  artifactsMap.put(artifact, deployedName);
     	}
 	  }
-    
+
     //disambiguate duplicates
     for (String name : duplicates) {
     	for (Map.Entry<Artifact, String> entry : artifactsMap.entrySet()) {
@@ -394,8 +399,8 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     		}
     	}
     }
-    
+
     return artifactsMap;
   }
-  
+
 }
