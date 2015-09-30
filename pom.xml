@@ -37,9 +37,9 @@
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
     <!--
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.6/</m2e-repo.url>
-    -->
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/releases/1.6/</m2e-repo.url>
+    -->
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.7/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.0.201502101659, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.0/</mavenarchiver-repo.url>
