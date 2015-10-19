@@ -13,10 +13,13 @@ import static org.eclipse.m2e.wtp.internal.conversion.MavenPluginUtils.configure
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jst.j2ee.project.EarUtilities;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
@@ -70,6 +73,7 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
     IFolder applicationContentFolder = findEarContentFolder(component);
     boolean hasApplicationXml=true;
     boolean customized = false;
+    IProject project = component.getProject();
     if (applicationContentFolder != null) {
       String applicationContent = applicationContentFolder.getProjectRelativePath().toPortableString();
       if (!DEFAULT_APPLICATION_FOLDER.equals(applicationContent)) {
@@ -79,8 +83,15 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
       hasApplicationXml = applicationContentFolder.getFile("META-INF/application.xml").exists(); //$NON-NLS-1$
     }
     else{
-      IProject project = component.getProject();
-      String msg =  NLS.bind(Messages.EarProjectConverter_Error_EAR_Root_Content_Folder, (project!= null?project.getName():component.getName())); 
+      String msg =  NLS.bind(Messages.EarProjectConverter_Error_EAR_Root_Content_Folder, (project!= null?project.getName():component.getName()));
+      String description = model.getDescription();
+      String warning = "!!!EAR resources from the root directory need to be moved under src/main/application!!!";
+      if (StringUtils.isNotEmpty(description)) {
+    	  description = description + "\n" + warning;
+      } else {
+    	  description = warning;
+      }
+      model.setDescription(description);
       LOG.warn(msg);
     }
     
@@ -105,7 +116,8 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
       
       String libDir = EarUtilities.getEARLibDir(component);
       if (libDir == null) {
-        libDir = inspectDefaultLibDirs(applicationContentFolder);
+        IContainer libDirContainer = applicationContentFolder == null?project:applicationContentFolder;
+		libDir = inspectDefaultLibDirs(libDirContainer );
       }
       if (libDir != null) {
         configure(earPlugin, "defaultLibBundleDir", libDir); //$NON-NLS-1$
@@ -123,10 +135,9 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
    * Checks if a lib directory exists in the application content folder
    * @return the relative path of the lib directory, if it exists, null otherwise
    */
-  private String inspectDefaultLibDirs(IFolder applicationContentFolder) {
-    
+  private String inspectDefaultLibDirs(IContainer applicationContentFolder) {
     for (String candidate : new String[] {"lib", "APP-INF/lib"}) { //$NON-NLS-1$ //$NON-NLS-2$
-      if  (applicationContentFolder.getFolder(candidate).exists()) {
+      if  (applicationContentFolder.getFolder(new Path(candidate)).exists()) {
         return candidate;
       }
     }
