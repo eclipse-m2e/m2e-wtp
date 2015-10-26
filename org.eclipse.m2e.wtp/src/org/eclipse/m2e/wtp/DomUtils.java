@@ -86,7 +86,7 @@ public class DomUtils {
   public static String[] getPatternsAsArray(Xpp3Dom config, String patternParameterName) {
     if(config != null) {
       Xpp3Dom excl = config.getChild(patternParameterName);
-      if(excl != null) {
+      if(excl != null && excl.getValue() != null) {
         return org.eclipse.m2e.wtp.internal.StringUtils.tokenizeToStringArray(excl.getValue(), ","); //$NON-NLS-1$
       }
     }
