@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
+	<extension point="org.eclipse.m2e.core.projectConfigurators">
+      <configurator 
+          id="org.eclipse.m2e.wtp.jpa.configurator.jdt"
+          class="org.eclipse.m2e.wtp.jpa.internal.configurators.JpaProjectConfigurator"
+          name="%jpa_project_configurator" 
+          runsAfter="org.eclipse.m2e.jdt.javaConfigurator?,org.maven.ide.eclipse.configuration.wtp.configurator?"/>
+    </extension>
+    <extension
+         point="org.eclipse.m2e.wtp.javaeeConfiguratorEnabler">
+         <javaeeConfiguratorEnabler
+           id="org.eclipse.m2e.wtp.jpa.enabler"
+           label="%jpa_enabler_label"
+           description="%jpa_enabler_description"
+           configuratorIds="org.eclipse.m2e.wtp.jpa.configurator.jdt"
+         />
+    </extension>
+    <extension
+          point="org.eclipse.m2e.wtp.facetDetectors">
+       <facetDetector
+             class="org.eclipse.m2e.wtp.jpa.internal.configurators.PersistenceXmlJpaFacetDetector"
+             facetId="jpt.jpa"
+             priority="10">
+       </facetDetector>
+    </extension>
+
+   <extension point="org.eclipse.ui.editors.templates">
+    <template id="org.eclipse.m2e.wtp.jpa.xml.templates.jpaActivationProperty"
+         contextTypeId="org.eclipse.m2e.editor.xml.templates.contextType.properties"
+         name="%template.jpaActivationProperty.name" 
+         description="%template.jpaActivationProperty.description">
+      <pattern>&lt;m2e.jpa.activation&gt;${cursor}${false}&lt;/m2e.jpa.activation&gt;</pattern>
+    </template>
+   </extension> 
+</plugin>

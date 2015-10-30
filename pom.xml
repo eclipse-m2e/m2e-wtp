@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2008-2013 Sonatype, Inc. and others
+  Copyright (c) 2008-2015 Sonatype, Inc. and others
   All rights reserved. This program and the accompanying materials
   are made available under the terms of the Eclipse Public License v1.0
   which accompanies this distribution, and is available at
@@ -77,11 +77,13 @@
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
     <module>org.eclipse.m2e.wtp.feature</module>
+    <module>org.eclipse.m2e.wtp.sdk.feature</module>
     <module>org.eclipse.m2e.wtp.jaxrs</module>
     <module>org.eclipse.m2e.wtp.jaxrs.feature</module>
     <module>org.eclipse.m2e.wtp.jsf</module>
     <module>org.eclipse.m2e.wtp.jsf.feature</module>
-    <module>org.eclipse.m2e.wtp.sdk.feature</module>
+    <module>org.eclipse.m2e.wtp.jpa</module>
+    <module>org.eclipse.m2e.wtp.jpa.feature</module>
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
 
