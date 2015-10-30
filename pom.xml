@@ -26,7 +26,7 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>0.23.1</tycho-version>
+    <tycho-version>0.24.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
@@ -69,7 +69,7 @@
 
   <ciManagement>
     <system>Hudson</system>
-    <url>http://hudson.eclipse.org/</url>
+    <url>https://hudson.eclipse.org/m2e/</url>
   </ciManagement>
 
   <modules>
@@ -120,28 +120,7 @@
       <layout>p2</layout>
       <url>${mavenarchiver-repo.url}</url>
     </repository>
-    <repository>
-      <id>RSO-public-group</id>
-      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>RSO-public-group</id>
-      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <plugins>
       <plugin>
