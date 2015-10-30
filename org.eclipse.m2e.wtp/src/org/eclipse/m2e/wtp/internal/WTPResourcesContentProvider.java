@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
@@ -85,7 +86,7 @@ public class WTPResourcesContentProvider extends BaseWorkbenchContentProvider im
             currentChildren.addAll(newChildren);
           }
         } catch(CoreException ex) {
-          LOG.error(Messages.WTPResourcesContentProvider_Error_Getting_Pipelined_Children, ex);
+          LOG.error(NLS.bind(Messages.WTPResourcesContentProvider_Error_Getting_Pipelined_Children, ex.getMessage()), ex);
         }
       }
     }
