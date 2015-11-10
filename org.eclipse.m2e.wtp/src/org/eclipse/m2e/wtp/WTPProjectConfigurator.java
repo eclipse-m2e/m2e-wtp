@@ -54,7 +54,8 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
       throws CoreException {
 
     IProject project = request.getProject();
-    if (WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor)) {
+    if (!isMutable(project) 
+    		|| WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor)) {
       return;
     }
 
@@ -63,10 +64,6 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
     IProjectConfiguratorDelegate configuratorDelegate = ProjectConfiguratorDelegateFactory
         .getProjectConfiguratorDelegate(mavenProject.getPackaging());
     if(configuratorDelegate != null) {
-      if (project.getResourceAttributes().isReadOnly()){
-        return;
-      }
-
       try {
         configuratorDelegate.configureProject(project, mavenProject, monitor);
       } catch(MarkedException ex) {
@@ -83,9 +80,8 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
     IMavenProjectFacade facade = event.getMavenProject();
     if(facade != null) {
       IProject project = facade.getProject();
-
-      if (!isWTPProject(project) || WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)
-          || project.getResourceAttributes().isReadOnly()){
+      if (!isMutable(project) 
+    		  || !isWTPProject(project) || WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)){
         return;
       }
 
@@ -106,7 +102,7 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
   public void configureClasspath(IMavenProjectFacade facade, IClasspathDescriptor classpath, IProgressMonitor monitor)
       throws CoreException {
     IProject project = facade.getProject();
-    if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
+    if (!isMutable(project) || WTPProjectsUtil.isM2eWtpDisabled(facade, monitor)) {
       return;
     }
 
@@ -133,7 +129,7 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
   public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
       IPluginExecutionMetadata executionMetadata) {
 
-    if (WTPProjectsUtil.isM2eWtpDisabled(projectFacade, new NullProgressMonitor())) {
+    if (!isMutable(projectFacade.getProject()) || WTPProjectsUtil.isM2eWtpDisabled(projectFacade, new NullProgressMonitor())) {
       return null;
     }
 
@@ -159,5 +155,9 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
     }
 
     return super.hasConfigurationChanged(newFacade, oldProjectConfiguration, key, monitor);
+  }
+  
+  protected boolean isMutable(IProject project) {
+	  return project != null && project.isAccessible() && !project.getResourceAttributes().isReadOnly();
   }
 }
