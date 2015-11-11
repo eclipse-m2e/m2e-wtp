@@ -46,7 +46,7 @@ public boolean isPackaged(String virtualPath) {
       return false;
     }
     virtualPath = toPortablePath(virtualPath);
-    if (packagingIncludes != null) {
+    if (packagingExcludes != null) {
       for(String excl : packagingExcludes) {
         if(matches(excl, virtualPath)) {
           //stop here already, since exclusions have precedence over inclusions
