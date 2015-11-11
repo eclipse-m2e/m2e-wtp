@@ -143,7 +143,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     //MECLIPSEWTP-41 Fix the missing moduleCoreNature
     fixMissingModuleCoreNature(project, monitor);
 
-    configureDeployedName(project, config.getWarName());
+    configureDeployedName(project, org.apache.commons.lang3.StringUtils.removeEnd(config.getWarName(), ".war"));
 
     // MNGECLIPSE-632 remove test sources/resources from WEB-INF/classes
     removeTestFolderLinks(project, mavenProject, monitor, "/WEB-INF/classes"); //$NON-NLS-1$

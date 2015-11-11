@@ -276,19 +276,15 @@ public void configureProject(IProject project, MavenProject mavenProject, IProgr
 
   @SuppressWarnings("restriction")
   protected void configureDeployedName(IProject project, String deployedFileName) {
-    //We need to remove the file extension from deployedFileName 
-    int extSeparatorPos  = deployedFileName.lastIndexOf('.');
-    String deployedName = extSeparatorPos > -1? deployedFileName.substring(0, extSeparatorPos): deployedFileName;
-    //From jerr's patch in MNGECLIPSE-965
     IVirtualComponent projectComponent = ComponentCore.createComponent(project);
-    if(projectComponent != null && !deployedName.equals(projectComponent.getDeployedName())){//MNGECLIPSE-2331 : Seems projectComponent.getDeployedName() can be null 
+    if(projectComponent != null && !deployedFileName.equals(projectComponent.getDeployedName())){//MNGECLIPSE-2331 : Seems projectComponent.getDeployedName() can be null 
       StructureEdit moduleCore = null;
       try {
         moduleCore = StructureEdit.getStructureEditForWrite(project);
         if (moduleCore != null){
           WorkbenchComponent component = moduleCore.getComponent();
           if (component != null) {
-            component.setName(deployedName);
+            component.setName(deployedFileName);
             moduleCore.saveIfNecessary(null);
           }
         }

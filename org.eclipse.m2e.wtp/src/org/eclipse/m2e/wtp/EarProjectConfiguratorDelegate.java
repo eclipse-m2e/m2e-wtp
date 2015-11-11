@@ -151,13 +151,9 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     
     ProjectUtils.removeNature(project, JavaCore.NATURE_ID, monitor);
 
-    String finalName = config.getFinalName();
-    if (!finalName.endsWith(".ear")) { //$NON-NLS-1$
-      finalName += ".ear"; //$NON-NLS-1$
-    }
+    String finalName = org.apache.commons.lang3.StringUtils.removeEnd(config.getFinalName(), ".ear");
     configureDeployedName(project, finalName);
     project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-
     
     //MECLIPSEWTP-221 : add (in|ex)clusion patterns as .component metadata
     addComponentExclusionPatterns(earComponent, config);
