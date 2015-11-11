@@ -12,5 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.m2e.wtp.overlay
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse.org - m2e-wtp
