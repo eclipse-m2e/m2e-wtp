@@ -32,6 +32,7 @@ import org.eclipse.jst.j2ee.earcreation.IEarFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.internal.earcreation.EarFacetInstallDataModelProvider;
 import org.eclipse.jst.j2ee.internal.project.J2EEProjectUtilities;
 import org.eclipse.jst.j2ee.model.IEARModelProvider;
+import org.eclipse.jst.j2ee.model.IModelProvider;
 import org.eclipse.jst.j2ee.model.ModelProviderManager;
 import org.eclipse.jst.javaee.application.Application;
 import org.eclipse.m2e.core.MavenPlugin;
@@ -239,28 +240,30 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
     }
     
     //if the ear project Java EE level was < 5.0, the following would throw a ClassCastException  
-    final IEARModelProvider earModel = (IEARModelProvider)ModelProviderManager.getModelProvider(project);
-    if (earModel == null) {
-      return;
+    IModelProvider modelProvider =  ModelProviderManager.getModelProvider(project);
+    if (!(modelProvider instanceof IEARModelProvider)) {
+    	return;
+    }
+    final IEARModelProvider earModel = (IEARModelProvider)modelProvider;
+    if (!(earModel.getModelObject() instanceof Application)){
+    	return;
     }
     final Application app = (Application)earModel.getModelObject();
-    if (app != null) {
-      if (newLibDir == null || "/".equals(newLibDir)) { //$NON-NLS-1$
-        newLibDir = "lib"; //$NON-NLS-1$
-      } 
-      //MECLIPSEWTP-167 : lib directory mustn't start with a slash
-      else if (newLibDir.startsWith("/")) { //$NON-NLS-1$
-        newLibDir = newLibDir.substring(1);
-      }
-      String oldLibDir = app.getLibraryDirectory();
-      if (newLibDir.equals(oldLibDir)) return;
-      final String libDir = newLibDir;
-      earModel.modify(new Runnable() {
-        @Override
-		public void run() {     
-        app.setLibraryDirectory(libDir);
-      }}, null);
-    }
+	if (newLibDir == null || "/".equals(newLibDir)) { //$NON-NLS-1$
+	  newLibDir = "lib"; //$NON-NLS-1$
+	} 
+    //MECLIPSEWTP-167 : lib directory mustn't start with a slash
+	else if (newLibDir.startsWith("/")) { //$NON-NLS-1$
+	  newLibDir = newLibDir.substring(1);
+	}
+	String oldLibDir = app.getLibraryDirectory();
+	if (newLibDir.equals(oldLibDir)) return;
+	final String libDir = newLibDir;
+	earModel.modify(new Runnable() {
+	  @Override
+      public void run() {     
+	    app.setLibraryDirectory(libDir);
+	  }}, null);
   }
 
 
