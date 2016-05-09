@@ -67,7 +67,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
   private void mavenProjectChanged(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
     if(facade == null) { return; }
     IProject project = facade.getProject();
-    if (WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || project.getResourceAttributes().isReadOnly()){
+    if (!project.isAccessible() || WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) ||  project.getResourceAttributes() == null || project.getResourceAttributes().isReadOnly()){
       return;
     }
 
