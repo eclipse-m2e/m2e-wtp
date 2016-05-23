@@ -158,6 +158,6 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
   }
   
   protected boolean isMutable(IProject project) {
-	  return project != null && project.isAccessible() && !project.getResourceAttributes().isReadOnly();
+	  return project != null && project.isAccessible() && project.getResourceAttributes() != null && !project.getResourceAttributes().isReadOnly();
   }
 }
