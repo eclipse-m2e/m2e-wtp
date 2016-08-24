@@ -438,10 +438,34 @@ public class WTPProjectsUtil {
       throw new IllegalArgumentException(Messages.WTPProjectsUtil_Actions_Cant_Be_Null);
     }
     for (IProjectFacetVersion existingFacetVersion : project.getProjectFacets()) {
-      if (facetVersion.conflictsWith(existingFacetVersion)) {
-        actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.UNINSTALL, existingFacetVersion, null));
-      }
+    	if (facetVersion.conflictsWith(existingFacetVersion)
+    			&& !containsVersionChange(actions, existingFacetVersion)
+    			&& !containsVersionUninstall(actions, existingFacetVersion)){
+    		//TODO: in case of version change, we may need to search if the new version is conflicting. What about also of chained modifications?
+    			actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.UNINSTALL, existingFacetVersion, null));
+    	}
     }
+  }
+
+  /**
+   * return if the list of Action contains an uninstall action for the provided facetVersion
+   */
+  private static boolean containsVersionUninstall(Set<Action> actions, IProjectFacetVersion facetVersion) {
+	  return actions.stream()
+			  .filter(action -> IFacetedProject.Action.Type.UNINSTALL.equals(action.getType()))
+			  .filter(action -> facetVersion.equals(action.getProjectFacetVersion()))
+			  .findAny().isPresent();
+  }
+
+  /**
+   * return if the list of Action contains a version change action for the provided facetVersion
+   */
+  private static boolean containsVersionChange(Set<Action> actions, IProjectFacetVersion facetVersion) {
+	  IProjectFacet projectFacet = facetVersion.getProjectFacet();
+	  return actions.stream()
+			  .filter(action -> IFacetedProject.Action.Type.VERSION_CHANGE.equals(action.getType()))
+			  .filter(action -> projectFacet.equals(action.getProjectFacetVersion().getProjectFacet()))
+			  .findAny().isPresent();
   }
 
   /**
@@ -462,7 +486,6 @@ public class WTPProjectsUtil {
    * @param project
    * @return
    */
-  @SuppressWarnings("restriction")
   public static boolean hasWebFragmentFacet(IProject project) {
     return FacetedProjectUtilities.isProjectOfType(project, WTPProjectsUtil.WEB_FRAGMENT_FACET.getId());
   }
