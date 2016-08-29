@@ -26,20 +26,20 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>0.24.0</tycho-version>
+    <tycho-version>0.26.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
-    <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
-    <eclipse.target>mars</eclipse.target>
+    <tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
+    <eclipse.target>neon</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>http://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
     <!--
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/releases/1.6/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/releases/1.7/</m2e-repo.url>
     -->
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.7/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.8/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.1.201605251832-signed-20160525150658, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.1/</mavenarchiver-repo.url>
@@ -175,7 +175,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -190,7 +190,7 @@
         </os>
       </activation>
       <properties>
-        <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
+        <tycho.test.jvmArgs>-Xmx512m -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
         <osgi.ws>cocoa</osgi.ws>
       </properties>
     </profile>
@@ -272,7 +272,7 @@
           <plugin>
             <groupId>org.eclipse.cbi.maven.plugins</groupId>
             <artifactId>eclipse-jarsigner-plugin</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.3</version>
             <executions>
               <execution>
                 <id>sign</id>
