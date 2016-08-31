@@ -10,6 +10,9 @@ package org.eclipse.m2e.wtp.internal.conversion;
 
 import static org.eclipse.m2e.wtp.internal.conversion.MavenPluginUtils.configure;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -69,15 +72,24 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
       }
     }
     
-    //Set <failOnMissingWebXml>false</failOnMissingWebXml> for web > 2.4
-    IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());
-    if (fProject != null) {
-      IProjectFacetVersion webVersion = fProject.getProjectFacetVersion(IJ2EEFacetConstants.DYNAMIC_WEB_FACET);
-      if (webVersion != null && webVersion.compareTo(IJ2EEFacetConstants.DYNAMIC_WEB_24) > 0) {
-        configure(warPlugin, FAIL_IF_MISSING_WEBXML_KEY, "false"); //$NON-NLS-1$
-        customized = true;
-      }
-    }
+    try {
+    	VersionRange mwp300 = VersionRange.createFromVersionSpec("[3.0.0,)");
+		if (mwp300.containsVersion(new DefaultArtifactVersion(warPluginVersion))){
+			customized = true;//we simply force adding the latest m-w-p without having to add failOnMissingWebXml
+		} else {
+			//Set <failOnMissingWebXml>false</failOnMissingWebXml> for web > 2.4
+			IFacetedProject fProject = ProjectFacetsManager.create(component.getProject());
+			if (fProject != null) {
+				IProjectFacetVersion webVersion = fProject.getProjectFacetVersion(IJ2EEFacetConstants.DYNAMIC_WEB_FACET);
+				if (webVersion != null && webVersion.compareTo(IJ2EEFacetConstants.DYNAMIC_WEB_24) > 0) {
+					configure(warPlugin, FAIL_IF_MISSING_WEBXML_KEY, "false"); //$NON-NLS-1$
+					customized = true;
+				}
+			}
+		}
+	} catch (InvalidVersionSpecificationException ex) {
+		//not possible
+	}
 
     if (customized) {
       model.setBuild(build);
@@ -99,7 +111,7 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
 	 if(version != null) {
 	   return version;
 	 }
-	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "2.6"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "3.0.0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   

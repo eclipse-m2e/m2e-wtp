@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.war.Overlay;
 import org.apache.maven.plugin.war.overlay.InvalidOverlayConfigurationException;
@@ -72,10 +74,13 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   
   private static final String FAIL_ON_MISSING_WEB_XML = "failOnMissingWebXml";
   
+  
   //Keep backward compat with WTP < Kepler
   private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
                                                               WebFacetUtils.WEB_FACET.getVersion(WEB_3_1_TEXT)
                                                              :WebFacetUtils.WEB_30;
+  
+  private boolean defaultFailOnMissingWebXml = true; 
   
   private IProject project;
   
@@ -86,6 +91,15 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     this.mavenProject = mavenProject;
     Plugin plugin = getPlugin();
     if (plugin != null) {
+    	try {
+        	VersionRange war_3_0_0 = VersionRange.createFromVersionSpec("[3.0.0,)"); //$NON-NLS-1$
+        	if(war_3_0_0.containsVersion(new DefaultArtifactVersion(plugin.getVersion()))) {
+        		defaultFailOnMissingWebXml = false;
+        	}
+        } catch(Exception ex) {
+            //Can't happen
+        }
+    	
     	setConfiguration((Xpp3Dom)plugin.getConfiguration());
     }
   }
@@ -409,7 +423,7 @@ protected String getFilteringAttribute() {
   
   public boolean isFailOnMissingWebXml() {
     Xpp3Dom config = getConfiguration();
-    boolean failOnMissingWebXml = true;
+    boolean failOnMissingWebXml = defaultFailOnMissingWebXml;
     String fail = null;
     if (config != null) {
       fail = DomUtils.getChildValue(config, FAIL_ON_MISSING_WEB_XML); //$NON-NLS-1$
