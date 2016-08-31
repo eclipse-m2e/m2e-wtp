@@ -41,8 +41,8 @@
     -->
     <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.8/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
-    <!-- Use signed version of m2eclipse-mavenarchiver 0.17.1.201605251832-signed-20160525150658, built on build.eclipse.org -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.1/</mavenarchiver-repo.url>
+    <!-- Use signed version of m2eclipse-mavenarchiver 0.17.2.201606141937-signed-20160830073346, built on build.eclipse.org -->
+    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.2/</mavenarchiver-repo.url>
 
   </properties>
 
