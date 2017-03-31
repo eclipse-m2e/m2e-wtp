@@ -86,6 +86,9 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   
   private MavenProject mavenProject;
 
+  /** {@code true} if {@code maven-war-plugin} version is &ge; 3.0.0 */
+  private boolean isVersion3OrGreater = false;
+
   public WarPluginConfiguration(MavenProject mavenProject, IProject project) {
     this.project = project;
     this.mavenProject = mavenProject;
@@ -94,6 +97,7 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     	try {
         	VersionRange war_3_0_0 = VersionRange.createFromVersionSpec("[3.0.0,)"); //$NON-NLS-1$
         	if(war_3_0_0.containsVersion(new DefaultArtifactVersion(plugin.getVersion()))) {
+        		isVersion3OrGreater = true;
         		defaultFailOnMissingWebXml = false;
         	}
         } catch(Exception ex) {
@@ -390,10 +394,26 @@ public String[] getSourceIncludes() {
   }
   
   @Override
-protected String getFilteringAttribute() {
+  protected String getFilteringAttribute() {
     return "filteringDeploymentDescriptors"; //$NON-NLS-1$
   }
-  
+
+  public boolean isFilteringDeploymentDescriptorsEnabled() {
+    Xpp3Dom config = getConfiguration();
+    boolean filteringDeploymentDescriptors = false;
+    String filter = null;
+    if (config != null) {
+      filter = DomUtils.getChildValue(config, getFilteringAttribute());
+    }
+    if (filter == null && !isVersion3OrGreater) {
+      filter = mavenProject.getProperties().getProperty("maven.war." + getFilteringAttribute()); //$NON-NLS-1$
+    }
+    if (filter != null) {
+      filteringDeploymentDescriptors = Boolean.parseBoolean(filter);
+    }
+    return filteringDeploymentDescriptors;
+  }
+
   public String getWarName() {
     Xpp3Dom config = getConfiguration();
     String warName = null;
