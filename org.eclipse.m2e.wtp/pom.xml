@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.eclipse.m2e.wtp</groupId>
 		<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-		<version>1.3.2-SNAPSHOT</version>
+		<version>1.3.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.eclipse.m2e.wtp</artifactId>

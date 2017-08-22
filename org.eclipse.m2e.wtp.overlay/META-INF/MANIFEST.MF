@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Overlay support for Eclipse WTP
 Bundle-SymbolicName: org.eclipse.m2e.wtp.overlay;singleton:=true
-Bundle-Version: 1.3.2.qualifier
+Bundle-Version: 1.3.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
