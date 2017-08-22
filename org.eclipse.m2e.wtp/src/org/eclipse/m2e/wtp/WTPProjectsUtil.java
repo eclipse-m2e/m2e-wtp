@@ -11,7 +11,9 @@ package org.eclipse.m2e.wtp;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +50,7 @@ import org.eclipse.m2e.core.project.MavenProjectUtils;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.jdt.internal.MavenClasspathHelpers;
 import org.eclipse.m2e.wtp.internal.Messages;
+import org.eclipse.m2e.wtp.internal.utilities.DebugUtilities;
 import org.eclipse.m2e.wtp.internal.webfragment.WebFragmentUtil;
 import org.eclipse.m2e.wtp.overlay.modulecore.IOverlayVirtualComponent;
 import org.eclipse.osgi.util.NLS;
@@ -687,5 +690,137 @@ public class WTPProjectsUtil {
 		}
 	}
 	return id.equals(lastConfigurator);
-  }  
+  } 
+  
+
+  public static void configureWtpUtil(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
+    // Adding utility facet on JEE projects is not allowed
+    IProject project = facade.getProject();
+    MavenProject mavenProject = facade.getMavenProject();
+    if(  !WTPProjectsUtil.isJavaProject(facade)
+       || WTPProjectsUtil.isJavaEEProject(project)
+       || WebFragmentUtil.isQualifiedAsWebFragment(facade)) {
+      return;
+    }
+
+    //MECLIPSEWTP-66 delete extra MANIFEST.MF
+    IPath[] sourceRoots = MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots());
+    IPath[] resourceRoots = MavenProjectUtils.getResourceLocations(project, mavenProject.getResources());
+
+    //MECLIPSEWTP-182 check if the Java Project configurator has been successfully run before doing anything :
+    if (!checkJavaConfiguration(project, sourceRoots, resourceRoots)) {
+      LOG.warn(NLS.bind(Messages.AbstractProjectConfiguratorDelegate_Error_Inconsistent_Java_Configuration, project.getName()));
+      return;
+    }
+
+    boolean isDebugEnabled = DebugUtilities.isDebugEnabled();
+    if (isDebugEnabled) {
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("Before configuration ",project)); //$NON-NLS-1$
+    }
+
+    // 2 - check if the manifest already exists, and its parent folder
+
+    IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
+    Set<Action> actions = new LinkedHashSet<>();
+    installJavaFacet(actions, project, facetedProject);
+
+    if(!facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET)) {
+      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.INSTALL, WTPProjectsUtil.UTILITY_10, null));
+    } else if(!facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_10)) {
+      actions.add(new IFacetedProject.Action(IFacetedProject.Action.Type.VERSION_CHANGE, WTPProjectsUtil.UTILITY_10,
+          null));
+    }
+
+    if (!actions.isEmpty()) {
+      ResourceCleaner fileCleaner = new ResourceCleaner(project);
+      try {
+        addFoldersToClean(fileCleaner, facade);
+        facetedProject.modify(actions, monitor);
+      } finally {
+        //Remove any unwanted MANIFEST.MF the Facet installation has created
+        fileCleaner.cleanUp();
+      } 
+    }
+
+    fixMissingModuleCoreNature(project, monitor);
+
+    if (isDebugEnabled) {
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("after configuration ",project)); //$NON-NLS-1$
+    }
+    //MNGECLIPSE-904 remove tests folder links for utility jars
+    removeTestFolderLinks(project, mavenProject, monitor, "/"); //$NON-NLS-1$
+
+    //Remove "library unavailable at runtime" warning.
+    if (isDebugEnabled) {
+      DebugUtilities.debug(DebugUtilities.dumpProjectState("after removing test folders ",project)); //$NON-NLS-1$
+    }
+
+    setNonDependencyAttributeToContainer(project, monitor);
+
+    WTPProjectsUtil.removeWTPClasspathContainer(project);
+  }
+
+  public static void addFoldersToClean(ResourceCleaner fileCleaner, IMavenProjectFacade facade) {
+    for (IPath p : facade.getCompileSourceLocations()) {
+        if (p != null) {
+          fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+          fileCleaner.addFolder(p);
+        }
+      }
+      for (IPath p : facade.getResourceLocations()) {
+        if (p != null) {
+          fileCleaner.addFiles(p.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+          fileCleaner.addFolder(p);
+        }
+      }
+      // add default resource folder
+      IPath defaultResource = new Path("src/main/resources"); //$NON-NLS-1$
+      fileCleaner.addFiles(defaultResource.append("META-INF/MANIFEST.MF")); //$NON-NLS-1$
+      fileCleaner.addFolder(defaultResource);
+
+      for (IPath p : facade.getTestCompileSourceLocations()) {
+        if (p != null) fileCleaner.addFolder(p);
+      }
+      for (IPath p : facade.getTestResourceLocations()) {
+        if (p != null) fileCleaner.addFolder(p);
+      }
+  }
+
+  /**
+   * Checks the maven source folders are correctly added to the project classpath
+   */
+  private static boolean checkJavaConfiguration(IProject project, IPath[] sourceRoots, IPath[] resourceRoots) throws JavaModelException {
+    IJavaProject javaProject = JavaCore.create(project);
+    if (javaProject == null) {
+      return false;
+    }
+    IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
+    if (cpEntries == null) {
+      return false;
+    }
+    Set<IPath> currentPaths = new HashSet<>();
+    for (IClasspathEntry entry  : cpEntries) {
+      if (IClasspathEntry.CPE_SOURCE == entry.getEntryKind()){
+        currentPaths.add(entry.getPath().makeRelativeTo(project.getFullPath()));
+      }
+    }
+    for(IPath mavenSource : sourceRoots) {
+        if (mavenSource != null && !mavenSource.isEmpty()) {
+          IFolder sourceFolder = project.getFolder(mavenSource);
+          if (sourceFolder.exists() && !currentPaths.contains(mavenSource)) {
+            return false;
+          }
+        }
+    }
+    for(IPath mavenSource : resourceRoots) {
+      if (mavenSource != null && !mavenSource.isEmpty()) {
+        IFolder resourceFolder = project.getFolder(mavenSource);
+        if (resourceFolder.exists() && !currentPaths.contains(mavenSource)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
 }

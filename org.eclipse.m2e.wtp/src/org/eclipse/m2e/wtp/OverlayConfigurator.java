@@ -97,7 +97,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
     if (warComponent == null) {
       return;
     }
-    
+
     Set<IVirtualReference> newOverlayRefs = new LinkedHashSet<>();
     MavenSessionHelper helper = new MavenSessionHelper(mavenProject);
     try {
@@ -119,7 +119,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
         if (overlay.shouldSkip()) {
           continue;
         }
-        
+
         Artifact artifact = overlay.getArtifact();
         IOverlayVirtualComponent overlayComponent = null;
         IMavenProjectFacade workspaceDependency = projectManager.getMavenProject(
@@ -134,6 +134,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
           if (overlayProject.equals(project)) {
             overlayComponent = OverlayComponentCore.createSelfOverlayComponent(project);
           } else if (workspaceDependency.getFullPath(artifact.getFile()) != null){
+            WTPProjectsUtil.configureWtpUtil(workspaceDependency, monitor);
             overlayComponent = OverlayComponentCore.createOverlayComponent(overlayProject);
           } else {
             //Dependency resolution is off
@@ -158,9 +159,9 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
     }
     
     IVirtualReference[] oldOverlayRefs = WTPProjectsUtil.extractHardReferences(warComponent, true);
-    
+
     IVirtualReference[] updatedOverlayRefs = newOverlayRefs.toArray(new IVirtualReference[newOverlayRefs.size()]);
-    
+
     if (WTPProjectsUtil.hasChanged2(oldOverlayRefs, updatedOverlayRefs)){
       //Only write in the .component file if necessary 
       IVirtualReference[] nonOverlayRefs = WTPProjectsUtil.extractHardReferences(warComponent, false);
