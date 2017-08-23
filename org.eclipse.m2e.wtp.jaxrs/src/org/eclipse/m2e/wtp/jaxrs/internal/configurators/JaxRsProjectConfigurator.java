@@ -68,21 +68,18 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 			IProgressMonitor monitor) throws CoreException {
 
 		MavenProject mavenProject = mavenProjectFacade.getMavenProject(monitor);
-		if(!WAR_PACKAGING.equals(mavenProject.getPackaging())) {
-			return;
-		}
 
 		if (!isConfigurationEnabled(mavenProjectFacade, monitor)) {
 			return;
 		}
 		IProject project = mavenProjectFacade.getProject();
 		
-    	final IFacetedProject fproj = ProjectFacetsManager.create(project);
-    	if (fproj == null) {
-    		return;
-    	}
-    	
-		if ((!fproj.hasProjectFacet(WTPProjectsUtil.DYNAMIC_WEB_FACET)) 
+		final IFacetedProject fproj = ProjectFacetsManager.create(project);
+		if (fproj == null) {
+			return;
+		}
+
+		if ((!fproj.hasProjectFacet(WTPProjectsUtil.DYNAMIC_WEB_FACET) && !fproj.hasProjectFacet(WTPProjectsUtil.WEB_FRAGMENT_FACET)) 
 				|| fproj.hasProjectFacet(JAX_RS_FACET)) {
 			//everything already installed. Since there's no support for version update -yet- we bail
 			return;
@@ -125,9 +122,11 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 					                      IResource.DEPTH_INFINITE, 
 					                      new SubProgressMonitor(monitor, 1));
 			IDataModel model = createJaxRsDataModel(fproj,facetVersion);
-			WarPluginConfiguration warConfig = new WarPluginConfiguration(mavenProject, fproj.getProject());
-			String warSourceDirectory = warConfig.getWarSourceDirectory();
-			model.setProperty(IJAXRSFacetInstallDataModelProperties.WEBCONTENT_DIR, warSourceDirectory);
+			if (WAR_PACKAGING.equals(mavenProject.getPackaging())) {
+				WarPluginConfiguration warConfig = new WarPluginConfiguration(mavenProject, fproj.getProject());
+				String warSourceDirectory = warConfig.getWarSourceDirectory();
+				model.setProperty(IJAXRSFacetInstallDataModelProperties.WEBCONTENT_DIR, warSourceDirectory);
+			}
 			model.setProperty(IJAXRSFacetInstallDataModelProperties.UPDATEDD, false);
 			fproj.installProjectFacet(facetVersion, model, monitor);
 		} else {
@@ -168,7 +167,7 @@ public class JaxRsProjectConfigurator extends AbstractProjectConfigurator {
 	    if(facade != null) {
 	      IProject project = facade.getProject();
 	      MavenProject mavenProject = facade.getMavenProject(monitor);
-	      if(isWTPProject(project) && WAR_PACKAGING.equals(mavenProject.getPackaging())) {
+	      if(isWTPProject(project)) {
 		    IMavenProjectFacade oldFacade = event.getOldMavenProject();
 		    if (oldFacade != null) {
 		    	MavenProject oldProject = oldFacade.getMavenProject(monitor);

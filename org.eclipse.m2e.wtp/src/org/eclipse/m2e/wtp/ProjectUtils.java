@@ -12,7 +12,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
@@ -160,38 +162,47 @@ public class ProjectUtils {
    */
   public static int refreshHierarchy(File basedir, int refreshDepth, IProgressMonitor monitor) throws CoreException {
     try {
-      int count = 0;
       final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-      final List<IProject> projects = new ArrayList<>(Arrays.asList(root.getProjects()));
+      final Set<IProject> projects = new LinkedHashSet<>();
       
-      final IPath rootLocation = root.getLocation();
-      IPath basedirPath = new Path(basedir.getAbsolutePath());
-      while(!rootLocation.equals(basedirPath) && rootLocation.isPrefixOf(basedirPath)) {
-        Iterator<IProject> ite = projects.iterator();
-         
-        // In case of maven module projects, root.findContainersForLocationURI(...) would return an IFolder
-        // instead of an IProject. So we manually loop through all projects and test their path against the 
-        // current basedirPath. Refreshed projects will be removed from the list for subsequent checks
-        while(ite.hasNext()) {
-          IProject project = ite.next();
-          final IPath projectLocation = project.getLocation();
-          if(projectLocation != null && projectLocation.equals(basedirPath) && project.isAccessible()) {
-            project.refreshLocal(refreshDepth, monitor);
-            count++;
-            ite.remove();
-            break;
-          }
+      IContainer[] containers = root.findContainersForLocationURI(basedir.toURI());
+      for (IContainer container : containers) {
+        if (monitor.isCanceled()) {
+          return 0;
         }
-        basedirPath = basedirPath.removeLastSegments(1);
+        collectProjects(container, projects);
       }
-      
-      return count;
+
+      for (IProject p : projects) {
+         if (monitor.isCanceled()) {
+           break;
+         }
+         if (p.isAccessible()) {
+           p.refreshLocal(refreshDepth, monitor);
+         }
+      }
+      return projects.size();
     } finally {
       monitor.done();
     }
   }
 
-  /**
+  private static void collectProjects(IContainer c, Set<IProject> projects) {
+    if (c == null) {
+      return;
+    }
+    if (c instanceof IProject) {
+      projects.add((IProject)c);
+    } else if (c instanceof IFolder) {
+      IFolder f = (IFolder) c;
+      if (f.getProject() != null) {
+        projects.add(f.getProject());
+      }
+      collectProjects(f.getParent(), projects);
+    }
+  }
+
+   /**
    * Returns the underlying file for a given path 
    * @param project
    * @param path, ex. WEB-INF/web.xml

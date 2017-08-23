@@ -20,7 +20,7 @@
           id="org.eclipse.m2e.wtp.jaxrs.configurator"
           class="org.eclipse.m2e.wtp.jaxrs.internal.configurators.JaxRsProjectConfigurator"
           name="%JAXRS_Project_configurator" 
-          secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"/>
+          runsAfter="org.sonatype.m2e.mavenarchiver.jararchiverconfigurator?,org.maven.ide.eclipse.configuration.wtp.configurator?,org.maven.ide.eclipse.configuration.wtp.webfragment.configurator?"/>
     </extension>
     
      <extension point="org.eclipse.core.resources.markers"
