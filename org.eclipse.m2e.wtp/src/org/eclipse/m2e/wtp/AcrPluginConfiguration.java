@@ -48,6 +48,7 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final IProjectFacetVersion DEFAULT_APPCLIENT_FACET_VERSION = IJ2EEFacetConstants.APPLICATION_CLIENT_50;
   
   private static final int JEE_7_0_ID = 70;
+  private static final int JEE_8_0_ID = 80;
 
   private static final Logger LOG = LoggerFactory.getLogger(AcrPluginConfiguration.class);
   
@@ -71,9 +72,7 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     IFile applicationClientXml = getApplicationClientXml();
 
     if(applicationClientXml != null && applicationClientXml.isAccessible()) {
-      try {
-        InputStream is = applicationClientXml.getContents();
-        try {
+    	try (InputStream is = applicationClientXml.getContents()) {
           JavaEEQuickPeek jqp = new JavaEEQuickPeek(is);
           switch(jqp.getVersion()) {
             case J2EEVersionConstants.J2EE_1_2_ID:
@@ -90,15 +89,14 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
             	//This can only happen when run in WTP >= 3.5
             	//Don't use/create a static 1.7 facet version, it'd blow up WTP < 3.5
                 return IJ2EEFacetConstants.APPLICATION_CLIENT_FACET.getVersion("7.0"); //$NON-NLS-1$
+            case JEE_8_0_ID:
+            	//This can only happen when run in WTP >= 3.5
+            	//Don't use/create a static 1.8 facet version, it'd blow up WTP < 3.5
+                return IJ2EEFacetConstants.APPLICATION_CLIENT_FACET.getVersion("8.0"); //$NON-NLS-1$
           }
-        } finally {
-          is.close();
-        }
-      } catch(IOException ex) {
+    	} catch(IOException | CoreException ex) {
         // expected
-      } catch(CoreException ex) {
-        // expected
-      }
+    	}   
     }
    
     IProject project = mavenProjectFacade.getProject();
