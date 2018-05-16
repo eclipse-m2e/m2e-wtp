@@ -31,6 +31,8 @@ public class MavenJaxRsConstants {
 	public static final IProjectFacetVersion JAX_RS_FACET_1_1; 
 	
 	public static final IProjectFacetVersion JAX_RS_FACET_2_0; 
+	
+	public static final IProjectFacetVersion JAX_RS_FACET_2_1; 
 
 	static {
 		JAX_RS_FACET = ProjectFacetsManager.getProjectFacet(IJAXRSCoreConstants.JAXRS_FACET_ID);
@@ -40,6 +42,11 @@ public class MavenJaxRsConstants {
 			JAX_RS_FACET_2_0 = JAX_RS_FACET.getVersion("2.0"); //$NON-NLS-1$
 		} else {
 			JAX_RS_FACET_2_0 = JAX_RS_FACET_1_1; 
+		}
+		if (JAX_RS_FACET.hasVersion("2.1")) { //$NON-NLS-1$
+			JAX_RS_FACET_2_1 = JAX_RS_FACET.getVersion("2.1"); //$NON-NLS-1$
+		} else {
+			JAX_RS_FACET_2_1 = JAX_RS_FACET_2_0; 
 		}
 	}
 	

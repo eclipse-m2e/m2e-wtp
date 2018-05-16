@@ -13,6 +13,7 @@ package org.eclipse.m2e.wtp.jaxrs.internal.configurators;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_0;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_1_1;
 import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_2_0;
+import static org.eclipse.m2e.wtp.jaxrs.internal.MavenJaxRsConstants.JAX_RS_FACET_2_1;
 
 import java.util.Map;
 
@@ -50,6 +51,11 @@ public class ClasspathJaxRsFacetDetector extends AbstractFacetDetector {
 		if (javaProject != null) {
 			IType type = null;
 			try {
+				type = javaProject.findType("javax.ws.rs.client.RxInvoker"); //$NON-NLS-1$
+				if (type != null) {
+					return JAX_RS_FACET_2_1;
+				}
+				
 				type = javaProject.findType("javax.ws.rs.client.Client"); //$NON-NLS-1$
 				if (type != null) {
 					return JAX_RS_FACET_2_0;
