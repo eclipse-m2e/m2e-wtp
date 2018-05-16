@@ -72,6 +72,10 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 
   private static final String WEB_3_1_TEXT = "3.1"; //$NON-NLS-1$
   
+  private static final int WEB_4_0_ID = 40;
+
+  private static final String WEB_4_0_TEXT = "4.0"; //$NON-NLS-1$
+  
   private static final String FAIL_ON_MISSING_WEB_XML = "failOnMissingWebXml";
   
   
@@ -79,7 +83,12 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
                                                               WebFacetUtils.WEB_FACET.getVersion(WEB_3_1_TEXT)
                                                              :WebFacetUtils.WEB_30;
-  
+
+                                                              
+  private static final IProjectFacetVersion WEB_40 = WebFacetUtils.WEB_FACET.hasVersion(WEB_4_0_TEXT)?
+													          WebFacetUtils.WEB_FACET.getVersion(WEB_4_0_TEXT)
+													         :WEB_31;
+          
   private boolean defaultFailOnMissingWebXml = true; 
   
   private IProject project;
@@ -231,34 +240,34 @@ public String[] getSourceIncludes() {
     }
 
     if(webXml.isAccessible()) {
-      try {
-        InputStream is = webXml.getContents();
-        try {
-          JavaEEQuickPeek jqp = new JavaEEQuickPeek(is);
-          switch(jqp.getVersion()) {
-            case J2EEVersionConstants.WEB_2_2_ID:
-              return WebFacetUtils.WEB_22;
-            case J2EEVersionConstants.WEB_2_3_ID:
-              return WebFacetUtils.WEB_23;
-            case J2EEVersionConstants.WEB_2_4_ID:
-              return WebFacetUtils.WEB_24;
-            case J2EEVersionConstants.WEB_2_5_ID:
-              return WebFacetUtils.WEB_25;
-            case J2EEVersionConstants.WEB_3_0_ID:
-              return WebFacetUtils.WEB_30;
-            case WEB_3_1_ID:
-              return WEB_31;
-          }
-        } finally {
-          is.close();
-        }
-      } catch(IOException ex) {
+	    try (InputStream is = webXml.getContents()){
+	      JavaEEQuickPeek jqp = new JavaEEQuickPeek(is);
+	      switch(jqp.getVersion()) {
+	        case J2EEVersionConstants.WEB_2_2_ID:
+	          return WebFacetUtils.WEB_22;
+	        case J2EEVersionConstants.WEB_2_3_ID:
+	          return WebFacetUtils.WEB_23;
+	        case J2EEVersionConstants.WEB_2_4_ID:
+	          return WebFacetUtils.WEB_24;
+	        case J2EEVersionConstants.WEB_2_5_ID:
+	          return WebFacetUtils.WEB_25;
+	        case J2EEVersionConstants.WEB_3_0_ID:
+	          return WebFacetUtils.WEB_30;
+	        case WEB_3_1_ID:
+	          return WEB_31;
+	        case WEB_4_0_ID:
+	          return WEB_40;
+	      }
+	    } catch(IOException | CoreException ex) {
         // expected
-      } catch(CoreException ex) {
-        // expected
-      }
+	    }
     }
-   
+
+    //If no web.xml found and the project depends on some java EE 8 jar, then set web facet to 4.0
+    if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.HttpServletMapping")) { //$NON-NLS-1$
+      return WEB_40;
+    }
+    
     //If no web.xml found and the project depends on some java EE 7 jar, then set web facet to 3.1
     if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.WebConnection")) { //$NON-NLS-1$
       return WEB_31;
