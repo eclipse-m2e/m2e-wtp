@@ -22,8 +22,10 @@ public class WebFragmentQuickPeek {
 
 	private static final String WEB_FRAGMENT_SCHEMA_ID_3_0 = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"; //$NON-NLS-1$
 	private static final String WEB_FRAGMENT_SCHEMA_ID_3_1 = "http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_3_1.xsd"; //$NON-NLS-1$
+	private static final String WEB_FRAGMENT_SCHEMA_ID_4_0 = "http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd"; //$NON-NLS-1$
 	private static final String WEB_FRAGMENT_3_0 = "3.0"; //$NON-NLS-1$
 	private static final String WEB_FRAGMENT_3_1 = "3.1"; //$NON-NLS-1$
+	private static final String WEB_FRAGMENT_4_0 = "4.0"; //$NON-NLS-1$
 	
 	private XMLRootHandler handler;
 
@@ -84,6 +86,8 @@ public class WebFragmentQuickPeek {
 			version = WEB_FRAGMENT_3_0;
 		} else if (schemaName.equals(WEB_FRAGMENT_SCHEMA_ID_3_1)) {
 			version = WEB_FRAGMENT_3_1;
+		} else if (schemaName.equals(WEB_FRAGMENT_SCHEMA_ID_4_0)) {
+			version = WEB_FRAGMENT_4_0;
 		} 
 		return version;
 	}
