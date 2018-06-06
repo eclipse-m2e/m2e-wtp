@@ -111,7 +111,7 @@ public class WebProjectConverter extends AbstractWtpProjectConversionParticipant
 	 if(version != null) {
 	   return version;
 	 }
-	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "3.2.0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-war-plugin", "3.2.1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   
