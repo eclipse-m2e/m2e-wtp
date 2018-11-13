@@ -36,6 +36,7 @@ import org.eclipse.m2e.wtp.internal.Messages;
 import org.eclipse.m2e.wtp.namemapping.AbstractFileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.FileNameMapping;
 import org.eclipse.m2e.wtp.namemapping.FileNameMappingFactory;
+import org.eclipse.m2e.wtp.namemapping.PatternBasedFileNameMapping;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.slf4j.Logger;
@@ -282,14 +283,20 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     FileNameMapping mapping = null;
     boolean useBaseVersion = !supportsUseBaseVersion;
     if(config != null) {
-	    Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
-	    if(fileNameMappingDom != null) {
-	      String fileNameMappingName = fileNameMappingDom.getValue().trim();
-	      mapping = FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
-	    }
-	    if (supportsUseBaseVersion) {// for ear-plugin >= 2.9
-	    	useBaseVersion = DomUtils.getBooleanChildValue(config, "useBaseVersion", false); //$NON-NLS-1$
-	    }
+        Xpp3Dom outputFileNameMappingDom = config.getChild("outputFileNameMapping"); //$NON-NLS-1$
+        if (outputFileNameMappingDom != null) {
+            String pattern = outputFileNameMappingDom.getValue().trim();
+            mapping = new PatternBasedFileNameMapping(pattern);
+        } else {
+            Xpp3Dom fileNameMappingDom = config.getChild("fileNameMapping"); //$NON-NLS-1$
+            if(fileNameMappingDom != null) {
+              String fileNameMappingName = fileNameMappingDom.getValue().trim();
+              mapping = FileNameMappingFactory.getFileNameMapping(fileNameMappingName);
+            }
+            if (supportsUseBaseVersion) {// for ear-plugin >= 2.9
+                useBaseVersion = DomUtils.getBooleanChildValue(config, "useBaseVersion", false); //$NON-NLS-1$
+            }
+        }
     }
     if (mapping == null) {
     	mapping = FileNameMappingFactory.getDefaultFileNameMapping(); 
