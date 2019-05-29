@@ -26,20 +26,20 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>1.0.0</tycho-version>
+    <tycho-version>1.4.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
-    <eclipse.target>oxygen</eclipse.target>
+    <eclipse.target>2019-06</eclipse.target>
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <webtools-repo.url>http://download.eclipse.org/webtools/downloads/drops/R3.9.0/S-3.9.0M7-20170516000202/repository</webtools-repo.url>
+    <webtools-repo.url>https://download.eclipse.org/webtools/downloads/drops/R3.14.0/S-3.14.0.M3-20190528041652/repository</webtools-repo.url>
     <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/releases/1.8/</m2e-repo.url>
+    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.12/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.2.201606141937-signed-20160830073346, built on build.eclipse.org -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.2/</mavenarchiver-repo.url>
+    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.3/</mavenarchiver-repo.url>
 
   </properties>
 
