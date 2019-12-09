@@ -150,6 +150,6 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
 	 if(version != null) {
 	   return version;
 	 }
-	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "1.1"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	 return MavenPluginUtils.getMostRecentPluginVersion("org.apache.maven.plugins", "maven-acr-plugin", "3.1.0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 }
