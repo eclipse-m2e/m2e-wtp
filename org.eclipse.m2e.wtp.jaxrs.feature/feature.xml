@@ -17,10 +17,6 @@
       %copyright
    </copyright>
 
-   <license url="%licenseURL">
-      %license
-   </license>
-
    <requires>
       <!--
       <import plugin="org.eclipse.wst.common.frameworks"/>

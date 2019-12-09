@@ -15,10 +15,6 @@
       %copyright
    </copyright>
 
-   <license url="%licenseURL">
-      %license
-   </license>
-
    <includes
          id="org.eclipse.m2e.wtp.feature"
          version="0.0.0"/>

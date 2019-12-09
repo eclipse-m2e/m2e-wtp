@@ -17,10 +17,6 @@
       %copyright
    </copyright>
 
-   <license url="%licenseURL">
-      %license
-   </license>
-
    <requires>
       <import feature="org.eclipse.platform" version="3.6.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.rcp" version="3.6.0" match="greaterOrEqual"/>

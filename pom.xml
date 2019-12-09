@@ -2,9 +2,11 @@
 <!--
   Copyright (c) 2008-2015 Sonatype, Inc. and others
   All rights reserved. This program and the accompanying materials
-  are made available under the terms of the Eclipse Public License v1.0
+  are made available under the terms of the Eclipse Public License 2.0
   which accompanies this distribution, and is available at
-  http://www.eclipse.org/legal/epl-v10.html
+  https://www.eclipse.org/legal/epl-2.0/
+
+  SPDX-License-Identifier: EPL-2.0
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -22,40 +24,35 @@
   <packaging>pom</packaging>
 
   <name>M2E-WTP :: Parent</name>
-  <url>http://www.eclipse.org/m2e-wtp</url>
+  <url>https://www.eclipse.org/m2e-wtp</url>
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>1.4.0</tycho-version>
+    <tycho-version>1.5.1</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
-    <eclipse.target>2019-06</eclipse.target>
-    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <webtools-repo.url>https://download.eclipse.org/webtools/downloads/drops/R3.14.0/S-3.14.0.M3-20190528041652/repository</webtools-repo.url>
-    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
-    <m2e-repo.url>http://download.eclipse.org/technology/m2e/milestones/1.12/</m2e-repo.url>
+    <eclipse.target>2019-12</eclipse.target>
+    <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <webtools-repo.url>https://download.eclipse.org/webtools/downloads/drops/R3.16.0/S-3.16.0.M3-20191121172023/repository</webtools-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
+    <m2e-repo.url>https://download.eclipse.org/technology/m2e/milestones/1.14/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.2.201606141937-signed-20160830073346, built on build.eclipse.org -->
     <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.4/</mavenarchiver-repo.url>
-
   </properties>
-
-  <prerequisites>
-   <maven>3.0</maven>
-  </prerequisites>
 
   <organization>
     <name>Eclipse foundation</name>
-    <url>http://www.eclipse.org</url>
+    <url>https://www.eclipse.org</url>
   </organization>
 
   <licenses>
     <license>
-      <name>Eclipse Public License - v 1.0</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <name>Eclipse Public License - v 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
     </license>
   </licenses>
 
@@ -170,7 +167,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
