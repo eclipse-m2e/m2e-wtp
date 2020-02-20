@@ -20,7 +20,7 @@
 
   <groupId>org.eclipse.m2e.wtp</groupId>
   <artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-  <version>1.4.3-SNAPSHOT</version>
+  <version>1.4.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>M2E-WTP :: Parent</name>
@@ -28,7 +28,7 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>1.5.1</tycho-version>
+    <tycho-version>1.6.0</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
     <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
 
@@ -38,10 +38,10 @@
     <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <webtools-repo.url>https://download.eclipse.org/webtools/downloads/drops/R3.16.0/S-3.16.0.M3-20191121172023/repository</webtools-repo.url>
     <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
-    <m2e-repo.url>https://download.eclipse.org/technology/m2e/milestones/1.14/</m2e-repo.url>
+    <m2e-repo.url>https://download.eclipse.org/technology/m2e/releases/1.14/</m2e-repo.url>
     <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
     <!-- Use signed version of m2eclipse-mavenarchiver 0.17.2.201606141937-signed-20160830073346, built on build.eclipse.org -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.4/</mavenarchiver-repo.url>
+    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.5/</mavenarchiver-repo.url>
   </properties>
 
   <organization>
