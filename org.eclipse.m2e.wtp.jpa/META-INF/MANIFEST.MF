@@ -30,3 +30,4 @@ Export-Package: org.eclipse.m2e.wtp.jpa,org.eclipse.m2e.wtp.jpa.intern
  ernal.configurators;x-friends:="org.eclipse.m2e.wtp.tests",org.eclips
  e.m2e.wtp.jpa.internal.util;x-friends:="org.eclipse.m2e.wtp.tests"
 Import-Package: org.slf4j;version="1.6.2"
+Automatic-Module-Name: org.eclipse.m2e.wtp.jpa
