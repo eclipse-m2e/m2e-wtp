@@ -57,13 +57,13 @@
   </licenses>
 
   <issueManagement>
-    <url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=M2E-WTP</url>
-    <system>Bugzilla</system>
+    <url>https://github.com/eclipse-m2e/m2e-wtp/issues</url>
+    <system>Github</system>
   </issueManagement>
 
   <ciManagement>
-    <system>Hudson</system>
-    <url>https://hudson.eclipse.org/m2e/</url>
+    <system>Jenkins</system>
+    <url>https://ci.eclipse.org/m2e/</url>
   </ciManagement>
 
   <modules>
@@ -239,32 +239,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>target-platform-configuration</artifactId>
-            <version>${tycho-version}</version>
-            <configuration>
-              <includePackedArtifacts>true</includePackedArtifacts>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-pack200a-plugin</artifactId>
-            <version>${tycho-extras-version}</version>
-            <executions>
-              <execution>
-                <id>pack200-normalize</id>
-                <goals>
-                  <goal>normalize</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
             <groupId>org.eclipse.cbi.maven.plugins</groupId>
             <artifactId>eclipse-jarsigner-plugin</artifactId>
-            <version>1.1.3</version>
+            <version>1.3.2</version>
             <executions>
               <execution>
                 <id>sign</id>
@@ -274,21 +251,6 @@
               </execution>
             </executions>
           </plugin>
-
-          <plugin>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-pack200b-plugin</artifactId>
-            <version>${tycho-extras-version}</version>
-            <executions>
-              <execution>
-                <id>pack200-pack</id>
-                <goals>
-                  <goal>pack</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
           <plugin>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>tycho-p2-plugin</artifactId>
