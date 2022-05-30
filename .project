@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.m2e.wtp.jpa.parent</name>
+	<name>m2e-wtp</name>
 	<comment></comment>
 	<projects>
 	</projects>
