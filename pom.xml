@@ -12,12 +12,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.sonatype.forge</groupId>
-    <artifactId>forge-parent</artifactId>
-    <version>10</version>
-  </parent>
-
   <groupId>org.eclipse.m2e.wtp</groupId>
   <artifactId>org.eclipse.m2e.wtp.parent</artifactId>
   <version>1.4.4-SNAPSHOT</version>
@@ -28,20 +22,17 @@
   <inceptionYear>2008</inceptionYear>
 
   <properties>
-    <tycho-version>1.6.0</tycho-version>
+    <tycho-version>2.7.2</tycho-version>
     <tycho-extras-version>${tycho-version}</tycho-extras-version>
-    <tycho.scmUrl>scm:git:http://git.eclipse.org/gitroot/m2e-wtp/org.eclipse.m2e.wtp.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 
     <test.timeout>1800</test.timeout><!--  30 mins -->
     <tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
-    <eclipse.target>2019-12</eclipse.target>
+    <eclipse.target>latest</eclipse.target>
     <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <webtools-repo.url>https://download.eclipse.org/webtools/downloads/drops/R3.16.0/S-3.16.0.M3-20191121172023/repository</webtools-repo.url>
-    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
-    <m2e-repo.url>https://download.eclipse.org/technology/m2e/releases/1.14/</m2e-repo.url>
-    <!-- Warning : changing the mavenarchiver version requires submitting a new CQ in ipzilla -->
-    <!-- Use signed version of m2eclipse-mavenarchiver 0.17.2.201606141937-signed-20160830073346, built on build.eclipse.org -->
-    <mavenarchiver-repo.url>http://download.eclipse.org/m2e-wtp/signed/mavenarchiver/0.17.5/</mavenarchiver-repo.url>
+    <webtools-repo.url>http://download.eclipse.org/webtools/repository/latest//</webtools-repo.url>
+    <orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/latest-R</orbit-repo.url>
+    <m2e-repo.url>https://download.eclipse.org/technology/m2e/snapshots/latest/</m2e-repo.url>
   </properties>
 
   <organization>
@@ -67,6 +58,7 @@
   </ciManagement>
 
   <modules>
+    <module>org.eclipse.m2e.wtp.target-platform</module>
     <module>org.eclipse.m2e.wtp.overlay</module>
     <module>org.eclipse.m2e.wtp.overlay.ui</module>
     <module>org.eclipse.m2e.wtp</module>
@@ -81,38 +73,6 @@
     <module>org.eclipse.m2e.wtp.site</module>
   </modules>
 
-  <repositories>
-    <repository>
-      <id>m2e-core</id>
-      <layout>p2</layout>
-      <url>${m2e-repo.url}</url>
-    </repository>
-    <repository>
-      <id>eclipse</id>
-      <layout>p2</layout>
-      <url>${eclipse-repo.url}</url>
-    </repository>
-    <repository>
-      <id>orbit</id>
-      <layout>p2</layout>
-      <url>${orbit-repo.url}</url>
-    </repository>
-    <repository>
-      <id>webtools</id>
-      <layout>p2</layout>
-      <url>${webtools-repo.url}</url>
-    </repository>
-    <repository>
-      <id>eclipse-license</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/cbi/updates/license</url>
-    </repository>
-    <repository>
-      <id>mavenarchiver</id>
-      <layout>p2</layout>
-      <url>${mavenarchiver-repo.url}</url>
-    </repository>
-  </repositories>
   <build>
     <plugins>
       <plugin>
@@ -145,6 +105,14 @@
         <version>${tycho-version}</version>
         <configuration>
           <pomDependencies>consider</pomDependencies>
+          <target>
+	          <artifact>
+					<groupId>org.eclipse.m2e.wtp</groupId>
+					<artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
+					<version>1.4.4-SNAPSHOT</version>
+					<classifier>m2e-wtp-latest</classifier>
+                </artifact>
+           </target>
         </configuration>
       </plugin>
       <plugin>
