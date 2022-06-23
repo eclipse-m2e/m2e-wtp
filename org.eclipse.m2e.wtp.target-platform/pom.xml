@@ -13,9 +13,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.eclipse.m2e.wtp</groupId>
-    <artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-    <version>0.16.0-SNAPSHOT</version>
+	  <groupId>org.eclipse.m2e.wtp</groupId>
+	  <artifactId>org.eclipse.m2e.wtp.parent</artifactId>
+	  <version>1.4.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
@@ -47,6 +47,11 @@
                   <file>m2e-wtp-e36.target</file>
                   <type>target</type>
                   <classifier>m2e-wtp-e36</classifier>
+                </artifact>
+                <artifact>
+                  <file>m2e-wtp-latest.target</file>
+                  <type>target</type>
+                  <classifier>m2e-wtp-latest</classifier>
                 </artifact>
               </artifacts>
             </configuration>
