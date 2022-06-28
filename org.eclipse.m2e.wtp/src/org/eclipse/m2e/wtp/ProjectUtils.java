@@ -11,11 +11,7 @@
 package org.eclipse.m2e.wtp;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;

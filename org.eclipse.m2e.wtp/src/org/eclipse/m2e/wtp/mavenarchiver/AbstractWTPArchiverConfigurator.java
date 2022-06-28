@@ -22,9 +22,9 @@ import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ILifecycleMappingConfiguration;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionKey;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
+import org.eclipse.m2e.mavenarchiver.internal.JarArchiverConfigurator;
 import org.eclipse.m2e.wtp.WTPProjectsUtil;
 import org.eclipse.wst.common.componentcore.ModuleCoreNature;
-import org.sonatype.m2e.mavenarchiver.internal.JarArchiverConfigurator;
 
 /**
  * Base Maven Archiver configurator for WTP projects

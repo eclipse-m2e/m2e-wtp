@@ -41,10 +41,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
+import org.eclipse.m2e.core.embedder.IMavenExecutionContext;
 import org.eclipse.m2e.core.internal.MavenPluginActivator;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
-import org.eclipse.m2e.core.project.IMavenProjectRegistry;
-import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.wtp.DomUtils;
 import org.eclipse.m2e.wtp.MavenWtpConstants;
@@ -226,30 +225,24 @@ public void clean(IProgressMonitor monitor) throws CoreException {
   private void executeCopyResources(IMavenProjectFacade facade,  ResourceFilteringConfiguration filteringConfiguration, IPath targetFolder, List<Xpp3Dom> resources, IProgressMonitor monitor) throws CoreException {
 
     //Create a maven request + session
-    ResolverConfiguration resolverConfig = facade.getResolverConfiguration();
-    
     List<String> filters = filteringConfiguration.getFilters();
-    IMavenProjectRegistry projectManager = MavenPlugin.getMavenProjectRegistry();
-    MavenExecutionRequest request = projectManager.createExecutionRequest(facade.getPom(), resolverConfig, monitor);
+    IMavenExecutionContext executionContext = facade.createExecutionContext();
+    MavenExecutionRequest request = executionContext.getExecutionRequest();
     request.setRecursive(false);
     request.setOffline(true);
 
     IMaven maven = MavenPlugin.getMaven();
     MavenProject mavenProject = facade.getMavenProject();
     
-    MavenSession session = maven.createSession(request, mavenProject);
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("resources:copy-resources"), true, monitor); //$NON-NLS-1$
-    
+    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(mavenProject, Collections.singletonList("resources:copy-resources"), true, monitor); //$NON-NLS-1$
     MojoExecution copyFilteredResourcesMojo = getExecution(executionPlan, "maven-resources-plugin"); //$NON-NLS-1$
-
     if (copyFilteredResourcesMojo == null) return;
 
+    
     Xpp3Dom originalConfig = copyFilteredResourcesMojo.getConfiguration();
     Xpp3Dom  configuration = Xpp3DomUtils.mergeXpp3Dom(new Xpp3Dom("configuration"), originalConfig); //$NON-NLS-1$
     boolean parentHierarchyLoaded = false;
     try {
-      parentHierarchyLoaded = loadParentHierarchy(facade, monitor);
-      
       //Set resource directories to read
       setupResources(configuration, resources);
       
@@ -277,8 +270,9 @@ public void clean(IProgressMonitor monitor) throws CoreException {
       copyFilteredResourcesMojo.setConfiguration(configuration);
       copyFilteredResourcesMojo.getMojoDescriptor().setGoal("copy-resources"); //$NON-NLS-1$
 
-      maven.execute(session, copyFilteredResourcesMojo, monitor);
-      
+      executionContext.execute(facade.getMavenProject(monitor), copyFilteredResourcesMojo, monitor);
+
+      MavenSession session = executionContext.getSession();
       if (session.getResult().hasExceptions()){
         
           MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), MavenWtpConstants.WTP_MARKER_FILTERING_ERROR,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
@@ -408,45 +402,6 @@ public void clean(IProgressMonitor monitor) throws CoreException {
     }
     return null;
   }
-
-  /**
-   * Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=356725. 
-   * Loads the parent project hierarchy if needed.
-   * @param facade
-   * @param monitor
-   * @return true if parent projects had to be loaded.
-   * @throws CoreException
-   */
-  private boolean loadParentHierarchy(IMavenProjectFacade facade, IProgressMonitor monitor) throws CoreException {
-    boolean loadedParent = false; 
-    MavenProject mavenProject = facade.getMavenProject();
-    try {
-      if (mavenProject.getModel().getParent() == null || mavenProject.getParent() != null) {
-        //If the method is called without error, we can assume the project has been fully loaded
-        //No need to continue. 
-        return false;
-      }
-    } catch (IllegalStateException e) {
-    //The parent can not be loaded properly 
-    }
-    MavenExecutionRequest request = null;
-    while(mavenProject !=null && mavenProject.getModel().getParent() != null) {
-        if(monitor.isCanceled()) {
-          break;
-        }
-        if (request == null) {
-          request = MavenPlugin.getMavenProjectRegistry().createExecutionRequest(facade, monitor);
-        }
-        MavenProject parentProject = MavenPlugin.getMaven().resolveParentProject(request, mavenProject, monitor);
-        if (parentProject != null) {
-          mavenProject.setParent(parentProject);
-          loadedParent = true;            
-        }
-        mavenProject = parentProject;
-    }
-    return loadedParent; 
-  }
-  
 
   private static class CleanBuildContext implements BuildContext {
 

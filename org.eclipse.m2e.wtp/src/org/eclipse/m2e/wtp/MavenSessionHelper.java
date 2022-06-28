@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.MavenPlugin;
+import org.eclipse.m2e.core.embedder.IMavenExecutionContext;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
@@ -62,17 +63,14 @@ public class MavenSessionHelper {
     artifacts = project.getArtifacts();
     dependencyArtifacts = project.getDependencyArtifacts();
     IProgressMonitor monitor = new NullProgressMonitor();
-    MavenSession session = getSession(monitor);
-          
-    MavenExecutionPlan executionPlan = MavenPlugin.getMaven().calculateExecutionPlan(session, 
-                                                                                     project, 
+    MavenExecutionPlan executionPlan = MavenPlugin.getMaven().calculateExecutionPlan(project, 
                                                                                      Collections.singletonList(goal), 
                                                                                      true, 
                                                                                      monitor);
     
     MojoExecution execution = getExecution(executionPlan, pluginId);
-    
-    ensureDependenciesAreResolved(session, execution, monitor);
+    IMavenExecutionContext context = MavenPlugin.getMaven().createExecutionContext();
+    ensureDependenciesAreResolved(context.getSession(), execution, monitor);
   }
   
   public void ensureDependenciesAreResolved(MavenSession session, MojoExecution execution, IProgressMonitor monitor) throws CoreException {
@@ -91,20 +89,6 @@ public class MavenSessionHelper {
     }
   }
 
-  private MavenSession getSession(IProgressMonitor monitor) throws CoreException {
-    IMavenProjectRegistry projectManager = MavenPlugin.getMavenProjectRegistry();
-    IMavenProjectFacade mavenFacade = projectManager.getMavenProject(project.getGroupId(), 
-                                                                     project.getArtifactId(), 
-                                                                     project.getVersion());
-
-    MavenExecutionRequest request = projectManager.createExecutionRequest(mavenFacade.getPom(), 
-                                                                          mavenFacade.getResolverConfiguration(), 
-                                                                          monitor);
-    
-    MavenSession session = MavenPlugin.getMaven().createSession(request, project);
-    return session;
-  }
-  
   public void dispose() {
     project.setArtifactFilter(null);
     project.setResolvedArtifacts(null);

@@ -139,7 +139,7 @@ public class DebugUtilities {
    * @return true if Debug Output is enabled in the Maven Preferences Page
    */
   public static boolean isDebugEnabled() {
-    return MavenPlugin.getDefault().getMavenConfiguration().isDebugOutput();
+    return MavenPlugin.getMavenConfiguration().isDebugOutput();
   }
 
 }
