@@ -75,20 +75,22 @@ public String getClassifier() {
   }
   
   @Override
-public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
-      IProgressMonitor monitor) throws CoreException {
-    addMainFolder(runtimeClasspath, mavenProjectFacade, monitor);
-  }
-
-  @Override
-public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
-      IProgressMonitor monitor) throws CoreException {
-    setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor);
-  }
-  
-  @Override
 public String getName() {
     return Messages.EjbClientClassifierClasspathProvider_EJB_Client_Classpath_Provider;
   }
+
+/* (non-Javadoc)
+ * @see org.eclipse.m2e.jdt.IClassifierClasspathProvider#setTestClasspath(java.util.Set, org.eclipse.m2e.core.project.IMavenProjectFacade, org.eclipse.core.runtime.IProgressMonitor, int)
+ */
+public void setTestClasspath(Set<IRuntimeClasspathEntry> testClasspath, IMavenProjectFacade mavenProjectFacade,
+		IProgressMonitor monitor, int classpathProperty) throws CoreException {
+	setRuntimeClasspath(testClasspath, mavenProjectFacade, monitor, classpathProperty);
+}
+
+@Override
+public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
+		IProgressMonitor monitor, int classpathProperty) throws CoreException {
+	addMainFolder(runtimeClasspath, mavenProjectFacade, monitor, classpathProperty);
+}
 
 }

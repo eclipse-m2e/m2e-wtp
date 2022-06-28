@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
+import org.eclipse.m2e.core.embedder.IMavenExecutionContext;
 import org.eclipse.m2e.core.internal.IMavenConstants;
 import org.eclipse.m2e.core.internal.MavenPluginActivator;
 import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
@@ -94,12 +95,11 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     IFile pomResource = project.getFile(IMavenConstants.POM_FILE_NAME);
     markerManager.deleteMarkers(pomResource, MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR);
 
+    IMavenExecutionContext executionContext = mavenFacade.createExecutionContext();
     //Create a maven request + session
     IMaven maven = MavenPlugin.getMaven();
-    MavenExecutionRequest request = projectManager.createExecutionRequest(pomResource, mavenFacade.getResolverConfiguration(), monitor);
-    MavenSession session = maven.createSession(request, mavenProject);
 
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(session, mavenProject, Collections.singletonList("ear:generate-application-xml"), true, monitor); //$NON-NLS-1$
+    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(mavenProject, Collections.singletonList("ear:generate-application-xml"), true, monitor); //$NON-NLS-1$
     MojoExecution genConfigMojo = getExecution(executionPlan, "maven-ear-plugin", "generate-application-xml"); //$NON-NLS-1$ //$NON-NLS-2$
     if(genConfigMojo == null) {
       //TODO Better error management
@@ -148,9 +148,10 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     }
 
     //Execute our modified mojo
-    maven.execute(session, genConfigMojo, monitor);
+    executionContext.execute(mavenFacade.getMavenProject(), genConfigMojo, monitor);
     
-    if (session.getResult().hasExceptions()){
+    MavenSession session = executionContext.getSession();
+	if (session.getResult().hasExceptions()){
       markerManager.addMarkers(mavenFacade.getPom(), MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR, session.getResult());
     }
     

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.m2e.core.embedder.MavenRuntimeManager;
 import org.eclipse.m2e.core.internal.markers.IMavenMarkerManager;
 import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
@@ -43,8 +42,7 @@ public class ExtensionReader {
   
   private static ArrayList<AbstractDependencyConfigurator> dependencyConfigurators;
 
-  public static List<AbstractDependencyConfigurator> readDependencyConfiguratorExtensions(IMavenProjectRegistry projectManager,
-      MavenRuntimeManager runtimeManager, IMavenMarkerManager markerManager) {
+  public static List<AbstractDependencyConfigurator> readDependencyConfiguratorExtensions(IMavenProjectRegistry projectManager, IMavenMarkerManager markerManager) {
     if (dependencyConfigurators == null) {
       dependencyConfigurators = new ArrayList<>();
       
@@ -61,7 +59,6 @@ public class ExtensionReader {
   
                 AbstractDependencyConfigurator projectConfigurator = (AbstractDependencyConfigurator) o;
                 projectConfigurator.setProjectManager(projectManager);
-                projectConfigurator.setRuntimeManager(runtimeManager);
                 projectConfigurator.setMarkerManager(markerManager);
                 
                 dependencyConfigurators.add(projectConfigurator);

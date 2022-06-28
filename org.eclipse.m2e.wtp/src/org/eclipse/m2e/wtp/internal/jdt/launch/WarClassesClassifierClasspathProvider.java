@@ -75,14 +75,14 @@ public String getClassifier() {
   
   @Override
 public void setRuntimeClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
-      IProgressMonitor monitor) throws CoreException {
-    addMainFolder(runtimeClasspath, mavenProjectFacade, monitor);
+      IProgressMonitor monitor, int classpathProperty) throws CoreException {
+    addMainFolder(runtimeClasspath, mavenProjectFacade, monitor, classpathProperty);
   }
   
   @Override
 public void setTestClasspath(Set<IRuntimeClasspathEntry> runtimeClasspath, IMavenProjectFacade mavenProjectFacade,
-      IProgressMonitor monitor) throws CoreException {
-    setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor);
+      IProgressMonitor monitor, int classpathProperty) throws CoreException {
+    setRuntimeClasspath(runtimeClasspath, mavenProjectFacade, monitor, classpathProperty);
   }
 
   @Override

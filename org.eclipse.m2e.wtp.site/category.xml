@@ -5,40 +5,32 @@
    </description>
    <category name="m2e-wtp"/>
 
-   <feature url="features/org.eclipse.m2e.wtp.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.feature" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jaxrs.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jaxrs.feature" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jaxrs.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jsf.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jsf.feature" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jsf.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jpa.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jpa.feature" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jpa.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
    <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
 
-   <category name="maven-archiver"/>
-
-   <feature url="features/org.sonatype.m2e.mavenarchiver.feature_0.0.0.qualifier.jar" id="org.sonatype.m2e.mavenarchiver.feature" version="0.0.0">
-      <category name="maven-archiver"/>
-   </feature>
-
-   <category-def name="maven-archiver" label="M2E Maven Archiver Connector (3rd party)"/>
-
    <category name="m2e-wtp-sdk"/>
 
-   <feature url="features/org.eclipse.m2e.wtp.sdk.feature_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jsf.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jsf.feature.source" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jsf.feature.source" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jaxrs.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jaxrs.feature.source" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jaxrs.feature.source" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
-   <feature url="features/org.eclipse.m2e.wtp.jpa.feature.source_0.0.0.qualifier.jar" id="org.eclipse.m2e.wtp.jpa.feature.source" version="0.0.0">
+   <feature id="org.eclipse.m2e.wtp.jpa.feature.source" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
    <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>

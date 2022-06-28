@@ -233,8 +233,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
     WarPluginConfiguration config = new WarPluginConfiguration(mavenProject, project);
     Map<Artifact, String> deployedArtifacts = getDeployedArtifacts(mavenProject.getArtifacts(), config);
 
-    List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager,
-        MavenPlugin.getMavenRuntimeManager(), mavenMarkerManager);
+    List<AbstractDependencyConfigurator> depConfigurators = ExtensionReader.readDependencyConfiguratorExtensions(projectManager, mavenMarkerManager);
 
     Set<IVirtualReference> references = new LinkedHashSet<>();
 
