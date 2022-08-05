@@ -13,7 +13,7 @@
 
 	<groupId>org.eclipse.m2e.wtp</groupId>
 	<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-	<version>1.4.4-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>M2E-WTP :: Parent</name>
@@ -21,16 +21,12 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>2.7.2</tycho-version>
+		<tycho-version>2.7.4</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
 		<tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
 		<eclipse.target>latest</eclipse.target>
-		<eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-		<webtools-repo.url>http://download.eclipse.org/webtools/repository/latest//</webtools-repo.url>
-		<orbit-repo.url>https://download.eclipse.org/tools/orbit/downloads/latest-R</orbit-repo.url>
-		<m2e-repo.url>https://download.eclipse.org/technology/m2e/snapshots/latest/</m2e-repo.url>
 	</properties>
 
 	<organization>
@@ -106,7 +102,7 @@
 						<artifact>
 							<groupId>org.eclipse.m2e.wtp</groupId>
 							<artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
-							<version>1.4.4-SNAPSHOT</version>
+							<version>1.5.0-SNAPSHOT</version>
 							<classifier>m2e-wtp-latest</classifier>
 						</artifact>
 					</target>
@@ -184,7 +180,7 @@
 					<configuration>
 						<baselineRepositories>
 							<repository>
-								<url>https://download.eclipse.org/m2e-wtp/snapshots/1.4/m2e-wtp/</url>
+								<url>https://download.eclipse.org/m2e-wtp/snapshots/</url>
 							</repository>
 						</baselineRepositories>
 					</configuration>
