@@ -134,7 +134,7 @@
 						<goals><goal>compare-version-with-baselines</goal></goals>
 						<configuration>
 							<baselines>
-								<baseline>https://download.eclipse.org/m2e-wtp/releases/1.4/1.4.3.20191209-1849/</baseline>
+								<baseline>https://download.eclipse.org/m2e-wtp/releases/latest/</baseline>
 							</baselines>
 						</configuration>
 					</execution>
