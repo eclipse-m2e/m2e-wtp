@@ -706,8 +706,8 @@ public class WTPProjectsUtil {
     }
 
     //MECLIPSEWTP-66 delete extra MANIFEST.MF
-    IPath[] sourceRoots = MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots());
-    IPath[] resourceRoots = MavenProjectUtils.getResourceLocations(project, mavenProject.getResources());
+    List<IPath> sourceRoots = MavenProjectUtils.getSourceLocations(project, mavenProject.getCompileSourceRoots());
+    List<IPath> resourceRoots = MavenProjectUtils.getResourceLocations(project, mavenProject.getResources());
 
     //MECLIPSEWTP-182 check if the Java Project configurator has been successfully run before doing anything :
     if (!checkJavaConfiguration(project, sourceRoots, resourceRoots)) {
@@ -791,7 +791,7 @@ public class WTPProjectsUtil {
   /**
    * Checks the maven source folders are correctly added to the project classpath
    */
-  private static boolean checkJavaConfiguration(IProject project, IPath[] sourceRoots, IPath[] resourceRoots) throws JavaModelException {
+  private static boolean checkJavaConfiguration(IProject project, List<IPath> sourceRoots, List<IPath> resourceRoots) throws JavaModelException {
     IJavaProject javaProject = JavaCore.create(project);
     if (javaProject == null) {
       return false;

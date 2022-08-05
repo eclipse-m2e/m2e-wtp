@@ -36,7 +36,7 @@ public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
-		if (WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor)) {
+		if (WTPProjectsUtil.isM2eWtpDisabled(request.mavenProjectFacade(), monitor)) {
 			return;
 		}
 		super.configure(request, monitor);
@@ -71,14 +71,8 @@ public class AbstractWTPArchiverConfigurator extends JarArchiverConfigurator {
 	 * Ensures the project is WTP enabled before generating the manifest.
 	 */
 	@Override
-	protected boolean needsNewManifest(IFile manifest,
-			IMavenProjectFacade oldFacade, IMavenProjectFacade newFacade,
-			IProgressMonitor monitor) {
-
-		if (!ModuleCoreNature.isFlexibleProject(newFacade.getProject())) {
-			return false;
-		}
-		return super.needsNewManifest(manifest, oldFacade, newFacade, monitor);
+	protected boolean needsNewManifest(IFile manifest, IMavenProjectFacade oldFacade, IMavenProjectFacade newFacade) {
+		return ModuleCoreNature.isFlexibleProject(newFacade.getProject()) && super.needsNewManifest(manifest, oldFacade, newFacade);
 	}
 	
 	@Override

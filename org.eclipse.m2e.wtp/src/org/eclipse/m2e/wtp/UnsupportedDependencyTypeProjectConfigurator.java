@@ -57,7 +57,7 @@ public class UnsupportedDependencyTypeProjectConfigurator extends AbstractProjec
 
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-	  checkUnsupportedWorkspaceDependency(monitor, request.getMavenProjectFacade());
+	  checkUnsupportedWorkspaceDependency(monitor, request.mavenProjectFacade());
   }
 
   @Override

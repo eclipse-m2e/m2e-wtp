@@ -49,8 +49,8 @@ public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 
-    IProject project = request.getProject();
-    if (WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor) || !project.isAccessible() || project.getResourceAttributes().isReadOnly()) {
+    IProject project = request.mavenProjectFacade().getProject();
+    if (WTPProjectsUtil.isM2eWtpDisabled(request.mavenProjectFacade(), monitor) || !project.isAccessible() || project.getResourceAttributes().isReadOnly()) {
       return;
     }
     
@@ -59,7 +59,7 @@ public class UtilityProjectConfigurator extends AbstractProjectConfigurator {
     // Only reconfigure utility projects 
     if(facetedProject != null && facetedProject.hasProjectFacet(WTPProjectsUtil.UTILITY_FACET)) {
 
-      MavenProject mavenProject = request.getMavenProject();
+      MavenProject mavenProject = request.mavenProject();
 
       Set<Action> actions = new LinkedHashSet<>();
       installJavaFacet(actions, project, facetedProject);

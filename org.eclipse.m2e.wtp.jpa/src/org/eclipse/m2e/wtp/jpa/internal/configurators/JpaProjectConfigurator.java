@@ -84,13 +84,13 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 	@Override
 	public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
 
-		if(!canConfigure(request.getMavenProjectFacade(), monitor)) {
+		if(!canConfigure(request.mavenProjectFacade(), monitor)) {
 			return;
 		}
-		IProject project = request.getProject();
-		MavenProject mavenProject = request.getMavenProject();
+		IProject project = request.mavenProjectFacade().getProject();
+		MavenProject mavenProject = request.mavenProject();
 
-		IFile persistenceXml = getPersistenceXml(request.getMavenProjectFacade());
+		IFile persistenceXml = getPersistenceXml(request.mavenProjectFacade());
 		if (persistenceXml == null || !persistenceXml.exists()) {
 			//No persistence.xml => not a JPA project
 			return;
@@ -105,9 +105,9 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 			//Configurators should *never* create files in the user's source folders
 			ResourceCleaner cleaner = new ResourceCleaner(facetedProject.getProject());
-			addFoldersToClean(cleaner, request.getMavenProjectFacade());
+			addFoldersToClean(cleaner, request.mavenProjectFacade());
 			try {
-				configureFacets(facetedProject, request.getMavenProjectFacade(), persistenceXml, monitor);
+				configureFacets(facetedProject, request.mavenProjectFacade(), persistenceXml, monitor);
 			} finally {
 				cleaner.cleanUp();
 			}

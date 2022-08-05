@@ -55,13 +55,13 @@ public class WTPProjectConfigurator extends AbstractProjectConfigurator implemen
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
       throws CoreException {
 
-    IProject project = request.getProject();
+    IProject project = request.mavenProjectFacade().getProject();
     if (!isMutable(project) 
-    		|| WTPProjectsUtil.isM2eWtpDisabled(request.getMavenProjectFacade(), monitor)) {
+    		|| WTPProjectsUtil.isM2eWtpDisabled(request.mavenProjectFacade(), monitor)) {
       return;
     }
 
-    MavenProject mavenProject = request.getMavenProject();
+    MavenProject mavenProject = request.mavenProject();
     //Lookup the project configurator
     IProjectConfiguratorDelegate configuratorDelegate = ProjectConfiguratorDelegateFactory
         .getProjectConfiguratorDelegate(mavenProject.getPackaging());
