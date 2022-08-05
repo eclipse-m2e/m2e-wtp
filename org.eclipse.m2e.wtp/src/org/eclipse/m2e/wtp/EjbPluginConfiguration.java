@@ -10,6 +10,8 @@
 
 package org.eclipse.m2e.wtp;
 
+import java.util.List;
+
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -88,11 +90,8 @@ public class EjbPluginConfiguration {
    * @return the first resource location directory declared in pom.xml
    */
   public String getEjbContentDirectory(IProject project) {
-    IPath[] resources = MavenProjectUtils.getResourceLocations(project, ejbProject.getResources());
-    if (resources != null && resources.length > 0 && resources[0] != null) {
-    	return resources[0].toPortableString();
-    }
-    return "src/main/resources"; //$NON-NLS-1$
+    List<IPath> resources = MavenProjectUtils.getResourceLocations(project, ejbProject.getResources());
+    return !resources.isEmpty() ? resources.iterator().next().toPortableString() : "src/main/resources"; //$NON-NLS-1$
   }
   
 }

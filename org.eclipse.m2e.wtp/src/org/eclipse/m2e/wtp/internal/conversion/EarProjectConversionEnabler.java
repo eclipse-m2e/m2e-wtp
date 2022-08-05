@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.m2e.wtp.internal.conversion;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.m2e.wtp.JEEPackaging;
@@ -33,8 +35,8 @@ public class EarProjectConversionEnabler extends AbstractProjectFacetConversionE
    * Returns the <code>ear</code> packaging
    */
   @Override
-public String[] getPackagingTypes(IProject project) {
-    return new String[]{JEEPackaging.EAR.getName()};
+  public List<String> getPackagingTypes(IProject project) {
+    return List.of(JEEPackaging.EAR.getName());
   }
 
 }

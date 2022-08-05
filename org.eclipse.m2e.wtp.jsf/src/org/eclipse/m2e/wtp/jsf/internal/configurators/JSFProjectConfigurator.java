@@ -67,7 +67,7 @@ public class JSFProjectConfigurator extends AbstractProjectConfigurator {
 	@Override
 	public void configure(ProjectConfigurationRequest request,
 			IProgressMonitor monitor) throws CoreException {
-		configureInternal(request.getMavenProjectFacade(), monitor);
+		configureInternal(request.mavenProjectFacade(), monitor);
 	}
 	
 	private void configureInternal(IMavenProjectFacade mavenProjectFacade,

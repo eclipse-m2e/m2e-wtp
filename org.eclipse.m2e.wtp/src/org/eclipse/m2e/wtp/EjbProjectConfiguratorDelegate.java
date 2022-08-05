@@ -12,6 +12,7 @@ package org.eclipse.m2e.wtp;
 
 import static org.eclipse.m2e.wtp.WTPProjectsUtil.removeConflictingFacets;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -118,7 +119,7 @@ protected void configure(IProject project, MavenProject mavenProject, IProgressM
 	  fileCleaner.addFiles(defaultResource.append("META-INF/ejb-jar.xml")); //$NON-NLS-1$
   }
 
-  private void cleanEjbJar(ResourceCleaner fileCleaner, IPath[] directories) {
+  private void cleanEjbJar(ResourceCleaner fileCleaner, Collection<IPath> directories) {
 	  for (IPath p : directories) {
 		  if (p != null) {
 			  fileCleaner.addFiles(p.append("META-INF/ejb-jar.xml")); //$NON-NLS-1$

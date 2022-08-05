@@ -58,7 +58,7 @@ public class OverlayConfigurator extends WTPProjectConfigurator {
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
       throws CoreException {
-	  mavenProjectChanged(request.getMavenProjectFacade(), monitor);
+	  mavenProjectChanged(request.mavenProjectFacade(), monitor);
   }
 
   @Override

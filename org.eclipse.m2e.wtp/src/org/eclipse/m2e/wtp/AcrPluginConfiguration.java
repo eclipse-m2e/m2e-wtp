@@ -142,8 +142,7 @@ public class AcrPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
    * @return the first resource location directory declared in pom.xml
    */
   public String getContentDirectory(IProject project) {
-    IPath[] resources = MavenProjectUtils.getResourceLocations(project, mavenProjectFacade.getMavenProject().getResources());
-    return resources[0].toPortableString();
+    return MavenProjectUtils.getResourceLocations(project, mavenProjectFacade.getMavenProject().getResources()).iterator().next().toPortableString();
   }
   
   @Override

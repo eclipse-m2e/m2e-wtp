@@ -70,7 +70,7 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
    */
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-    IMavenProjectFacade facade = request.getMavenProjectFacade();
+    IMavenProjectFacade facade = request.mavenProjectFacade();
     IProject project = facade.getProject();
 
     if(WTPProjectsUtil.isM2eWtpDisabled(facade, monitor) || !project.isAccessible() || 
