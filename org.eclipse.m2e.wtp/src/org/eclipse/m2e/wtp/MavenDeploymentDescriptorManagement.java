@@ -150,10 +150,11 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
     //Execute our modified mojo
     executionContext.execute(mavenFacade.getMavenProject(), genConfigMojo, monitor);
     
-    MavenSession session = executionContext.getSession();
-	if (session.getResult().hasExceptions()){
-      markerManager.addMarkers(mavenFacade.getPom(), MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR, session.getResult());
-    }
+    // disabled as executionContext.getSession() will throw exception
+//    MavenSession session = executionContext.getSession();
+//	if (session.getResult().hasExceptions()){
+//      markerManager.addMarkers(mavenFacade.getPom(), MavenWtpConstants.WTP_MARKER_GENERATE_APPLICATIONXML_ERROR, session.getResult());
+//    }
     
     //Copy generated files to their final location
     File[] files = generatedDescriptorLocation.listFiles();

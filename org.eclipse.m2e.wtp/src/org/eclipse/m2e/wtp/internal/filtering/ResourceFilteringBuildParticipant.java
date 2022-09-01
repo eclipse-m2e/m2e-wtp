@@ -272,18 +272,19 @@ public void clean(IProgressMonitor monitor) throws CoreException {
 
       executionContext.execute(facade.getMavenProject(monitor), copyFilteredResourcesMojo, monitor);
 
-      MavenSession session = executionContext.getSession();
-      if (session.getResult().hasExceptions()){
-        
-          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), MavenWtpConstants.WTP_MARKER_FILTERING_ERROR,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
-          //move exceptions up to the original session, so they can be handled by the maven builder
-          //XXX current exceptions refer to maven-resource-plugin (since that's what we used), we should probably 
-          // throw a new exception instead to indicate the problem(s) come(s) from web resource filtering
-          for(Throwable t : session.getResult().getExceptions())
-          {
-            getSession().getResult().addException(t);    
-          }
-      }
+//      disabled as executionContext.getSession() will throw exception
+//      MavenSession session = executionContext.getSession();
+//      if (session.getResult().hasExceptions()){
+//        
+//          MavenPluginActivator.getDefault().getMavenMarkerManager().addMarker(facade.getProject(), MavenWtpConstants.WTP_MARKER_FILTERING_ERROR,Messages.ResourceFilteringBuildParticipant_Error_While_Filtering_Resources, -1,  IMarker.SEVERITY_ERROR);
+//          //move exceptions up to the original session, so they can be handled by the maven builder
+//          //XXX current exceptions refer to maven-resource-plugin (since that's what we used), we should probably 
+//          // throw a new exception instead to indicate the problem(s) come(s) from web resource filtering
+//          for(Throwable t : session.getResult().getExceptions())
+//          {
+//            getSession().getResult().addException(t);    
+//          }
+//      }
       
     } finally {
       //Restore original configuration
