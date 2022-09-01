@@ -29,7 +29,7 @@ import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
 import org.eclipse.wst.common.project.facet.core.internal.FacetedProjectNature;
 import org.junit.jupiter.api.Test;
 
-public class TestDummyWarProject extends AbstractMavenProjectTestCase {
+public class DummyWarProjectTest extends AbstractMavenProjectTestCase {
 	
 	@Test
 	public void testConfigureBasicWar() throws Exception {

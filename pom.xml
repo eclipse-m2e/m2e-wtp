@@ -21,7 +21,7 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>2.7.4</tycho-version>
+		<tycho-version>3.0.0-SNAPSHOT</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
@@ -213,15 +213,15 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.eclipse.tycho.extras</groupId>
-						<artifactId>tycho-source-feature-plugin</artifactId>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-source-plugin</artifactId>
 						<version>${tycho-version}</version>
 						<executions>
 							<execution>
 								<id>source-feature</id>
 								<phase>package</phase>
 								<goals>
-									<goal>source-feature</goal>
+									<goal>feature-source</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -289,4 +289,17 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>tycho-snapshots</id>
+			<url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
