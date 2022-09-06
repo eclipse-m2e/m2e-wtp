@@ -18,7 +18,7 @@
 
 	<artifactId>org.eclipse.m2e.wtp</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<version>1.5.1-SNAPSHOT</version>
+	<version>1.5.2-SNAPSHOT</version>
 
 	<name>M2E-WTP :: Core</name>
 	<dependencies>

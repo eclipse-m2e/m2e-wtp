@@ -11,107 +11,102 @@
 package org.eclipse.m2e.wtp;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.lifecycle.internal.DependencyContext;
 import org.apache.maven.lifecycle.internal.MojoExecutor;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMavenExecutionContext;
-import org.eclipse.m2e.core.internal.IMavenConstants;
-import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
-import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.eclipse.m2e.wtp.internal.Messages;
 
 /**
  * Helper for {@link MavenSession} manipulations.
  * 
- * @provisional This class has been added as part of a work in progress. 
- * It is not guaranteed to work or remain the same in future releases. 
- * For more information contact <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
+ * @provisional This class has been added as part of a work in progress. It is
+ * not guaranteed to work or remain the same in future releases. For more
+ * information contact
+ * <a href="mailto:m2e-wtp-dev@eclipse.org">m2e-wtp-dev@eclipse.org</a>.
  * 
  * @author Fred Bricon
  */
 public class MavenSessionHelper {
-  
-  private final MavenProject project;
 
-  private Set<Artifact> artifacts;
+	private final IMavenProjectFacade facade;
 
-  private Set<Artifact> dependencyArtifacts; 
+	private MavenProject project;
 
-  public MavenSessionHelper(MavenProject mavenProject) {
-    if (mavenProject == null) {
-      throw new IllegalArgumentException(Messages.Error_Maven_Project_Cant_Be_Null);
-    } 
-    this.project = mavenProject;
-  }
-  
-  public void ensureDependenciesAreResolved(String pluginId, String goal) throws CoreException {
-    artifacts = project.getArtifacts();
-    dependencyArtifacts = project.getDependencyArtifacts();
-    IProgressMonitor monitor = new NullProgressMonitor();
-    MavenExecutionPlan executionPlan = MavenPlugin.getMaven().calculateExecutionPlan(project, 
-                                                                                     Collections.singletonList(goal), 
-                                                                                     true, 
-                                                                                     monitor);
-    
-    MojoExecution execution = getExecution(executionPlan, pluginId);
-    IMavenExecutionContext context = MavenPlugin.getMaven().createExecutionContext();
-    ensureDependenciesAreResolved(context.getSession(), execution, monitor);
-  }
-  
-  public void ensureDependenciesAreResolved(MavenSession session, MojoExecution execution, IProgressMonitor monitor) throws CoreException {
-    artifacts = project.getArtifacts();
-    dependencyArtifacts = project.getDependencyArtifacts();
-    try {
-               
-      MojoExecutor mojoExecutor = lookup(MojoExecutor.class);
-      DependencyContext dependencyContext = mojoExecutor.newDependencyContext(session,
-          Collections.singletonList(execution));
+	private Set<Artifact> artifacts;
 
-      mojoExecutor.ensureDependenciesAreResolved(execution.getMojoDescriptor(), session, dependencyContext);
+	private Set<Artifact> dependencyArtifacts;
 
-    } catch(Exception ex) {
-      dispose();
-    }
-  }
+	public MavenSessionHelper(IMavenProjectFacade facade) {
+		if (facade == null) {
+			throw new IllegalArgumentException(Messages.Error_Maven_Project_Cant_Be_Null);
+		}
+		this.facade = facade;
+	}
 
-  public void dispose() {
-    project.setArtifactFilter(null);
-    project.setResolvedArtifacts(null);
-    project.setArtifacts(artifacts);
-    project.setDependencyArtifacts(dependencyArtifacts);
-  }
-  
-  private <T> T lookup(Class<T> clazz) throws CoreException {
-    try {
-      return ((MavenImpl)MavenPlugin.getMaven()).getPlexusContainer().lookup(clazz);
-    } catch(ComponentLookupException ex) {
-      throw new CoreException(new Status(IStatus.ERROR, IMavenConstants.PLUGIN_ID, -1,
-          Messages.MavenSessionHelper_Error_Component_Lookup, ex));
-    }
-  }
+	public void ensureDependenciesAreResolved(String pluginId, String goal, IProgressMonitor monitor)
+			throws CoreException {
+		project = facade.getMavenProject(monitor);
+		MavenExecutionPlan executionPlan = MavenPlugin.getMaven().calculateExecutionPlan(project,
+				Collections.singletonList(goal), true, monitor);
 
-  public static MojoExecution getExecution(MavenExecutionPlan executionPlan, String artifactId) throws CoreException {
-    if (executionPlan == null) return null;
-    for(MojoExecution execution : executionPlan.getMojoExecutions()) {
-      if(artifactId.equals(execution.getArtifactId()) ) {
-        return execution;
-      }
-    }
-    return null;
-  }
+		MojoExecution execution = getExecution(executionPlan, pluginId);
+		IMavenExecutionContext context = facade.createExecutionContext();
+		context.execute(project, (ctx, pm) -> {
+			ensureDependenciesAreResolved(ctx, execution, monitor);
+			return null;
+		}, monitor);
+	}
+
+	private void ensureDependenciesAreResolved(IMavenExecutionContext ctx, MojoExecution execution,
+			IProgressMonitor monitor) {
+		MavenSession session = ctx.getSession();
+		try {
+			artifacts = project.getArtifacts();
+			dependencyArtifacts = project.getDependencyArtifacts();
+			MojoExecutor mojoExecutor = ctx.getComponentLookup().lookup(MojoExecutor.class);
+			DependencyContext dependencyContext = mojoExecutor.newDependencyContext(session, List.of(execution));
+			mojoExecutor.ensureDependenciesAreResolved(execution.getMojoDescriptor(), session, dependencyContext);
+		} catch (Exception ex) {
+			dispose();
+		}
+	}
+
+	public void dispose() {
+		if (project != null) {
+			project.setArtifactFilter(null);
+			project.setResolvedArtifacts(null);
+			project.setArtifacts(artifacts);
+			project.setDependencyArtifacts(dependencyArtifacts);
+		}
+	}
+
+	public static MojoExecution getExecution(MavenExecutionPlan executionPlan, String artifactId) throws CoreException {
+		if (executionPlan == null)
+			return null;
+		for (MojoExecution execution : executionPlan.getMojoExecutions()) {
+			if (artifactId.equals(execution.getArtifactId())) {
+				return execution;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	public MavenProject getMavenProject() {
+		return project;
+	}
 }

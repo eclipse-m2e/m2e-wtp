@@ -21,8 +21,6 @@ import java.util.Set;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.MavenExecutionPlan;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
