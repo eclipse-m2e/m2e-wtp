@@ -4,13 +4,10 @@ Contributing to m2e-wtp
 
 If you are interested in contributing to m2e-wtp, you can :
 
-* join the project mailing list [m2e-wtp-dev@eclipse.org](https://dev.eclipse.org/mailman/listinfo/m2e-wtp-dev).
+* Try snapshots from https://download.eclipse.org/technology/m2e/m2e-wtp/snapshots
+* Report issues to this repository
+* Submit Pull Requests. Please note that contributors need to sign the [Eclipse Contributor Agreement](https://www.eclipse.org/legal/ECA.php).
+* Join the project mailing list [m2e-wtp-dev@eclipse.org](https://dev.eclipse.org/mailman/listinfo/m2e-wtp-dev)
 
-* Report bugs to the [Eclipse Bugzilla instance](https://bugs.eclipse.org/bugs/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&bugidtype=include&classification=Technology&list_id=9231713&product=M2E-WTP&query_format=advanced)
+See also https://github.com/jbosstools/m2e-wtp-tests which does contain some more integration tests.
 
-* Take a look at the code :
-
-    - The canonical git repository is available at http://git.eclipse.org/c/m2e-wtp/org.eclipse.m2e.wtp.git/
-    - The git repository containing integration tests is available at [m2e-wtp-tests (@github.com)](https://github.com/jbosstools/m2e-wtp-tests.git)
-
-* Currently, m2e-wtp only accepts contributions as git patches attached the [Eclipse Bugzilla instance](https://bugs.eclipse.org/bugs/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&bugidtype=include&classification=Technology&list_id=9231713&product=M2E-WTP&query_format=advanced). Please note that contributors need to sign the [Eclipse Foundation Contributor License Agreement](https://www.eclipse.org/legal/CLA.php).

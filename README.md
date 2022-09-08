@@ -3,6 +3,12 @@ Maven Integration for Eclipse WTP
 
 Maven Integration for Eclipse WTP, a.k.a m2e-wtp, aims at providing a tight integration between Maven Integration for Eclipse (a.k.a m2e) and the Eclipse Web Tools Project (WTP) .
 
+## 📥 Installation
+
+[Install from p2 repository](https://download.eclipse.org/m2e-wtp/releases/latest)
+
+## Details
+
 m2eclipse-wtp provides a set of m2e connectors used for the configuration of Java EE projects in WTP. It features :
 
 * Support for war projects : adds the Java and Dynamic Web Facets. Support war overlays and on-the-fly resource filtering
@@ -16,10 +22,6 @@ m2eclipse-wtp provides a set of m2e connectors used for the configuration of Jav
 Note that m2e-wtp requires m2e > 1.0. You must make sure m2e's update site (http://download.eclipse.org/technology/m2e/releases/) is defined in :
 Window > Preferences > Install / Update > Available Software Sites
 Since m2e 1.0 is incompatible with previous versions, you may have to uninstall old m2e and m2e-wtp versions before proceeding with the installation.
-
-[Public source repository](http://git.eclipse.org/c/m2e-wtp/org.eclipse.m2e.wtp.git/)
-
-[Issue tracking](https://bugs.eclipse.org/bugs/enter_bug.cgi?product=M2E-WTP)
 
 [Public wiki](wiki.eclipse.org/M2E-WTP)
 
