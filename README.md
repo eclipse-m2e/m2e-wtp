@@ -23,5 +23,5 @@ Note that m2e-wtp requires m2e > 1.0. You must make sure m2e's update site (http
 Window > Preferences > Install / Update > Available Software Sites
 Since m2e 1.0 is incompatible with previous versions, you may have to uninstall old m2e and m2e-wtp versions before proceeding with the installation.
 
-[Public wiki](wiki.eclipse.org/M2E-WTP)
+[Public wiki](https://wiki.eclipse.org/M2E-WTP)
 
