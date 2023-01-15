@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008-2015 Sonatype, Inc. and others.
+ * Copyright (c) 2008-2023 Sonatype, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,17 +71,21 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final String WEB_XML = "WEB-INF/web.xml"; //$NON-NLS-1$
 
   private static final int WEB_3_1_ID = 31;
-
   private static final String WEB_3_1_TEXT = "3.1"; //$NON-NLS-1$
-  
-  private static final int WEB_4_0_ID = 40;
 
+  private static final int WEB_4_0_ID = 40;
   private static final String WEB_4_0_TEXT = "4.0"; //$NON-NLS-1$
-  
+
+  private static final int WEB_5_0_ID = 50;
+  private static final String WEB_5_0_TEXT = "5.0"; //$NON-NLS-1$
+
+  private static final int WEB_6_0_ID = 60;
+  private static final String WEB_6_0_TEXT = "6.0"; //$NON-NLS-1$
+
   private static final String FAIL_ON_MISSING_WEB_XML = "failOnMissingWebXml";
   
   
-  //Keep backward compat with WTP < Kepler
+  //Keep backward compat with WTP < Kepler by having our own constants
   private static final IProjectFacetVersion WEB_31 = WebFacetUtils.WEB_FACET.hasVersion(WEB_3_1_TEXT)?
                                                               WebFacetUtils.WEB_FACET.getVersion(WEB_3_1_TEXT)
                                                              :WebFacetUtils.WEB_30;
@@ -91,6 +95,15 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
 													          WebFacetUtils.WEB_FACET.getVersion(WEB_4_0_TEXT)
 													         :WEB_31;
           
+
+  private static final IProjectFacetVersion WEB_50 = WebFacetUtils.WEB_FACET.hasVersion(WEB_5_0_TEXT)?
+	          WebFacetUtils.WEB_FACET.getVersion(WEB_5_0_TEXT)
+	         :WEB_40;
+
+  private static final IProjectFacetVersion WEB_60 = WebFacetUtils.WEB_FACET.hasVersion(WEB_6_0_TEXT)?
+	          WebFacetUtils.WEB_FACET.getVersion(WEB_6_0_TEXT)
+	         :WEB_50;
+
   private boolean defaultFailOnMissingWebXml = true; 
   
   private IProject project;
@@ -241,7 +254,8 @@ public String[] getSourceIncludes() {
       webXml = project.getFile(customWebXml);
     }
 
-    if(webXml.isAccessible()) {
+	if (webXml.isAccessible()) {
+	// web.xml was found, see to what version of the grammar it refers
 	    try (InputStream is = webXml.getContents()){
 	      JavaEEQuickPeek jqp = new JavaEEQuickPeek(is);
 	      switch(jqp.getVersion()) {
@@ -259,22 +273,36 @@ public String[] getSourceIncludes() {
 	          return WEB_31;
 	        case WEB_4_0_ID:
 	          return WEB_40;
+	        case WEB_5_0_ID:
+	          return WEB_50;
+	        case WEB_6_0_ID:
+	          return WEB_60;
 	      }
 	    } catch(IOException | CoreException ex) {
         // expected
 	    }
     }
 
-    //If no web.xml found and the project depends on some java EE 8 jar, then set web facet to 4.0
+    //If no web.xml found and the project depends on Servlet 6.0 API, then set web facet to 6.0
+    if (WTPProjectsUtil.hasInClassPath(project, "jakarta.servlet.ServletConnection")) { //$NON-NLS-1$
+        return WEB_60;
+    }
+
+    //If no web.xml found and the project depends on Servlet 5.0 API, then set web facet to 5.0
+    if (WTPProjectsUtil.hasInClassPath(project, "jakarta.servlet.GenericFilter")) { //$NON-NLS-1$
+        return WEB_50;
+    }
+
+    //If no web.xml found and the project depends on Servlet 4.0 API, then set web facet to 4.0
     if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.HttpServletMapping")) { //$NON-NLS-1$
       return WEB_40;
     }
     
-    //If no web.xml found and the project depends on some java EE 7 jar, then set web facet to 3.1
+    //If no web.xml found and the project depends on Servlet 3.1 API, then set web facet to 3.1
     if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.http.WebConnection")) { //$NON-NLS-1$
       return WEB_31;
     }
-    //MNGECLIPSE-1978 If no web.xml found and the project depends on some java EE 6 jar, then set web facet to 3.0
+    //MNGECLIPSE-1978 If no web.xml found and the project depends on Servlet 3 API, then set web facet to 3.0
     if (WTPProjectsUtil.hasInClassPath(project, "javax.servlet.annotation.WebServlet")) { //$NON-NLS-1$
       return WebFacetUtils.WEB_30;
     }
