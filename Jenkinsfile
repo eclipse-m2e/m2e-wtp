@@ -15,7 +15,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
-					sh 'mvn clean verify -f pom.xml -B -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Peclipse-sign,uts,its -Dtycho.surefire.timeout=7200'
+					sh 'mvn clean verify -f pom.xml -B -Peclipse-sign,uts,its -Dtycho.surefire.timeout=7200'
 				}
 			}
 			post {

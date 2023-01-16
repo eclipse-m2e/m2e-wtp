@@ -21,13 +21,4 @@
 	<version>1.5.2-SNAPSHOT</version>
 
 	<name>M2E-WTP :: Core</name>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-war-plugin</artifactId>
-			<type>maven-plugin</type>
-			<version>2.1.1</version>
-		</dependency>
-	</dependencies>
-
 </project>
