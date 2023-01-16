@@ -35,6 +35,7 @@ public class DummyWarProjectTest extends AbstractMavenProjectTestCase {
 		IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject("basicWar");
 		p.create(null);
 		p.open(null);
+		
 		IFile pom = p.getFile("pom.xml");
 		pom.create(new ByteArrayInputStream(
 				"""

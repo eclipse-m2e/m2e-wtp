@@ -219,7 +219,9 @@ public void clean(IProgressMonitor monitor) throws CoreException {
   
 
   private void executeCopyResources(IMavenProjectFacade facade,  ResourceFilteringConfiguration filteringConfiguration, IPath targetFolder, List<Xpp3Dom> resources, IProgressMonitor monitor) throws CoreException {
-
+	if (resources == null || resources.isEmpty()) {
+		return;
+	}
     //Create a maven request + session
     List<String> filters = filteringConfiguration.getFilters();
     IMavenExecutionContext executionContext = facade.createExecutionContext();

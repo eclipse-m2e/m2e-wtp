@@ -21,7 +21,7 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>4.0.0-SNAPSHOT</tycho-version>
+		<tycho-version>3.0.1</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
@@ -154,7 +154,7 @@
 					<version>${tycho-version}</version>
 					<dependencies>
 						<dependency>
-							<groupId>org.eclipse.tycho.extras</groupId>
+							<groupId>org.eclipse.tycho</groupId>
 							<artifactId>tycho-buildtimestamp-jgit</artifactId>
 							<version>${tycho-version}</version>
 						</dependency>
