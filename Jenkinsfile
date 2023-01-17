@@ -1,6 +1,6 @@
 pipeline {
 	options {
-		timeout(time: 180, unit: 'MINUTES')
+		timeout(time: 45, unit: 'MINUTES')
 		buildDiscarder(logRotator(numToKeepStr:'10'))
 		disableConcurrentBuilds(abortPrevious: true)
 	}
@@ -15,7 +15,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
-					sh 'mvn clean verify -f pom.xml -B -Peclipse-sign,uts,its -Dtycho.surefire.timeout=7200'
+					sh 'mvn clean verify -f pom.xml -B -Peclipse-sign,uts,its,ci -Dtycho.surefire.timeout=7200'
 				}
 			}
 			post {

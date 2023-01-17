@@ -13,7 +13,7 @@
 
 	<groupId>org.eclipse.m2e.wtp</groupId>
 	<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-	<version>1.5.0-SNAPSHOT</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>M2E-WTP :: Parent</name>
@@ -23,7 +23,7 @@
 	<properties>
 		<tycho-version>3.0.1</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
-
+		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
 		<tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
 		<eclipse.target>latest</eclipse.target>
@@ -103,7 +103,7 @@
 						<artifact>
 							<groupId>org.eclipse.m2e.wtp</groupId>
 							<artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
-							<version>1.5.0-SNAPSHOT</version>
+							<version>1.6.0-SNAPSHOT</version>
 							<classifier>m2e-wtp-latest</classifier>
 						</artifact>
 					</target>
@@ -133,7 +133,7 @@
 						</goals>
 						<configuration>
 							<baselines>
-								<baseline>https://download.eclipse.org/m2e-wtp/releases/latest/</baseline>
+								<baseline>https://download.eclipse.org/technology/m2e/m2e-wtp/releases/latest/</baseline>
 							</baselines>
 						</configuration>
 					</execution>
@@ -169,6 +169,7 @@
 						<sourceReferences>
 							<generate>true</generate>
 						</sourceReferences>
+						<jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
 						<timestampProvider>jgit</timestampProvider>
 						<jgit.ignore>
 				             pom.xml
@@ -193,6 +194,12 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>ci</id>
+			<properties>
+				<git.dirtyWorkingTree>error</git.dirtyWorkingTree>
+			</properties>		
+		</profile>
 		<profile>
 			<id>osx</id>
 			<activation>
