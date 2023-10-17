@@ -22,8 +22,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.eclipse.m2e.wtp.ArtifactHelper;
 
-
-
 /**
  * This class was derived from maven-ear-plugin's org.apache.maven.plugin.ear.output.AbstractFileNameMapping 
  * 
@@ -40,6 +38,7 @@ public abstract class AbstractFileNameMapping
 
 
     private boolean useBaseVersion;
+    private boolean useGroupIdInWarName;
 
 	/**
      * Generates a standard file name for the specified {@link Artifact}.
@@ -58,6 +57,10 @@ public abstract class AbstractFileNameMapping
     	ArtifactHelper.fixArtifactHandler(artifactHandler);
         String extension = artifactHandler.getExtension();
         final StringBuilder buffer = new StringBuilder( 128 );
+        // From 3.0.0 of the maven ear plugin it uses the group id as part of the name
+        if (getUseGroupIdInWarName()) {
+        	buffer.append(a.getGroupId() + "-");
+        }
         buffer.append( a.getArtifactId() );
         if ( addVersion )
         {
@@ -97,6 +100,14 @@ public abstract class AbstractFileNameMapping
      */
     public boolean isUseBaseVersion() {
     	return useBaseVersion;
+    }
+    
+    public void setUseGroupIdInWarName (boolean useGroupIdInWarName) {
+    	this.useGroupIdInWarName = useGroupIdInWarName;
+    }
+    
+    public boolean getUseGroupIdInWarName () {
+    	return useGroupIdInWarName;
     }
     
 }

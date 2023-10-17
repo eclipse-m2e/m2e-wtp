@@ -83,6 +83,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private Set<EarModule>  earModules;
   
   private boolean supportsUseBaseVersion = false;
+  private boolean useGroupIdInWarName = false;
   
   public EarPluginConfiguration(MavenProject mavenProject) {
     if(JEEPackaging.EAR != JEEPackaging.getValue(mavenProject.getPackaging())) {
@@ -95,6 +96,10 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     	VersionRange ear_2_9 = VersionRange.createFromVersionSpec("[2.9,)"); //$NON-NLS-1$
     	if(ear_2_9.containsVersion(new DefaultArtifactVersion(plugin.getVersion()))) {
     		supportsUseBaseVersion = true;
+    	}
+    	VersionRange ear_3_0 = VersionRange.createFromVersionSpec("[3.0,)"); //$NON-NLS-1$
+    	if(ear_3_0.containsVersion(new DefaultArtifactVersion(plugin.getVersion()))) {
+    		useGroupIdInWarName = true;
     	}
     } catch(Exception ex) {
         //Can't happen
@@ -305,6 +310,7 @@ public class EarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
     }
     if (mapping instanceof AbstractFileNameMapping) {
     	((AbstractFileNameMapping)mapping).setUseBaseVersion(useBaseVersion);
+    	((AbstractFileNameMapping)mapping).setUseGroupIdInWarName(useGroupIdInWarName);
     }
     return mapping;
   }
