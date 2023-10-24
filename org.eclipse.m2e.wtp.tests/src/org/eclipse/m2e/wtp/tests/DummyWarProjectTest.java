@@ -81,6 +81,10 @@ public class DummyWarProjectTest extends AbstractMavenProjectTestCase {
 		ResolverConfiguration configuration = new ResolverConfiguration();
 		configuration.setResolveWorkspaceProjects(true);
 		IProjectConfigurationManager configurationManager = MavenPlugin.getProjectConfigurationManager();
+                System.out.println("p=" + p);
+                System.out.println("configuration=" + configuration);
+                System.out.println("monitor=" + monitor);
+                System.out.println("configurationManager=" + configurationManager);
 		configurationManager.enableMavenNature(p, configuration, monitor);
 		configurationManager.updateProjectConfiguration(p, monitor);
 		waitForJobsToComplete();
