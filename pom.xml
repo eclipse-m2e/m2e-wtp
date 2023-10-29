@@ -21,11 +21,11 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>3.0.1</tycho-version>
+		<tycho-version>4.0.3</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
-		<tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
+		<tycho.test.jvmArgs>-Xmx512m -DDetectVMInstallationsJob.disabled=true</tycho.test.jvmArgs>
 		<eclipse.target>latest</eclipse.target>
 	</properties>
 
@@ -208,7 +208,7 @@
 				</os>
 			</activation>
 			<properties>
-				<tycho.test.jvmArgs>-Xmx800m -Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.jvmArgs>
+				<tycho.test.jvmArgs>-Xmx800m -Dosgi.ws=cocoa -DDetectVMInstallationsJob.disabled=true</tycho.test.jvmArgs>
 				<osgi.ws>cocoa</osgi.ws>
 			</properties>
 			<build>
@@ -318,17 +318,4 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>tycho-snapshots</id>
-			<url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 </project>
