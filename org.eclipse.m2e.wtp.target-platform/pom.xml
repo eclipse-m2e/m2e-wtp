@@ -19,46 +19,8 @@
   </parent>
 
   <artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
-  <packaging>pom</packaging>
+  <packaging>eclipse-target-definition</packaging>
 
   <name>M2E-WTP :: Target Platform</name>
-
-  <build>
-    <plugins>
-      <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.4.0</version>
-          <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>m2e-wtp-e371.target</file>
-                  <type>target</type>
-                  <classifier>m2e-wtp-e371</classifier>
-                </artifact>		
-                <artifact>
-                  <file>m2e-wtp-e36.target</file>
-                  <type>target</type>
-                  <classifier>m2e-wtp-e36</classifier>
-                </artifact>
-                <artifact>
-                  <file>m2e-wtp-latest.target</file>
-                  <type>target</type>
-                  <classifier>m2e-wtp-latest</classifier>
-                </artifact>
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
