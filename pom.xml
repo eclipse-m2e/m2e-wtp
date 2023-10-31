@@ -25,7 +25,7 @@
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
-		<tycho.test.jvmArgs>-Xmx512m -DDetectVMInstallationsJob.disabled=true</tycho.test.jvmArgs>
+		<mac.args></mac.args>
 		<eclipse.target>latest</eclipse.target>
 	</properties>
 
@@ -179,6 +179,14 @@
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<argLine>-DDetectVMInstallationsJob.disabled=true ${mac.args}</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
@@ -208,7 +216,7 @@
 				</os>
 			</activation>
 			<properties>
-				<tycho.test.jvmArgs>-Xmx800m -Dosgi.ws=cocoa -DDetectVMInstallationsJob.disabled=true</tycho.test.jvmArgs>
+				<mac.args>-Dosgi.ws=cocoa</mac.args>
 				<osgi.ws>cocoa</osgi.ws>
 			</properties>
 			<build>
