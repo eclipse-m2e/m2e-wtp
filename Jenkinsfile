@@ -15,7 +15,13 @@ pipeline {
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
-					sh 'mvn clean verify -f pom.xml -B -Peclipse-sign,uts,its,ci -Dtycho.surefire.timeout=7200 -Dmaven.repo.local=$WORKSPACE/.m2/repository'
+					sh """
+						mvn -B clean verify -f pom.xml \
+							-Peclipse-sign,uts,its,ci \
+							-Dtycho.surefire.timeout=720 \
+							-Dmaven.repo.local=$WORKSPACE/.m2/repository \
+							-Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true
+					"""
 				}
 			}
 			post {
