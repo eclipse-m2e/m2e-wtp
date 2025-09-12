@@ -43,7 +43,7 @@ public class ConfiguratorEnabler {
 
   public ConfiguratorEnabler(String enablerId, String label, String[] configuratorIds, String description) {
     //Keep new DefaultScope() to maintain Helios compatibility
-    preferenceStore = new InstanceScope().getNode(MavenWtpPlugin.ID);
+    preferenceStore = InstanceScope.INSTANCE.getNode(MavenWtpPlugin.ID);
     this.id = enablerId;
     this.label = label;
     this.description = description;

@@ -111,16 +111,12 @@ public class DebugUtilities {
       dump.append(file.getFullPath()).append(" does not exist").append(SEP); //$NON-NLS-1$
       return;
     }
-    InputStream ins = null;
-    try {
-      dump.append("Contents of ").append(file.getFullPath()).append(SEP); //$NON-NLS-1$
-      ins = file.getContents();
+    dump.append("Contents of ").append(file.getFullPath()).append(SEP); //$NON-NLS-1$
+    try (InputStream ins = file.getContents()){
       dump.append(IOUtil.toString(ins));
     } catch(Exception e) {
       dump.append("An exception occured while reading ").append(file.getFullPath()).append(" :").append(e.getMessage()) //$NON-NLS-1$ //$NON-NLS-2$
           .append(SEP);
-    } finally {
-      IOUtil.close(ins);
     }
   }
 

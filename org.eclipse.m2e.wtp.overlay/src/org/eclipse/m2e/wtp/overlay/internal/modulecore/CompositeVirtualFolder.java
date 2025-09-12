@@ -156,11 +156,11 @@ public class CompositeVirtualFolder implements IFilteredVirtualFolder {
 	}
 
 	private IVirtualFile convertFile(IFlatFile flatFile) {
-		final IFile f = (IFile)flatFile.getAdapter(IFile.class);
+		final IFile f = flatFile.getAdapter(IFile.class);
 		String filePath  = null;
 		if (f == null) {
 			//Not a workspace file, we assume it's an external reference
-			File underlyingFile = (File)flatFile.getAdapter(File.class);
+			File underlyingFile = flatFile.getAdapter(File.class);
 			if (underlyingFile != null && underlyingFile.exists()) {
 				filePath = flatFile.getModuleRelativePath().toPortableString() + Path.SEPARATOR + underlyingFile.getName();
 				if (filter == null || filter.accepts(filePath, true)) {

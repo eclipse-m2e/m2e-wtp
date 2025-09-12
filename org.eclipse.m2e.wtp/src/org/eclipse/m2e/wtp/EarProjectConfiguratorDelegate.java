@@ -225,7 +225,7 @@ public void setModuleDependencies(IProject project, MavenProject mavenProject, I
     newRefs.toArray(newRefsArray);
     
     //Only change the project references if they've changed
-    if (hasChanged(earComponent.getReferences(), newRefsArray)) {
+    if (WTPProjectsUtil.hasChanged(earComponent.getReferences(), newRefsArray)) {
       earComponent.setReferences(newRefsArray);
     }
 

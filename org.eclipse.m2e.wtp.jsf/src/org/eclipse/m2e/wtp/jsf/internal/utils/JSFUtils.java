@@ -20,6 +20,7 @@ import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_0
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_1;
 import static org.eclipse.m2e.wtp.jsf.internal.MavenJSFConstants.JSF_VERSION_2_2;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -30,7 +31,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -86,17 +86,15 @@ public class JSFUtils {
 		IFile facesConfig = getFacesconfig(project);
 	    String version = null;
 		if (facesConfig != null) {
-			InputStream in = null;
 			try {
 				facesConfig.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
-				in = facesConfig.getContents();
-				FacesConfigQuickPeek peek = new FacesConfigQuickPeek(in);
-				version = peek.getVersion();
-			} catch (CoreException e) {
+				try (InputStream in = facesConfig.getContents()) {
+					FacesConfigQuickPeek peek = new FacesConfigQuickPeek(in);
+					version = peek.getVersion();
+				}
+			} catch (IOException|CoreException e) {
 				// ignore
 				LOG.error(Messages.JSFUtils_Error_Reading_FacesConfig, e);
-			} finally {
-				IOUtil.close(in);
 			}
 		}
 		return version;
@@ -111,14 +109,10 @@ public class JSFUtils {
 			return false;
 		}
 		
-		InputStream is = null;
-		try {
-			is = webXml.getContents();
+		try (InputStream is = webXml.getContents()){
 			return hasFacesServlet(is);
 		} catch (Exception e) {
 			LOG.error(NLS.bind(Messages.JSFUtils_Error_Finding_Faces_Servlet_In_WebXml, FACES_SERVLET, webXml.getLocation().toOSString()), e);
-		} finally {
-			IOUtil.close(is);
 		}
 		return false;
 	}	
