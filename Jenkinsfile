@@ -5,11 +5,11 @@ pipeline {
 		disableConcurrentBuilds(abortPrevious: true)
 	}
 	agent {
-		label "centos-latest"
+		label "ubuntu-latest"
 	}
 	tools {
 		maven 'apache-maven-latest'
-		jdk 'temurin-jdk17-latest'
+		jdk 'temurin-jdk21-latest'
 	}
 	stages {
 		stage('Build') {

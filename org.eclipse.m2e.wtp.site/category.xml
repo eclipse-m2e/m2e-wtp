@@ -24,15 +24,6 @@
    <feature id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
       <category name="m2e-wtp-sdk"/>
    </feature>
-   <feature id="org.eclipse.m2e.wtp.jsf.feature.source" version="0.0.0">
-      <category name="m2e-wtp-sdk"/>
-   </feature>
-   <feature id="org.eclipse.m2e.wtp.jaxrs.feature.source" version="0.0.0">
-      <category name="m2e-wtp-sdk"/>
-   </feature>
-   <feature id="org.eclipse.m2e.wtp.jpa.feature.source" version="0.0.0">
-      <category name="m2e-wtp-sdk"/>
-   </feature>
    <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>
 
 
