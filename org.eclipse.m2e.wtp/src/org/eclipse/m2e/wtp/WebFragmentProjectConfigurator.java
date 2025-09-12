@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.codehaus.plexus.util.IOUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -146,21 +145,19 @@ public class WebFragmentProjectConfigurator extends AbstractProjectConfigurator 
   }
 
   private IProjectFacetVersion getVersion(IFile webFragment) {
-	InputStream in = null;
 	try {
 		webFragment.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
-		in = webFragment.getContents();
-		WebFragmentQuickPeek peek = new WebFragmentQuickPeek(in);
-		String version = peek.getVersion();
-		if (version != null) {
-			return WTPProjectsUtil.WEB_FRAGMENT_FACET.getVersion(version);
+		try (InputStream in = webFragment.getContents();){
+			WebFragmentQuickPeek peek = new WebFragmentQuickPeek(in);
+			String version = peek.getVersion();
+			if (version != null) {
+				return WTPProjectsUtil.WEB_FRAGMENT_FACET.getVersion(version);
+			}
 		}
 	} catch (Exception e) {
 		// ignore
 		LOG.error("Error_Reading_WebFragment", e); //$NON-NLS-1$
 		return WTPProjectsUtil.WEB_FRAGMENT_FACET.getDefaultVersion();
-	} finally {
-		IOUtil.close(in);
 	}
 	return null;
   }

@@ -103,7 +103,7 @@ public class JptUtils {
 	 */
 	public static ResourceLocator getResourceLocator(IProject project) {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		JptWorkspace jptWorkspace = (JptWorkspace) workspace.getAdapter(JptWorkspace.class);
+		JptWorkspace jptWorkspace = workspace.getAdapter(JptWorkspace.class);
 		ResourceLocatorManager rlm = jptWorkspace.getResourceLocatorManager();
 		return (rlm==null)?null:rlm.getResourceLocator(project);
 	}

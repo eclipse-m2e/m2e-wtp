@@ -176,7 +176,7 @@ public class JpaProjectConfigurator extends AbstractProjectConfigurator {
 
 	private JpaPlatformManager getPlatformManager() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		JpaWorkspace jpaWorkspace = (JpaWorkspace) workspace.getAdapter(JpaWorkspace.class);
+		JpaWorkspace jpaWorkspace = workspace.getAdapter(JpaWorkspace.class);
 		return jpaWorkspace.getJpaPlatformManager();
 	}
 

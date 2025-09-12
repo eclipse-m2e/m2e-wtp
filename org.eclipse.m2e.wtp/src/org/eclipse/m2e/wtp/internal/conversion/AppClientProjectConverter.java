@@ -19,7 +19,6 @@ import java.util.jar.Manifest;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFile;
@@ -125,16 +124,12 @@ public void convert(IProject project, Model model, IProgressMonitor monitor) thr
       return null;
     }
     
-    InputStream is = null;
-    try {
-      is = manifest.getContents();
+    try (InputStream is = manifest.getContents();){
       Manifest mf = new Manifest(is);
       Attributes mainAttributes = mf.getMainAttributes();
       return mainAttributes.getValue(MAIN_CLASS);
     } catch (Exception ex) {
       ex.printStackTrace();//TODO proper logging
-    } finally {
-      IOUtil.close(is);
     }
     return null;
   }

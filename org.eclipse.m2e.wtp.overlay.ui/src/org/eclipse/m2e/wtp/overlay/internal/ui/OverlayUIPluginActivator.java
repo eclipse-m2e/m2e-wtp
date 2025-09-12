@@ -67,7 +67,7 @@ public class OverlayUIPluginActivator extends AbstractUIPlugin {
     // Create the preference store lazily.
     if(preferenceStore == null) {
       // InstanceScope.INSTANCE added in 3.7
-      preferenceStore = new ScopedPreferenceStore(new InstanceScope(), OverlayConstants.PLUGIN_ID);
+      preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, OverlayConstants.PLUGIN_ID);
 
     }
     return preferenceStore;

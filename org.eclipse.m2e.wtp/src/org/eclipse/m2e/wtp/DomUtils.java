@@ -10,7 +10,8 @@
 
 package org.eclipse.m2e.wtp;
 
-import org.codehaus.plexus.util.StringUtils;
+import java.util.Objects;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.runtime.Assert;
 
@@ -44,7 +45,7 @@ public class DomUtils {
 
   public static final String getChildValue(Xpp3Dom parent, String childName, String defaultValue) {
     String result = getChildValue(parent, childName);
-    return StringUtils.defaultString(result, defaultValue);
+    return Objects.toString(result, defaultValue);
   }
 
   public static final boolean getBooleanChildValue(Xpp3Dom parent, String childName) {

@@ -15,6 +15,7 @@ import static org.eclipse.m2e.wtp.MavenWtpConstants.WTP_MARKER_UNSUPPORTED_DEPEN
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -119,9 +120,9 @@ private void checkUnsupportedWorkspaceDependency(IProgressMonitor monitor,
 
   private Dependency getDependency(Artifact a, List<Dependency> dependencies) {
     for(Dependency d : dependencies) {
-      if(StringUtils.equals(a.getArtifactId(), d.getArtifactId()) && StringUtils.equals(a.getGroupId(), d.getGroupId())
-          && StringUtils.equals(a.getVersion(), d.getVersion())
-          && StringUtils.equals(a.getClassifier(), a.getClassifier())
+      if(Objects.equals(a.getArtifactId(), d.getArtifactId()) && Objects.equals(a.getGroupId(), d.getGroupId())
+          && Objects.equals(a.getVersion(), d.getVersion())
+          && Objects.equals(a.getClassifier(), a.getClassifier())
         ) {
         String dType = (StringUtils.isBlank(d.getType()))?"jar":d.getType(); //$NON-NLS-1$
         String aType = (StringUtils.isBlank(a.getType()))?"jar":a.getType(); //$NON-NLS-1$
