@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.m2e.wtp.feature"
       label="%featureName"
-      version="1.6.1.qualifier"
+      version="1.6.2.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.m2e.wtp"
       license-feature="org.eclipse.license"
@@ -28,23 +28,14 @@
 
    <plugin
          id="org.eclipse.m2e.wtp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.m2e.wtp.overlay"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.m2e.wtp.overlay.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

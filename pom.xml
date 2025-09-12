@@ -13,7 +13,7 @@
 
 	<groupId>org.eclipse.m2e.wtp</groupId>
 	<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-	<version>1.6.1-SNAPSHOT</version>
+	<version>1.6.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>M2E-WTP :: Parent</name>
@@ -21,7 +21,7 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>4.0.3</tycho-version>
+		<tycho-version>5.0.0</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
@@ -52,7 +52,6 @@
 	</ciManagement>
 
 	<modules>
-		<module>org.eclipse.m2e.wtp.target-platform</module>
 		<module>org.eclipse.m2e.wtp.overlay</module>
 		<module>org.eclipse.m2e.wtp.overlay.ui</module>
 		<module>org.eclipse.m2e.wtp</module>
@@ -100,12 +99,7 @@
 				<configuration>
 					<pomDependencies>consider</pomDependencies>
 					<target>
-						<artifact>
-							<groupId>org.eclipse.m2e.wtp</groupId>
-							<artifactId>org.eclipse.m2e.wtp.target-platform</artifactId>
-							<version>1.6.1-SNAPSHOT</version>
-							<classifier>m2e-wtp-latest</classifier>
-						</artifact>
+						<file>${maven.multiModuleProjectDirectory}/org.eclipse.m2e.wtp.target-platform/m2e-wtp-latest.target</file>
 					</target>
 				</configuration>
 			</plugin>
@@ -179,6 +173,14 @@
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-repository-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<includeAllSources>true</includeAllSources>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
@@ -230,46 +232,6 @@
 						</plugin>
 					</plugins>
 				</pluginManagement>
-			</build>
-		</profile>
-		<profile>
-			<id>sdk</id>
-			<activation>
-				<file>
-					<exists>sdk</exists>
-				</file>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>tycho-source-plugin</artifactId>
-						<version>${tycho-version}</version>
-						<executions>
-							<execution>
-								<id>source-feature</id>
-								<phase>package</phase>
-								<goals>
-									<goal>feature-source</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>tycho-p2-plugin</artifactId>
-						<version>${tycho-version}</version>
-						<executions>
-							<execution>
-								<id>attach-p2-metadata</id>
-								<phase>package</phase>
-								<goals>
-									<goal>p2-metadata</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
 			</build>
 		</profile>
 		<profile>
