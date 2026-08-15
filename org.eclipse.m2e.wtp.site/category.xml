@@ -3,7 +3,9 @@
    <description name="Maven Integration for WTP">
       m2e-wtp - Maven Integration for WTP
    </description>
+
    <category name="m2e-wtp"/>
+   <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
 
    <feature id="org.eclipse.m2e.wtp.feature" version="0.0.0">
       <category name="m2e-wtp"/>
@@ -17,14 +19,5 @@
    <feature id="org.eclipse.m2e.wtp.jpa.feature" version="0.0.0">
       <category name="m2e-wtp"/>
    </feature>
-   <category-def name="m2e-wtp" label="Maven Integration for WTP"/>
-
-   <category name="m2e-wtp-sdk"/>
-
-   <feature id="org.eclipse.m2e.wtp.sdk.feature" version="0.0.0">
-      <category name="m2e-wtp-sdk"/>
-   </feature>
-   <category-def name="m2e-wtp-sdk" label="Maven Integration for WTP - SDK"/>
-
 
 </site>
