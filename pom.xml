@@ -21,13 +21,14 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>5.0.3</tycho-version>
+		<tycho-version>5.0.4-SNAPSHOT</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
 		<tycho.test.jvmArgs>-Xmx512m -DDetectVMInstallationsJob.disabled=true</tycho.test.jvmArgs>
 		<eclipse.target>latest</eclipse.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<tycho-snapshot-repo.url>https://repo.eclipse.org/content/repositories/tycho-maven2-snapshots/</tycho-snapshot-repo.url>
 	</properties>
 
 	<organization>
@@ -67,6 +68,13 @@
 		<module>org.eclipse.m2e.wtp.jpa.feature</module>
 		<module>org.eclipse.m2e.wtp.site</module>
 	</modules>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>tycho-snapshots</id>
+			<url>${tycho-snapshot-repo.url}</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<plugins>
