@@ -69,7 +69,7 @@
 							</mappings>
 							<favicon>https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/refs/heads/master/org.eclipse.m2e.wtp/m2e-wtp_icon_32px.png</favicon>
 							<bodyImage>https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/refs/heads/master/org.eclipse.m2e.wtp/m2e-wtp_icon_32px.png</bodyImage>
-							<titleImage>https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/refs/heads/master/org.eclipse.m2e.wtp/m2e-wtp_icon_32px.png</titleImage>
+							<titleImage>https://raw.githubusercontent.com/eclipse-m2e/m2e-core/refs/heads/main/assets/m2e_Logo_plain.svg</titleImage>
 							<bree>true</bree>
 						</configuration>
 					</execution>
