@@ -10,5 +10,5 @@ See also https://github.com/jbosstools/m2e-wtp-tests which contains some additio
 
 ### ⌨️ Setting Up the Development Environment Automatically
 
-[![Create Eclipse Development Environment for m2e-wtp](https://download.eclipse.org/oomph/www/setups/svg/m2e_WTP.svg)](https://www.eclipse.org/setups/installer/?url=https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/master/setup/m2e-wtp-configuration.setup&show=true "Click to open Eclipse-Installer Auto Launch or drag into your running installer")
+[![Create Eclipse Development Environment for m2e-wtp](https://download.eclipse.org/oomph/www/setups/svg/m2e_WTP.svg)](https://www.eclipse.org/setups/installer/?url=https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/master/setups/m2e-wtp-configuration.setup&show=true "Click to open Eclipse-Installer Auto Launch or drag into your running installer")
 

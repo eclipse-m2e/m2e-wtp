@@ -4,7 +4,7 @@ Maven Integration for Eclipse WTP, a.k.a m2e-wtp, aims at providing a tight inte
 
 ## 📥 Installation
 
-[Install from p2 repository](https://download.eclipse.org/technology/m2e/m2e-wtp/releases/latest)
+[Install from p2 repository](https://download.eclipse.org/technology/m2e/m2e-wtp/updates/release/latest)
 
 ## Details
 

@@ -135,7 +135,7 @@
 						</goals>
 						<configuration>
 							<baselines>
-								<baseline>https://download.eclipse.org/technology/m2e/m2e-wtp/releases/latest/</baseline>
+								<baseline>https://download.eclipse.org/technology/m2e/m2e-wtp/updates/release/latest/</baseline>
 							</baselines>
 						</configuration>
 					</execution>
