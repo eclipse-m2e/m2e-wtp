@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Project
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:git="http://www.eclipse.org/oomph/setup/git/1.0"
+    xmlns:jdt="http://www.eclipse.org/oomph/setup/jdt/1.0"
+    xmlns:p2="http://www.eclipse.org/oomph/p2/1.0"
+    xmlns:predicates="http://www.eclipse.org/oomph/predicates/1.0"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    xmlns:setup.targlets="http://www.eclipse.org/oomph/setup/targlets/1.0"
+    xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
+    xmlns:workingsets="http://www.eclipse.org/oomph/workingsets/1.0"
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/JDT.ecore http://www.eclipse.org/oomph/predicates/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/targlets/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/SetupTarglets.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/SetupWorkingSets.ecore http://www.eclipse.org/oomph/workingsets/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/WorkingSets.ecore"
+    name="m2e-wtp"
+    label="m2e WTP">
+  <annotation
+      source="http://www.eclipse.org/oomph/setup/ConfigurationReference">
+    <reference
+        href="m2e-wtp-configuration.setup#/"/>
+  </annotation>
+  <setupTask
+      xsi:type="setup:CompoundTask"
+      name="User Preferences">
+    <annotation
+        source="http://www.eclipse.org/oomph/setup/UserPreferences">
+      <detail
+          key="/instance/org.eclipse.oomph.setup.ui/showToolBarContributions">
+        <value>record</value>
+      </detail>
+      <detail
+          key="/instance/org.eclipse.oomph.setup.ui/p2.startup.tasks">
+        <value>record</value>
+      </detail>
+      <detail
+          key="/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE">
+        <value>record</value>
+      </detail>
+      <detail
+          key="/instance/org.eclipse.pde/compilers.incompatible-environment">
+        <value>record</value>
+      </detail>
+      <detail
+          key="/instance/org.eclipse.wildwebdeveloper.xml/org.eclipse.wildwebdeveloper.xml.format.maxLineWidth">
+        <value>record</value>
+      </detail>
+      <detail
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.discouragedReference">
+        <value>record</value>
+      </detail>
+    </annotation>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="org.eclipse.jdt.core">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          disabled="true"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.discouragedReference"
+          value="ignore"/>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="org.eclipse.jdt.launching">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          disabled="true"
+          key="/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
+          value="ignore"/>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="org.eclipse.oomph.setup.ui">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          disabled="true"
+          key="/instance/org.eclipse.oomph.setup.ui/p2.startup.tasks"
+          value="PROMPT"/>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.oomph.setup.ui/showToolBarContributions"
+          value="true"/>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="org.eclipse.wildwebdeveloper.xml">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wildwebdeveloper.xml/org.eclipse.wildwebdeveloper.xml.format.maxLineWidth"
+          value="0"/>
+    </setupTask>
+  </setupTask>
+  <setupTask
+      xsi:type="jdt:JRETask"
+      version="JavaSE-21"
+      location="${jre.location-21}">
+    <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:EclipseIniTask"
+      option="-Xmx"
+      value="2048m"
+      vm="true">
+    <description>Set the heap space needed to work with the projects of ${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:ResourceCreationTask"
+      excludedTriggers="STARTUP MANUAL"
+      targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.jdt.ui/dialog_settings.xml"
+      encoding="UTF-8">
+    <description>Initialize JDT's package explorer to show working sets as its root objects</description>
+    <content>
+      &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+      &lt;section name=&quot;Workbench&quot;>
+      	&lt;section name=&quot;org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart&quot;>
+      		&lt;item value=&quot;true&quot; key=&quot;group_libraries&quot;/>
+      		&lt;item value=&quot;false&quot; key=&quot;linkWithEditor&quot;/>
+      		&lt;item value=&quot;2&quot; key=&quot;layout&quot;/>
+      		&lt;item value=&quot;2&quot; key=&quot;rootMode&quot;/>
+      		&lt;item value=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;packageExplorer configured=&amp;quot;true&amp;quot; group_libraries=&amp;quot;1&amp;quot; layout=&amp;quot;2&amp;quot; linkWithEditor=&amp;quot;0&amp;quot; rootMode=&amp;quot;2&amp;quot; sortWorkingSets=&amp;quot;false&amp;quot; workingSetName=&amp;quot;&amp;quot;&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;localWorkingSetManager&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;workingSet editPageId=&amp;quot;org.eclipse.jdt.internal.ui.OthersWorkingSet&amp;quot; factoryID=&amp;quot;org.eclipse.ui.internal.WorkingSetFactory&amp;quot; id=&amp;quot;1382792884467_1&amp;quot; label=&amp;quot;Other Projects&amp;quot; name=&amp;quot;Other Projects&amp;quot;/&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;/localWorkingSetManager&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;activeWorkingSet workingSetName=&amp;quot;Other Projects&amp;quot;/&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;allWorkingSets workingSetName=&amp;quot;Other Projects&amp;quot;/&amp;gt;&amp;#x0D;&amp;#x0A;&amp;lt;/packageExplorer&amp;gt;&quot; key=&quot;memento&quot;/>
+      	&lt;/section>
+      &lt;/section>
+
+    </content>
+  </setupTask>
+  <setupTask
+      xsi:type="git:GitCloneTask"
+      id="git.clone.m2e-wtp"
+      remoteURI="eclipse-m2e/m2e-wtp">
+    <annotation
+        source="http://www.eclipse.org/oomph/setup/InducedChoices">
+      <detail
+          key="inherit">
+        <value>github.remoteURIs</value>
+      </detail>
+      <detail
+          key="label">
+        <value>m2e WTP GitHub Repository</value>
+      </detail>
+      <detail
+          key="target">
+        <value>remoteURI</value>
+      </detail>
+    </annotation>
+    <configSections
+        name="branch">
+      <properties
+          key="autoSetupRebase"
+          value="always"/>
+    </configSections>
+    <description>${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup.targlets:TargletTask">
+    <annotation>
+      <content
+          xsi:type="p2:Repository"
+          url="https://download.eclipse.org/releases/${eclipse.target.platform}"/>
+    </annotation>
+    <targlet
+        name="${scope.project.label}">
+      <requirement
+          name="org.eclipse.sdk.feature.group"/>
+      <requirement
+          name="*"/>
+      <sourceLocator
+          rootFolder="${git.clone.m2e-wtp.location}"
+          locateNestedProjects="true">
+        <predicate
+            xsi:type="predicates:NotPredicate">
+          <operand
+              xsi:type="predicates:NamePredicate"
+              pattern="basicWar"/>
+        </predicate>
+      </sourceLocator>
+      <repositoryList>
+        <repository
+            url="https://download.eclipse.org/cbi/updates/license"/>
+        <repository
+            url="https://download.eclipse.org/webtools/CI/latest"/>
+        <repository
+            url="https://download.eclipse.org/modeling/emf/emf/builds/milestone/latest"/>
+        <repository
+            url="https://download.eclipse.org/technology/m2e/snapshots/latest"/>
+        <repository
+            url="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/milestone/latest"/>
+        <repository
+            url="https://download.eclipse.org/datatools/updates/milestone/latest"/>
+        <repository
+            url="https://download.eclipse.org/tools/gef/classic/milestone/latest"/>
+      </repositoryList>
+    </targlet>
+  </setupTask>
+  <setupTask
+      xsi:type="setup.workingsets:WorkingSetTask"
+      id="m2e-wtp.workingsets"
+      prefix="org.eclipse.m2e-wtp-">
+    <workingSet
+        name="m2e WTP Bundles">
+      <predicate
+          xsi:type="predicates:AndPredicate">
+        <operand
+            xsi:type="predicates:RepositoryPredicate"
+            project="org.eclipse.m2e.wtp"/>
+        <operand
+            xsi:type="predicates:NaturePredicate"
+            nature="org.eclipse.pde.PluginNature"/>
+        <operand
+            xsi:type="workingsets:ExclusionPredicate"
+            excludedWorkingSet="//'m2e-wtp.workingsets'/@workingSets[name='m2e%20WTP%20Tests']"/>
+      </predicate>
+    </workingSet>
+    <workingSet
+        name="m2e WTP Tests">
+      <predicate
+          xsi:type="predicates:AndPredicate">
+        <operand
+            xsi:type="predicates:RepositoryPredicate"
+            project="org.eclipse.m2e.wtp"/>
+        <operand
+            xsi:type="predicates:NaturePredicate"
+            nature="org.eclipse.pde.PluginNature"/>
+        <operand
+            xsi:type="predicates:NamePredicate"
+            pattern=".*\.tests"/>
+      </predicate>
+    </workingSet>
+    <workingSet
+        name="m2e WTP Features">
+      <predicate
+          xsi:type="predicates:AndPredicate">
+        <operand
+            xsi:type="predicates:RepositoryPredicate"
+            project="org.eclipse.m2e.wtp"/>
+        <operand
+            xsi:type="predicates:NaturePredicate"
+            nature="org.eclipse.pde.FeatureNature"/>
+      </predicate>
+    </workingSet>
+    <workingSet
+        name="m2e WTP Releng">
+      <predicate
+          xsi:type="predicates:AndPredicate">
+        <operand
+            xsi:type="predicates:RepositoryPredicate"
+            project="org.eclipse.m2e.wtp"/>
+        <operand
+            xsi:type="workingsets:ExclusionPredicate"
+            excludedWorkingSet="//'m2e-wtp.workingsets'/@workingSets[name='m2e%20WTP%20Bundles'] //'m2e-wtp.workingsets'/@workingSets[name='m2e%20WTP%20Features'] //'m2e-wtp.workingsets'/@workingSets[name='m2e%20WTP%20Tests']"/>
+      </predicate>
+    </workingSet>
+    <description>The dynamic working sets for ${scope.project.label}</description>
+  </setupTask>
+  <setupTask
+      xsi:type="setup:ResourceCreationTask"
+      targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.debug.core/.launches/build-m2e-wtp.launch">
+    <content>
+      &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?>
+      &lt;launchConfiguration type=&quot;org.eclipse.m2e.Maven2LaunchConfigurationType&quot;>
+          &lt;intAttribute key=&quot;M2_COLORS&quot; value=&quot;0&quot;/>
+          &lt;booleanAttribute key=&quot;M2_DEBUG_OUTPUT&quot; value=&quot;false&quot;/>
+          &lt;stringAttribute key=&quot;M2_GOALS&quot; value=&quot;clean verify&quot;/>
+          &lt;booleanAttribute key=&quot;M2_NON_RECURSIVE&quot; value=&quot;false&quot;/>
+          &lt;booleanAttribute key=&quot;M2_OFFLINE&quot; value=&quot;false&quot;/>
+          &lt;stringAttribute key=&quot;M2_PROFILES&quot; value=&quot;promote&quot;/>
+          &lt;listAttribute key=&quot;M2_PROPERTIES&quot;>
+              &lt;listEntry value=&quot;user.home=$${system_property:user.home}&quot;/>
+              &lt;listEntry value=&quot;jgit.dirtyWorkingTree=warning&quot;/>
+              &lt;listEntry value=&quot;org.eclipse.justj.p2.manager.remote=localhost:$${project_loc:/m2e-wtp}/org.eclipse.m2e.wtp.site/promotion/m2e-wtp&quot;/>
+              &lt;listEntry value=&quot;build.type=nightly&quot;/>
+              &lt;listEntry value=&quot;tycho-versionx=5.0.4-SNAPSHOT&quot;/>
+              &lt;listEntry value=&quot;git.commit=00913770bda1ff5837ef4c935c2b87d7f7ef23da&quot;/>
+          &lt;/listAttribute>
+          &lt;stringAttribute key=&quot;M2_RUNTIME&quot; value=&quot;EMBEDDED&quot;/>
+          &lt;booleanAttribute key=&quot;M2_SKIP_TESTS&quot; value=&quot;false&quot;/>
+          &lt;intAttribute key=&quot;M2_THREADS&quot; value=&quot;1&quot;/>
+          &lt;booleanAttribute key=&quot;M2_UPDATE_SNAPSHOTS&quot; value=&quot;false&quot;/>
+          &lt;stringAttribute key=&quot;M2_USER_SETTINGS&quot; value=&quot;&quot;/>
+          &lt;booleanAttribute key=&quot;M2_WORKSPACE_RESOLUTION&quot; value=&quot;false&quot;/>
+          &lt;booleanAttribute key=&quot;org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING&quot; value=&quot;false&quot;/>
+          &lt;stringAttribute key=&quot;org.eclipse.debug.core.terminate.timestamp&quot; value=&quot;1786867224949&quot;/>
+          &lt;stringAttribute key=&quot;org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE&quot; value=&quot;$${workspace_loc:/m2e-wtp}/build.log&quot;/>
+          &lt;booleanAttribute key=&quot;org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE&quot; value=&quot;false&quot;/>
+          &lt;booleanAttribute key=&quot;org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES&quot; value=&quot;true&quot;/>
+          &lt;booleanAttribute key=&quot;org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR&quot; value=&quot;false&quot;/>
+          &lt;stringAttribute key=&quot;org.eclipse.jdt.launching.WORKING_DIRECTORY&quot; value=&quot;$${workspace_loc:/m2e-wtp}&quot;/>
+      &lt;/launchConfiguration>
+
+    </content>
+  </setupTask>
+  <stream name="master"
+      label="Master">
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        option="-Doomph.redirection.m2e-wtp"
+        value="=https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/master/setups/m2e-wtp.setup->${git.clone.m2e-wtp|uri}/setups/m2e-wtp.setup"
+        vm="true">
+      <description>Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.</description>
+    </setupTask>
+  </stream>
+  <logicalProjectContainer
+      xsi:type="setup:ProjectCatalog"
+      href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']"/>
+  <description>m2e WTP provides the Development IDE</description>
+</setup:Project>

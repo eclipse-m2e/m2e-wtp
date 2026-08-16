@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Configuration
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    label="m2e WTP Development Environment">
+  <annotation
+      source="http://www.eclipse.org/oomph/setup/BrandingInfo">
+    <detail
+        key="imageURI">
+      <value>https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/refs/heads/master/org.eclipse.m2e.wtp/m2e-wtp_icon_32px.png</value>
+    </detail>
+    <detail
+        key="badgeLabel">
+      <value>m2e WTP</value>
+    </detail>
+  </annotation>
+  <installation
+      name="m2e-wtp.development.environment.installation"
+      label="m2e WTP Development Environment Installation">
+    <productVersion
+        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.committers']/@versions[name='latest']"/>
+    <description>The m2e WTP Development Environment installation provides a full development environment for working on m2e WTP integration.</description>
+  </installation>
+  <workspace
+      name="m2e-wtp.development.environment.workspace"
+      label="m2e WTP Development Environment Workspace">
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="eclipse.target.platform"
+        value="${eclipse.target.platform.latest}"/>
+    <stream
+        href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']/@projects[name='m2e-wtp']/@streams[name='master']"/>
+    <description>The m2e WTP Development Environment workspace contains all features and plugins from the m2e-wtp Git repository.</description>
+  </workspace>
+  <description>
+    &lt;p>
+    The &lt;a href=&quot;https://projects.eclipse.org/projects/technology.m2e&quot;/>m2e WTP&lt;/a> Development Environment configuration provisions a dedicated development environment 
+    for the complete set of source projects used by &lt;a href=&quot;https://ci.eclipse.org/m2e/job/m2e-wtp/&quot;>m2e's build server&lt;/a> 
+    to produce &lt;a href=&quot;https://download.eclipse.org/technology/m2e/m2e-wtp/updates//?d&quot;>m2e Web Tools Platform Integration's update sites&lt;/a>.
+    &lt;/p>
+    &lt;p>
+    All the source projects from &lt;a href=&quot;https://github.com/eclipse-m2e/m2e-wtp.git&quot;>m2e WTP's' Git Repository&lt;/a>
+    are available, organized into working sets, and ready for contribution.
+    &lt;/p>
+    &lt;/p>
+    Please &lt;a href=&quot;https://eclipse.dev/oomph/?file=Eclipse_Platform_SDK_Provisioning.md&quot;>read the analogous tutorial instructions&lt;/a> for the Eclipse Platform SDK's configuration for more details.
+    &lt;/p>
+  </description>
+</setup:Configuration>

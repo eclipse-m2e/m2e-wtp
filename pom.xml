@@ -21,7 +21,7 @@
 	<inceptionYear>2008</inceptionYear>
 
 	<properties>
-		<tycho-version>5.0.4-SNAPSHOT</tycho-version>
+		<tycho-version>5.0.4</tycho-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
