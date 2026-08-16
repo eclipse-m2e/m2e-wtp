@@ -55,7 +55,7 @@
 							<remote>${org.eclipse.justj.p2.manager.remote}</remote>
 							<root>${project.basedir}/m2e-wtp</root>
 							<relative>${org.eclipse.justj.p2.manager.relative}</relative>
-							<versionIU>org.eclipse.m2e.wtp.sdk.feature.feature.group</versionIU>
+							<versionIU>org.eclipse.m2e.wtp.feature.feature.group</versionIU>
 							<commit>https://github.com/eclipse-m2e/m2e-wtp/commit/${git.commit}</commit>
 							<targetUrl>https://download.eclipse.org/technology/m2e/m2e-wtp</targetUrl>
 							<promote>${project.basedir}/../target/repository</promote>
