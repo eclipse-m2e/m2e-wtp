@@ -292,7 +292,7 @@
     <setupTask
         xsi:type="setup:EclipseIniTask"
         option="-Doomph.redirection.m2e-wtp"
-        value="=https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/master/setups/m2e-wtp.setup->${git.clone.m2e-wtp|uri}/setups/m2e-wtp.setup"
+        value="=https://raw.githubusercontent.com/eclipse-m2e/m2e-wtp/master/setups/m2e-wtp.setup->${git.clone.m2e-wtp.location|uri}/setups/m2e-wtp.setup"
         vm="true">
       <description>Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.</description>
     </setupTask>
