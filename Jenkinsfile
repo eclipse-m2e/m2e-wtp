@@ -29,7 +29,7 @@ pipeline {
 
     booleanParam(
       name: 'PROMOTE',
-      defaultValue: false,
+      defaultValue: true,
       description: 'Whether to promote the build to the download server.'
     )
   }
