@@ -22,6 +22,8 @@
 
 	<properties>
 		<tycho-version>5.0.4</tycho-version>
+		<jarsigner-version>1.5.7</jarsigner-version>
+		<maven-resources-plugin-version>3.5.0</maven-resources-plugin-version>
 		<tycho.scmUrl>scm:git:http://github.com/eclipse-m2e/m2e-wtp/m2e-wtp.git</tycho.scmUrl>
 		<git.dirtyWorkingTree>warning</git.dirtyWorkingTree>
 		<test.timeout>1800</test.timeout> <!--  30 mins -->
@@ -148,7 +150,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>${maven-resources-plugin-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -257,7 +259,7 @@
 					<plugin>
 						<groupId>org.eclipse.cbi.maven.plugins</groupId>
 						<artifactId>eclipse-jarsigner-plugin</artifactId>
-						<version>1.3.2</version>
+						<version>${jarsigner-version}</version>
 						<executions>
 							<execution>
 								<id>sign</id>
