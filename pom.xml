@@ -13,7 +13,7 @@
 
 	<groupId>org.eclipse.m2e.wtp</groupId>
 	<artifactId>org.eclipse.m2e.wtp.parent</artifactId>
-	<version>1.6.2-SNAPSHOT</version>
+	<version>1.6.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>M2E-WTP :: Parent</name>
