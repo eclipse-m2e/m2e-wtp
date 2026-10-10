@@ -229,10 +229,8 @@ public void clean(IProgressMonitor monitor) throws CoreException {
     request.setRecursive(false);
     request.setOffline(true);
 
-    IMaven maven = MavenPlugin.getMaven();
-    MavenProject mavenProject = facade.getMavenProject();
-    
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(mavenProject, Collections.singletonList("resources:copy-resources"), true, monitor); //$NON-NLS-1$
+
+    MavenExecutionPlan executionPlan = facade.calculateExecutionPlan(Collections.singletonList("resources:copy-resources"), monitor); //$NON-NLS-1$
     MojoExecution copyFilteredResourcesMojo = getExecution(executionPlan, "maven-resources-plugin"); //$NON-NLS-1$
     if (copyFilteredResourcesMojo == null) return;
 
@@ -288,7 +286,7 @@ public void clean(IProgressMonitor monitor) throws CoreException {
       //Restore original configuration
       copyFilteredResourcesMojo.setConfiguration(originalConfig);
       if (parentHierarchyLoaded) {
-        mavenProject.setParent(null);
+        facade.getMavenProject().setParent(null);
       }
     }
   }

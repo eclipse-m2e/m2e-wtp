@@ -95,9 +95,7 @@ public void updateConfiguration(IProject project, MavenProject mavenProject, Ear
 
     IMavenExecutionContext executionContext = mavenFacade.createExecutionContext();
     //Create a maven request + session
-    IMaven maven = MavenPlugin.getMaven();
-
-    MavenExecutionPlan executionPlan = maven.calculateExecutionPlan(mavenProject, Collections.singletonList("ear:generate-application-xml"), true, monitor); //$NON-NLS-1$
+    MavenExecutionPlan executionPlan = mavenFacade.calculateExecutionPlan(Collections.singletonList("ear:generate-application-xml"), monitor); //$NON-NLS-1$ 
     MojoExecution genConfigMojo = getExecution(executionPlan, "maven-ear-plugin", "generate-application-xml"); //$NON-NLS-1$ //$NON-NLS-2$
     if(genConfigMojo == null) {
       //TODO Better error management
