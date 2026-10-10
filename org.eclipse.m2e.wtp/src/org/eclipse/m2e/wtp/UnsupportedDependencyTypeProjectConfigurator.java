@@ -85,7 +85,7 @@ private void checkUnsupportedWorkspaceDependency(IProgressMonitor monitor,
     }
 
     //Constraints only applies when workspace project resolution is active
-    if(!facade.getResolverConfiguration().shouldResolveWorkspaceProjects()) {
+    if(!facade.getConfiguration().isResolveWorkspaceProjects()) {
       return;
     }
 

@@ -58,8 +58,7 @@ public class MavenSessionHelper {
 	public void ensureDependenciesAreResolved(String pluginId, String goal, IProgressMonitor monitor)
 			throws CoreException {
 		project = facade.getMavenProject(monitor);
-		MavenExecutionPlan executionPlan = MavenPlugin.getMaven().calculateExecutionPlan(project,
-				Collections.singletonList(goal), true, monitor);
+		MavenExecutionPlan executionPlan = facade.calculateExecutionPlan(Collections.singletonList(goal), monitor);
 
 		MojoExecution execution = getExecution(executionPlan, pluginId);
 		IMavenExecutionContext context = facade.createExecutionContext();
