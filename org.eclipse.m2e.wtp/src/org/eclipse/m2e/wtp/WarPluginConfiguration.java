@@ -82,6 +82,9 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final int WEB_6_0_ID = 60;
   private static final String WEB_6_0_TEXT = "6.0"; //$NON-NLS-1$
 
+  private static final int WEB_6_1_ID = 61;
+  private static final String WEB_6_1_TEXT = "6.1"; //$NON-NLS-1$
+
   private static final String FAIL_ON_MISSING_WEB_XML = "failOnMissingWebXml";
   
   
@@ -103,6 +106,10 @@ public class WarPluginConfiguration extends AbstractFilteringSupportMavenPlugin 
   private static final IProjectFacetVersion WEB_60 = WebFacetUtils.WEB_FACET.hasVersion(WEB_6_0_TEXT)?
 	          WebFacetUtils.WEB_FACET.getVersion(WEB_6_0_TEXT)
 	         :WEB_50;
+
+  private static final IProjectFacetVersion WEB_61 = WebFacetUtils.WEB_FACET.hasVersion(WEB_6_1_TEXT)?
+            WebFacetUtils.WEB_FACET.getVersion(WEB_6_1_TEXT)
+           :WEB_60;
 
   private boolean defaultFailOnMissingWebXml = true; 
   
@@ -277,6 +284,8 @@ public String[] getSourceIncludes() {
 	          return WEB_50;
 	        case WEB_6_0_ID:
 	          return WEB_60;
+	        case WEB_6_1_ID:
+	          return WEB_61;
 	      }
 	    } catch(IOException | CoreException ex) {
         // expected
